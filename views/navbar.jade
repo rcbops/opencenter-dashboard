@@ -1,0 +1,10 @@
+.navbar.navbar-fixed-top
+  .navbar-inner
+    .container-fluid
+      a.brand(href='/')= title
+      ul.nav
+        li.active: a(href='/clusters') Clusters
+        li: a(href='/nodes') Nodes
+        li: a(href='/locations') Locations
+      form.navbar-search.pull-right
+        input.search-query(type='text', placeholder='Custom Filter')

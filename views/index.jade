@@ -1,5 +1,15 @@
 extends layout
-
 block content
-  h1= title
-  p Welcome to #{title}
+  include navbar
+  .container-fluid
+    .row-fluid
+      .span2
+        ul.nav.nav-list
+          li.nav-header Header
+          li.active
+            a(href='#') Linkz0r
+          li
+            a(href='#') Other
+      .span8
+        h1= title
+        p Welcome to #{title}

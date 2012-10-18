@@ -2,6 +2,11 @@ doctype 5
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href='/css/bootstrap-combined.min.css', rel='stylesheet')
+    link(rel='stylesheet', href='/css/custom.css')
   body
     block content
+    block script
+      script(src='/js/jquery.min.js')
+      script(src='/js/bootstrap.min.js')
+      script(src='/js/knockout.min.js')
