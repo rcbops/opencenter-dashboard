@@ -12,9 +12,8 @@ $(document).ready(function() {
        on filter updates. Possibly using HTTP long-polling
      */
 
-    // FIXME: Add some filters, change this to /filters/, .filters
-    $.getJSON('/api/clusters/', function(data) {
-        nbm.filters(data.clusters);
+    $.getJSON('/api/filters/', function(data) {
+        nbm.filters(data.filters);
         // Activate first navbar item
         $('.navbar * ul.nav li').first().addClass('active');
     });
