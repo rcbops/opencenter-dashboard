@@ -30,16 +30,13 @@ app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
 })
 
-// Routes
-app.get('/', routes.index);
-app.get('/api/:path', function(req, res) {
+function roush_get(path, res) {
     var options = {
         'port': '8080',
-        'path': req.params.path + '/'
+        'path': path
     };
 
     var hreq = http.request(options, function(hres) {
-//        res.setEncoding('utf8');
         res.statusCode = hres.statusCode;
         res.setHeader('Content-Type', 'application/json');
 
@@ -53,6 +50,38 @@ app.get('/api/:path', function(req, res) {
     });
 
     hreq.end();
+};
+
+function roush_post(path, res) {
+    var options = {
+        'port': '8080',
+        'method': 'POST',
+        'path': path
+    };
+
+    var hreq = http.request(options, function(hres) {
+        res.statusCode = hres.statusCode;
+        res.setHeader('Content-Type', 'application/json');
+
+        hres.on('data', function(chunk) {
+            res.send(chunk);
+        });
+    }).on('error', function(e) {
+        console.log('Got error: ' + e.message);
+        res.statusCode = 500;
+        res.end();
+    });
+
+    hreq.end();
+};
+
+// Routes
+app.get('/', routes.index);
+app.get('/api/:path', function(req, res) {
+    roush(req.params.path + '/', 'GET', res);
+});
+app.post('/api/:path/filter', function(req, res) {
+    roush(req.params.path + '/filter', 'POST', res);
 });
 
 // Create

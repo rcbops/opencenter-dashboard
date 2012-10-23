@@ -4,8 +4,6 @@ block body
   .container-fluid
     .row-fluid
       .span2
-        ul.nav.nav-list
-          li.nav-header Header
-          li: a(href='#') Linkz0r
-          li: a(href='#') Other
+        ul.nav.nav-list(data-bind="foreach: nodes")
+          li: a(href='#', data-bind="text: name")
       .span8
