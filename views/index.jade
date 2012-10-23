@@ -1,6 +1,6 @@
 extends layout
-block content
-  include navbar
+extends navbar
+block body
   .container-fluid
     .row-fluid
       .span2
@@ -11,5 +11,3 @@ block content
           li
             a(href='#') Other
       .span8
-        h1= title
-        p Welcome to #{title}

@@ -1,10 +1,14 @@
-.navbar.navbar-fixed-top
-  .navbar-inner
-    .container-fluid
-      a.brand(href='/')= title
-      ul.nav
-        li.active: a(href='/clusters') Clusters
-        li: a(href='/nodes') Nodes
-        li: a(href='/locations') Locations
-      form.navbar-search.pull-right
-        input.search-query(type='text', placeholder='Custom Filter')
+extends layout
+
+block navbar
+  .navbar.navbar-fixed-top
+    .navbar-inner
+      .container-fluid
+        a.brand(href='/')= title
+        ul.nav(data-bind='foreach: filters')
+          li: a(href='#', data-bind='text: name')
+        form.navbar-search.pull-right
+          input.search-query(type='text', placeholder='Custom Filter')
+
+block append script
+  script(src='/js/navbar.js')
