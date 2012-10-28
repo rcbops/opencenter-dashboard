@@ -1,8 +1,8 @@
 // Globals
 var express = require('express'),
-routes = require('./routes'),
-http = require('http'),
-path = require('path');
+    http = require('http'),
+    path = require('path'),
+    gzippo = require('gzippo');
 
 // App
 var app = express();
@@ -16,10 +16,8 @@ app.configure(function(){
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
     app.use(express.methodOverride());
-//    app.use(express.cookieParser('your secret here'));
-//    app.use(express.session());
     app.use(app.router);
-    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(gzippo.staticGzip(path.join(__dirname, 'public')));
 });
 
 // Profiles
@@ -30,58 +28,9 @@ app.configure('development', function(){
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
 })
 
-function roush_get(path, res) {
-    var options = {
-        'port': '8080',
-        'path': path
-    };
-
-    var hreq = http.request(options, function(hres) {
-        res.statusCode = hres.statusCode;
-        res.setHeader('Content-Type', 'application/json');
-
-        hres.on('data', function(chunk) {
-            res.send(chunk);
-        });
-    }).on('error', function(e) {
-        console.log('Got error: ' + e.message);
-        res.statusCode = 500;
-        res.end();
-    });
-
-    hreq.end();
-};
-
-function roush_post(path, res) {
-    var options = {
-        'port': '8080',
-        'method': 'POST',
-        'path': path
-    };
-
-    var hreq = http.request(options, function(hres) {
-        res.statusCode = hres.statusCode;
-        res.setHeader('Content-Type', 'application/json');
-
-        hres.on('data', function(chunk) {
-            res.send(chunk);
-        });
-    }).on('error', function(e) {
-        console.log('Got error: ' + e.message);
-        res.statusCode = 500;
-        res.end();
-    });
-
-    hreq.end();
-};
-
 // Routes
-app.get('/', routes.index);
-app.get('/api/:path', function(req, res) {
-    roush(req.params.path + '/', 'GET', res);
-});
-app.post('/api/:path/filter', function(req, res) {
-    roush(req.params.path + '/filter', 'POST', res);
+app.get('/', function(req, res) {
+    res.render('index', { title: 'nTrapy' });
 });
 
 // Create
