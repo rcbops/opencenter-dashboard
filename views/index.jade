@@ -3,7 +3,11 @@ extends navbar
 block body
   .container-fluid
     .row-fluid
+      // ko if: nodes() && nodes().length > 0
       .span2
-        ul.nav.nav-list(data-bind="foreach: nodes")
-          li: a(href='#', data-bind="text: name")
+        ul.nav.nav-list(data-bind='foreach: nodes')
+          li(data-bind='click: $parent.node, css: {active: $parent.node() === $data}')
+            a(href='#', data-bind='text: name')
+      // /ko
       .span8
+        #details
