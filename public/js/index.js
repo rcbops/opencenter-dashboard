@@ -21,7 +21,7 @@ $(document).ready(function() {
         });
 
         // Node getter/setter
-        self.node = selector(function(data) {
+        self.node = selector(self.nodes, function(data) {
             if(data && data['id']) {
                 // Query adventures
                 $.getJSON('http://localhost:8080/nodes/' +
@@ -30,12 +30,14 @@ $(document).ready(function() {
                           function(res) {self.adventures(res.adventures)}
                          );
             }
-            else
+            else {
+                // Blank adventures
                 self.adventures({});
+            }
         });
 
         // Filter getter/setter
-        self.filter = selector(function(data) {
+        self.filter = selector(self.filters, function(data) {
             if(data && data['expr']) {
                 // Evaluate filter and update nodes
                 $.post('http://localhost:8080/nodes/filter',

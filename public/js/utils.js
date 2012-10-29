@@ -11,12 +11,11 @@ $.post = function(url, data, callback) {
 };
 
 // Selector wrapper
-selector = function(callback) {
-    var parent = this;
-
+selector = function(parent, callback) {
     return ko.computed({
         read: function() {
-            if(!parent.sub) parent.sub = ko.observable();
+            if(!parent.sub)
+                parent.sub = ko.observable();
             return parent.sub();
         },
         write: function(data) {
@@ -25,7 +24,7 @@ selector = function(callback) {
         },
         deferEvaluation: true,
         owner: parent
-    })
+    });
 };
 
 // Object -> Array mapper
