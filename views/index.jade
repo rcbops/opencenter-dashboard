@@ -4,15 +4,19 @@ block body
   .container-fluid
     .row-fluid
       .span2
-        ul.nav.nav-list(data-bind='foreach: nodes')
+        ul.nav.nav-list.well(data-bind='template: {foreach: nodes, beforeRemove: slideRemove, afterAdd: slideAdd}')
+          li.nav-header(data-bind='text: $parent.filter().filter')
           li(data-bind='click: $parent.node, css: {active: $parent.node() === $data}')
             a(href='#', data-bind='text: name')
       .span4
+        h1 Actions
         dl.dl-horizontal(data-bind='foreach: adventures')
-          dt(data-bind='text: id')
-          dd(data-bind='text: name')
+          a(href='#')
+            dt(data-bind='text: id')
+            dd(data-bind='text: name')
       .span4
-        dl.dl-horizontal(data-bind='foreach: o2a(node())')
+        h1 Details
+        dl.dl-horizontal(data-bind='template: {foreach: o2a(node()), beforeRemove: slideRemove, afterAdd: slideAdd}')
           // ko if: value
           dt(data-bind='text: key')
           dd(data-bind='text: value')

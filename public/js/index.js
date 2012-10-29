@@ -48,6 +48,9 @@ $(document).ready(function() {
             // Blank node
             self.node({});
         });
+
+        self.slideAdd    = function(elem) { if (elem.nodeType === 1) $(elem).hide().slideDown() };
+        self.slideRemove = function(elem) { if (elem.nodeType === 1) $(elem).slideUp(function() { $(elem).remove(); }) };
     };
 
     // Store model variable for convenience
