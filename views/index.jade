@@ -3,11 +3,17 @@ extends navbar
 block body
   .container-fluid
     .row-fluid
-      // ko if: nodes() && nodes().length > 0
       .span2
         ul.nav.nav-list(data-bind='foreach: nodes')
           li(data-bind='click: $parent.node, css: {active: $parent.node() === $data}')
             a(href='#', data-bind='text: name')
-      // /ko
-      .span8
-        #details
+      .span4
+        dl.dl-horizontal(data-bind='foreach: adventures')
+          dt(data-bind='text: id')
+          dd(data-bind='text: name')
+      .span4
+        dl.dl-horizontal(data-bind='foreach: o2a(node())')
+          // ko if: value
+          dt(data-bind='text: key')
+          dd(data-bind='text: value')
+          // /ko

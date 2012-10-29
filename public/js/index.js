@@ -16,22 +16,39 @@ $(document).ready(function() {
         */
 
         // Initialize filters
-        $.getJSON('http://localhost:8080/filters/', function(data) {
-            self.filters(data.filters);
+        $.getJSON('http://localhost:8080/filters/', function(res) {
+            self.filters(res.filters);
         });
 
+        // Node getter/setter
+        self.node = selector(function(data) {
+            if(data && data['id']) {
+                // Query adventures
+                $.getJSON('http://localhost:8080/nodes/' +
+                          data['id'] +
+                          '/adventures',
+                          function(res) {self.adventures(res.adventures)}
+                         );
+            }
+            else
+                self.adventures({});
+        });
+
+        // Filter getter/setter
         self.filter = selector(function(data) {
             if(data && data['expr']) {
+                // Evaluate filter and update nodes
                 $.post('http://localhost:8080/nodes/filter',
                        JSON.stringify({ filter: data['expr'] }),
                        function(res) {self.nodes(res.nodes)}
                       );
             }
+            // Blank node
+            self.node({});
         });
-
-        self.node = selector(function(data) { });
     };
 
+    // Store model variable for convenience
     var indexModel = new IndexModel();
     ko.applyBindings(indexModel);
 });

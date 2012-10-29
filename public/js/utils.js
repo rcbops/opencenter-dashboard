@@ -27,3 +27,14 @@ selector = function(callback) {
         owner: parent
     })
 };
+
+// Object -> Array mapper
+o2a = function(obj) {
+    var array = [];
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop)) {
+            array.push({ key: prop, value: obj[prop] });
+        }
+    }
+    return array;
+};
