@@ -37,3 +37,23 @@ toArray = function(obj) {
     }
     return array;
 };
+
+// Fade in on add
+self.fadeAdd = function(elem) {
+    if (elem.nodeType === 1) {
+        $(elem).hide().fadeIn();
+        $(elem).children().hide().fadeIn();
+    }
+};
+
+// Fade out on remove
+self.fadeRemove = function(elem) {
+    if (elem.nodeType === 1) {
+        $(elem).hide().fadeOut(function() {
+            $(elem).remove();
+        });
+        $(elem).children().hide().fadeOut(function() {
+            $(elem).remove();
+        });
+    }
+};
