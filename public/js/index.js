@@ -24,15 +24,13 @@ $(document).ready(function() {
         self.node = selector(self.nodes, function(data) {
             if(data && data['id']) {
                 // Query adventures
-                $.getJSON('http://localhost:8080/nodes/' +
-                          data['id'] +
-                          '/adventures',
+                $.getJSON('http://localhost:8080/nodes/' + data['id'] + '/adventures',
                           function(res) {self.adventures(res.adventures)}
                          );
             }
             else {
                 // Blank adventures
-                self.adventures({});
+                self.adventures([]);
             }
         });
 
