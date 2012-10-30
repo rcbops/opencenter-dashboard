@@ -34,6 +34,11 @@ $(document).ready(function() {
             }
         });
 
+        // Node properties
+        self.nProp = ko.computed(function() {
+            return toArray(self.node());
+        });
+
         // Filter getter/setter
         self.filter = selector(self.filters, function(data) {
             if(data && data['expr']) {

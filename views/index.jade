@@ -4,20 +4,21 @@ block body
   .container-fluid
     .row-fluid
       .span2
-        ul.nav.nav-list.well(data-bind='template: {foreach: nodes, beforeRemove: slideRemove, afterAdd: slideAdd}')
-          li.nav-header(data-bind='text: $parent.filter().filter')
+        ul.nav.nav-list(data-bind='foreach: nodes')
+          // ko if: $index() === 0
+          li.nav-header Nodes
+          // /ko
           li(data-bind='click: $parent.node, css: {active: $parent.node() === $data}')
             a(href='#', data-bind='text: name')
-      .span4
-        h1 Actions
+      .span5
+        h4(data-bind='if: adventures().length') Actions
         dl.dl-horizontal(data-bind='foreach: adventures')
-          a(href='#')
-            dt(data-bind='text: id')
-            dd(data-bind='text: name')
-      .span4
-        h1 Details
-        dl.dl-horizontal(data-bind='template: {foreach: o2a(node()), beforeRemove: slideRemove, afterAdd: slideAdd}')
-          // ko if: value
+          dt(data-bind='text: $data["id"]')
+          dd: a(href='#', data-bind='text: name')
+      .span5
+        h4(data-bind='if: nProp().length') Details
+        dl.dl-horizontal(data-bind='foreach: nProp')
+          // ko if: value && !(key == 'config')
           dt(data-bind='text: key')
           dd(data-bind='text: value')
           // /ko
