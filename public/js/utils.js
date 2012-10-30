@@ -28,7 +28,7 @@ selector = function(parent, callback) {
 };
 
 // Object -> Array mapper
-o2a = function(obj) {
+toArray = function(obj) {
     var array = [];
     for (var prop in obj) {
         if (obj.hasOwnProperty(prop)) {
