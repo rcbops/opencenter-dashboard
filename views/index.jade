@@ -13,8 +13,9 @@ block body
       .span5
         h4(data-bind='if: adventures().length') Actions
         dl.dl-horizontal(data-bind='foreach: adventures')
-          dt(data-bind='text: $data["id"]')
-          dd: a(href='#', data-bind='text: name')
+          a(href='#', data-bind='click: $parent.adventurate')
+            dt(data-bind='text: id')
+            dd(data-bind='text: name')
       .span5
         h4(data-bind='if: nProp().length') Details
         dl.dl-horizontal(data-bind='foreach: nProp')
