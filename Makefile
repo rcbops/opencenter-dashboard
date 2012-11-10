@@ -31,3 +31,7 @@ cert:
 	@openssl req -new -key key.pem -out csr.pem
 	@openssl x509 -req -in csr.pem -signkey key.pem -out cert.pem
 	@rm csr.pem
+
+clean:
+	@rm -rf components node_modules
+	@rm *.log *.pem
