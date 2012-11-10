@@ -2,6 +2,7 @@ $(document).ready(function() {
     var IndexModel = function() {
         // Store for convenience
         var self = this;
+        var host = "http://thor.local:8080"
 
         // Main arrays
         self.filters = ko.observableArray();
@@ -16,7 +17,7 @@ $(document).ready(function() {
         */
 
         // Initialize filters
-        $.getJSON('http://localhost:8080/filters/', function(res) {
+        $.getJSON(host + '/filters/', function(res) {
             self.filters(res.filters);
         });
 
@@ -24,7 +25,7 @@ $(document).ready(function() {
         self.node = selector(self.nodes, function(data) {
             if(data && data['id']) {
                 // Query adventures
-                $.getJSON('http://localhost:8080/nodes/' + data['id'] + '/adventures',
+                $.getJSON(host + '/nodes/' + data['id'] + '/adventures',
                           function(res) {self.adventures(res.adventures)}
                          );
             }
@@ -43,7 +44,7 @@ $(document).ready(function() {
         self.filter = selector(self.filters, function(data) {
             if(data && data['expr']) {
                 // Evaluate filter and update nodes
-                $.post('http://localhost:8080/nodes/filter',
+                $.post(host + '/nodes/filter',
                        JSON.stringify({ filter: data['expr'] }),
                        function(res) {self.nodes(res.nodes)}
                       );
@@ -51,6 +52,17 @@ $(document).ready(function() {
             // Blank node
             self.node({});
         });
+
+        self.adventurate = function(data) {
+            if(data && data['id']) {
+                $.post(host + '/adventures/' + data['id'] + '/execute',
+                       JSON.stringify({
+                           nodes: [self.node()['id']]
+                       }),
+                       function(res) {console.log(res)}
+                      );
+            }
+        };
     };
 
     // Store model variable for convenience

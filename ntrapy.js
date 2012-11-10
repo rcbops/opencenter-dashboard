@@ -41,16 +41,23 @@ app.get('/', function(req, res) {
 
 // HTTP server
 http.createServer(app).listen(app.get('port'), function() {
-    console.log("Express server listening on port " + app.get('port') + " in " + app.settings.env + " mode");
+    console.log('Express server listening on port ' + app.get('port') + ' in ' + app.settings.env + ' mode');
 });
 
-// TLS setup
-var tlsOptions = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
-};
+// TODO: See about stuffing this logic into callbacks on readFile
+try {
+    // TLS setup
+    var tlsOptions = {
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
+    };
 
-// HTTPS server
-https.createServer(tlsOptions, app).listen(app.get('sport'), function() {
-    console.log("Express https server listening on port " + app.get('sport') + " in " + app.settings.env + " mode");
-});
+    // HTTPS server
+    https.createServer(tlsOptions, app).listen(app.get('sport'), function() {
+        console.log('Express https server listening on port ' + app.get('sport') + ' in ' + app.settings.env + ' mode');
+    });
+}
+catch(e) {
+    console.log(e);
+    console.log('Error setting up HTTPS; skipping.');
+}
