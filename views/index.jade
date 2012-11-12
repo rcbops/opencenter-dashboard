@@ -3,21 +3,10 @@ extends navbar
 block body
   .container-fluid
     .row-fluid
-      .span2
-        h4(data-bind='if: nodes().length') Nodes
-        ul.nav.nav-list(data-bind='foreach: nodes')
-          li(data-bind='click: $parent.node, css: {active: $parent.node() === $data}')
-            a(href='#', data-bind='text: name')
-      .span5
-        h4(data-bind='if: adventures().length') Actions
-        dl.dl-horizontal(data-bind='foreach: adventures')
-          a(href='#', data-bind='click: $parent.adventurate')
-            dt(data-bind='text: id')
-            dd(data-bind='text: name')
-      .span5
-        h4(data-bind='if: nProp().length') Details
-        dl.dl-horizontal(data-bind='foreach: nProp')
-          // ko if: value && !(key == 'config')
-          dt(data-bind='text: key')
-          dd(data-bind='text: value')
-          // /ko
+      .span12
+        table.table.table-bordered.table-hover.table-condensed(data-bind='template: {name: "itemTemplate", foreach: items}')
+
+  script(type='text/html', id='itemTemplate')
+    table(data-bind='template: {name: "itemTemplate", foreach: children}')
+      tr: td(data-bind='text: $data')
+

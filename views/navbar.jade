@@ -5,8 +5,5 @@ block navbar
     .navbar-inner
       .container-fluid
         a.brand(href='/')= title
-        ul.nav(data-bind='foreach: filters')
-          li(data-bind='click: $parent.filter, css: {active: $parent.filter() === $data}')
-            a(href='#', data-bind='text: name')
-        form.navbar-search.pull-right
-          input.search-query(type='text', placeholder='Custom Filter')
+        ul.nav
+          li.active: a(href='#') Overview

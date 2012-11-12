@@ -63,6 +63,37 @@ $(document).ready(function() {
                       );
             }
         };
+
+        self.items = [
+            {
+                id: 'root',
+                children: [
+                    {
+                        id: 'outerA',
+                        children: [
+                            {
+                                id: 'innerA'
+                            },
+                            {
+                                id: 'innerB'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'outerB',
+                        children: [
+                            {
+                                id: 'innerC'
+                            },
+                            {
+                                id: 'innerD'
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
     };
 
     // Store model variable for convenience
