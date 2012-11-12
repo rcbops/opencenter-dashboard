@@ -2,7 +2,7 @@ $(document).ready(function() {
     var IndexModel = function() {
         // Store for convenience
         var self = this;
-        var host = "http://thor.local:8080"
+        var host = "http://localhost:8080"
 
         // Main arrays
         self.filters = ko.observableArray();

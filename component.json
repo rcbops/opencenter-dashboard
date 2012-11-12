@@ -1,7 +1,7 @@
 {
   "name": "nTrapy",
-  "version": "0.1.0",
-  "main": "app.js",
+  "version": "0.0.1",
+  "main": "./ntrapy.js",
   "dependencies": {
     "bootstrap": "latest",
     "jquery": "~1.8.0",

@@ -1,3 +1,5 @@
+.git
+
 lib-cov
 *.seed
 *.log
@@ -14,3 +16,6 @@ results
 
 node_modules
 npm-debug.log
+
+components
+public
