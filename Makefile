@@ -1,4 +1,7 @@
 HR="=========================================="
+SHELL=bash
+
+all: | clean build link
 
 build:
 	@echo ${HR}
@@ -22,17 +25,22 @@ build:
 	@echo ${HR}
 	cd components/knockout/build; ./build-linux
 	uglifyjs -nc components/knockout/build/output/knockout-latest.js > components/knockout/build/output/knockout.min.js
+
+link:
+	@echo ${HR}
 	@echo "Linking Bower components"
+	@echo ${HR}
 	mkdir -p public/{js,css,img}
 	ln -sf ${PWD}/components/bootstrap/bootstrap/js/*.min.js public/js
 	ln -sf ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
-	ln -sf ${PWD}/components/bootstrap/bootstrap/img/*.png public/img
+	ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
 	ln -sf ${PWD}/components/knockout/build/output/knockout.min.js public/js
 	ln -sf ${PWD}/components/jquery/jquery.min.js public/js
+	@echo ${HR}
 	@echo "Linking nTrapy components"
+	@echo ${HR}
 	ln -sf ${PWD}/source/js/* public/js
 	ln -sf ${PWD}/source/css/* public/css
-	ln -sf ${PWD}/source/img/* public/img
 
 cert:
 	rm -f *.pem
