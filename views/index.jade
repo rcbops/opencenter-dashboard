@@ -4,10 +4,8 @@ block body
   .container-fluid
     .row-fluid
       .span2
+        h4(data-bind='if: nodes().length') Nodes
         ul.nav.nav-list(data-bind='foreach: nodes')
-          // ko if: $index() === 0
-          li.nav-header Nodes
-          // /ko
           li(data-bind='click: $parent.node, css: {active: $parent.node() === $data}')
             a(href='#', data-bind='text: name')
       .span5
