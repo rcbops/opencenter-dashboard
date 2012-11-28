@@ -1,12 +1,38 @@
 extends layout
 extends navbar
 block body
-  .container-fluid
-    .row-fluid
+  .container
+    .row
       .span12
-        table.table.table-bordered.table-hover.table-condensed(data-bind='template: {name: "itemTemplate", foreach: items}')
+        #root(data-bind='template: {name: "itemTemplate", foreach: items}')
+
+  style
+    .drop-shadow {
+      -moz-box-shadow: 5px 5px 10px rgba(0,0,0,.5);
+      -webkit-box-shadow: 5px 5px 10px rgba(0,0,0,.5);
+      box-shadow: 5px 5px 10px rgba(0,0,0,.5);
+    }
+    .clear-right { clear: right; }
+    .clear-left { clear: left; }
+    .clear-both { clear: both; }
 
   script(type='text/html', id='itemTemplate')
-    table(data-bind='template: {name: "itemTemplate", foreach: children}')
-      tr: td(data-bind='text: $data')
+    .well.pull-left.drop-shadow
+      .pull-left: span.label(data-bind='text: name')
+      .pull-right.dropdown
+        a.dropdown-toggle(role='button', data-toggle='dropdown', href='#', id='dLabel'): i.icon-cog
+        ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+          li Blah
+          li Bleh
 
+      .clear-right
+      // ko foreach: nodes()
+      .well.pull-left(style='border-color: lightgrey', data-bind='style: {backgroundColor: $root.statusColor(status)}')
+        .pull-left: span.label(data-bind='text: name, css: $root.statusLabel(status)')
+        .pull-right.dropdown
+          a.dropdown-toggle(role='button', data-toggle='dropdown', href='#', id='dLabel'): i.icon-cog
+          ul.dropdown-menu(role='menu', aria-labelledby='dLabel')
+            li Blah
+            li Bleh
+      // /ko
+      .clear-left(data-bind='template: {name: "itemTemplate", foreach: children}')

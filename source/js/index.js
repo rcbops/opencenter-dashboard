@@ -5,10 +5,10 @@ $(document).ready(function() {
         var host = "http://localhost:8080"
 
         // Main arrays
-        self.filters = ko.observableArray();
-        self.nodes = ko.observableArray();
-        self.adventures = ko.observableArray();
-        self.facts = ko.observableArray();
+        //self.filters = ko.observableArray();
+        //self.nodes = ko.observableArray();
+        //self.adventures = ko.observableArray();
+        //self.facts = ko.observableArray();
 
         /*
           TODO: Figure out how to stuff filters into a
@@ -17,82 +17,140 @@ $(document).ready(function() {
         */
 
         // Initialize filters
-        $.getJSON(host + '/filters/', function(res) {
-            self.filters(res.filters);
-        });
+        //$.getJSON(host + '/filters/', function(res) {
+        //    self.filters(res.filters);
+        //});
 
         // Node getter/setter
-        self.node = selector(self.nodes, function(data) {
-            if(data && data['id']) {
-                // Query adventures
-                $.getJSON(host + '/nodes/' + data['id'] + '/adventures',
-                          function(res) {self.adventures(res.adventures)}
-                         );
-            }
-            else {
-                // Blank adventures
-                self.adventures([]);
-            }
-        });
+        //self.node = selector(self.nodes, function(data) {
+        //    if(data && data['id']) {
+        //        // Query adventures
+        //        $.getJSON(host + '/nodes/' + data['id'] + '/adventures',
+        //                  function(res) {self.adventures(res.adventures)}
+        //                 );
+        //    }
+        //    else {
+        //        // Blank adventures
+        //        self.adventures([]);
+        //    }
+        //});
 
         // Node properties
-        self.nProp = ko.computed(function() {
-            return toArray(self.node());
-        });
+        //self.nProp = ko.computed(function() {
+        //    return toArray(self.node());
+        //});
 
         // Filter getter/setter
-        self.filter = selector(self.filters, function(data) {
-            if(data && data['expr']) {
-                // Evaluate filter and update nodes
-                $.post(host + '/nodes/filter',
-                       JSON.stringify({ filter: data['expr'] }),
-                       function(res) {self.nodes(res.nodes)}
-                      );
-            }
-            // Blank node
-            self.node({});
+        //self.filter = selector(self.filters, function(data) {
+        //    if(data && data['expr']) {
+        //        // Evaluate filter and update nodes
+        //        $.post(host + '/nodes/filter',
+        //               JSON.stringify({ filter: data['expr'] }),
+        //               function(res) {self.nodes(res.nodes)}
+        //              );
+        //    }
+        //    // Blank node
+        //    self.node({});
+        //});
+        //
+        //self.adventurate = function(data) {
+        //    if(data && data['id']) {
+        //        $.post(host + '/adventures/' + data['id'] + '/execute',
+        //               JSON.stringify({
+        //                   nodes: [self.node()['id']]
+        //               }),
+        //               function(res) {console.log(res)}
+        //              );
+        //    }
+        //};
+
+        self.items = ko.observable({
+            name: 'root',
+            nodes: ko.observableArray([
+                { name: 'Unprovisioned', status: 'unprovisioned' },
+                { name: 'Unprovisioned', status: 'unprovisioned' }
+            ]),
+            children: ko.observableArray([
+                {
+                    name: 'AZ1',
+                    nodes: ko.observableArray([
+                        { name: 'AZ1-Chef', status: 'good' }
+                    ]),
+                    children: ko.observableArray([
+                        {
+                            name: 'Nova1',
+                            nodes: ko.observableArray([
+                                { name: 'Controller1', status: 'good' },
+                                { name: 'Compute1', status: 'alert' },
+                                { name: 'Compute2', status: 'error' }
+                            ]),
+                            children: ko.observableArray([])
+                        },
+                        {
+                            name: 'Swift1',
+                            nodes: ko.observableArray([
+                                { name: 'Proxy1', status: 'alert' },
+                                { name: 'Storage1', status: 'alert' }
+                            ]),
+                            children: ko.observableArray([])
+                        }
+                    ])
+                },
+                {
+                    name: 'AZ2',
+                    nodes: ko.observableArray([
+                        { name: 'AZ2-Chef', status: 'alert' }
+                    ]),
+                    children: ko.observableArray([
+                        {
+                            name: 'Nova1',
+                            nodes: ko.observableArray([]),
+                            children: ko.observableArray([])
+                        },
+                        {
+                            name: 'Nova2',
+                            nodes: ko.observableArray([]),
+                            children: ko.observableArray([])
+                        }
+                    ])
+                }
+            ])
         });
 
-        self.adventurate = function(data) {
-            if(data && data['id']) {
-                $.post(host + '/adventures/' + data['id'] + '/execute',
-                       JSON.stringify({
-                           nodes: [self.node()['id']]
-                       }),
-                       function(res) {console.log(res)}
-                      );
-            }
+        self.statusColor = function(status) {
+            switch(status) {
+                case 'unprovisioned':
+                return '#3A87AD'; // label-info
+                break;
+                case 'good':
+                return '#468847'; // label-success
+                break;
+                case 'alert':
+                return '#F89406'; // label-warning
+                break;
+                case 'error':
+                return '#B94A48'; // label-important
+                break;
+            };
         };
 
-        self.items = [
-            {
-                id: 'root',
-                children: [
-                    {
-                        id: 'outerA',
-                        children: [
-                            {
-                                id: 'innerA'
-                            },
-                            {
-                                id: 'innerB'
-                            }
-                        ]
-                    },
-                    {
-                        id: 'outerB',
-                        children: [
-                            {
-                                id: 'innerC'
-                            },
-                            {
-                                id: 'innerD'
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
+        self.statusLabel = function(status) {
+            switch(status) {
+            case 'unprovisioned':
+                return 'label-info';
+                break;
+            case 'good':
+                return 'label-success';
+                break;
+            case 'alert':
+                return 'label-warning';
+                break;
+            case 'error':
+                return 'label-important';
+                break;
+            };
+
+        };
 
     };
 
