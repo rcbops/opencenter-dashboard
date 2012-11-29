@@ -149,12 +149,33 @@ $(document).ready(function() {
                 return 'label-important';
                 break;
             };
-
         };
 
+        self.statusButton = function(status) {
+            switch(status) {
+            case 'unprovisioned':
+                return 'btn-info';
+                break;
+            case 'good':
+                return 'btn-success';
+                break;
+            case 'alert':
+                return 'btn-warning';
+                break;
+            case 'error':
+                return 'btn-danger';
+                break;
+            };
+        };
     };
 
     // Store model variable for convenience
     var indexModel = new IndexModel();
     ko.applyBindings(indexModel);
+
+    $("a[rel=popover]")
+      .popover()
+      .click(function(e) {
+        e.preventDefault()
+})
 });
