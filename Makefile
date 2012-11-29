@@ -36,7 +36,6 @@ link:
 	ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
 	ln -sf ${PWD}/components/knockout/build/output/knockout.min.js public/js
 	ln -sf ${PWD}/components/jquery/jquery.min.js public/js
-	ln -sf ${PWD}/components/d3/d3.v2.min.js public/js/d3.min.js
 	@echo ${HR}
 	@echo "Linking nTrapy components"
 	@echo ${HR}
