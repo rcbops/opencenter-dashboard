@@ -1,4 +1,38 @@
+/* Space navbar */
 body {
   padding-top: 60px;
   padding-bottom: 40px;
+}
+
+/* Drop shadow yay */
+.drop-shadow {
+  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,.5);
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,.5);
+  box-shadow: 1px 1px 5px rgba(0,0,0,.5);
+}
+
+/* Convenience classes */
+.clear-right { clear: right; }
+.clear-left { clear: left; }
+.clear-both { clear: both; }
+
+/* Re-space wells */
+.well {
+  min-width: 100px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 0px;
+  padding-bottom: 10px;
+}
+
+/* Don't space right of last sibling */
+.well:last-child { margin-right: 0px; }
+
+/* Make some room above nodes  */
+.btn-group button { margin-top: 10px; }
+
+/* Tweak container cogs */
+.btn-group .btn {
+  padding-bottom: 3px;
+  margin-left: 20px;
 }

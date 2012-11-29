@@ -6,16 +6,6 @@ block body
       .span12
         #root(data-bind='template: {name: "itemTemplate", foreach: items}')
 
-  style
-    .drop-shadow {
-      -moz-box-shadow: 5px 5px 10px rgba(0,0,0,.5);
-      -webkit-box-shadow: 5px 5px 10px rgba(0,0,0,.5);
-      box-shadow: 5px 5px 10px rgba(0,0,0,.5);
-    }
-    .clear-right { clear: right; }
-    .clear-left { clear: left; }
-    .clear-both { clear: both; }
-
   script(type='text/html', id='itemTemplate')
     .well.pull-left.drop-shadow
       .pull-left: span.label(data-bind='text: name')
