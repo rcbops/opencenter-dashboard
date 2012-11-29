@@ -1,10 +1,9 @@
 extends layout
 extends navbar
 block body
-  .container-fluid
-    .row-fluid
-      .span2
-      .span10
+  .container
+    .row
+      .span12
         #root(data-bind='template: {name: "itemTemplate", foreach: items}')
 
   script(type='text/html', id='itemTemplate')

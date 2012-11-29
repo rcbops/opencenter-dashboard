@@ -16,6 +16,9 @@ body {
 .clear-left { clear: left; }
 .clear-both { clear: both; }
 
+/* Center root */
+.span12 > #root { margin: 0px auto; }
+
 /* Re-space wells */
 .well {
   min-width: 100px;
