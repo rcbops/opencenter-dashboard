@@ -25,6 +25,11 @@ build:
 	@echo ${HR}
 	cd components/knockout/build; ./build-linux
 	uglifyjs -nc components/knockout/build/output/knockout-latest.js > components/knockout/build/output/knockout.min.js
+	@echo ${HR}
+	@echo "Building Knockout-Mapping"
+	@echo ${HR}
+	cd components/knockout-mapping/build; bash ./build-linux
+	uglifyjs -nc components/knockout-mapping/build/output/knockout.mapping-latest.js > components/knockout-mapping/build/output/knockout-mapping.min.js
 
 link:
 	@echo ${HR}
@@ -35,6 +40,7 @@ link:
 	ln -sf ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
 	ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
 	ln -sf ${PWD}/components/knockout/build/output/knockout.min.js public/js
+	ln -sf ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
 	ln -sf ${PWD}/components/jquery/jquery.min.js public/js
 	@echo ${HR}
 	@echo "Linking nTrapy components"

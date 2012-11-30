@@ -5,6 +5,7 @@
   "dependencies": {
     "bootstrap": "latest",
     "jquery": "latest",
-    "knockout": "latest"
+    "knockout": "latest",
+    "knockout-mapping": "latest"
   }
 }
