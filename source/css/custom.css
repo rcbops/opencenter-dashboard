@@ -31,8 +31,12 @@ body {
 /* Don't space right of last sibling */
 .well:last-child { margin-right: 0px; }
 
-/* Make some room above nodes  */
+/* Make some room above nodes */
 .btn-group button { margin-top: 10px; }
+
+/* Fix popover fallout */
+.btn-group .popover { font-size: 14px; }
+.btn-group > .btn + .popover + .btn.dropdown-toggle { margin-left: -1px; padding-left: 8px; padding-right: 8px; }
 
 /* Tweak container cogs */
 .btn-group .btn {

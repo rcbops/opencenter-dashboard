@@ -2,133 +2,97 @@ $(document).ready(function() {
     var IndexModel = function() {
         // Store for convenience
         var self = this;
-        var host = "http://localhost:8080"
 
-        // Main arrays
-        //self.filters = ko.observableArray();
-        //self.nodes = ko.observableArray();
-        //self.adventures = ko.observableArray();
-        //self.facts = ko.observableArray();
-
-        /*
-          TODO: Figure out how to stuff filters into a
-          computed observable so this function gets called
-          on filter updates. Possibly using HTTP long-polling
-        */
-
-        // Initialize filters
-        //$.getJSON(host + '/filters/', function(res) {
-        //    self.filters(res.filters);
-        //});
-
-        // Node getter/setter
-        //self.node = selector(self.nodes, function(data) {
-        //    if(data && data['id']) {
-        //        // Query adventures
-        //        $.getJSON(host + '/nodes/' + data['id'] + '/adventures',
-        //                  function(res) {self.adventures(res.adventures)}
-        //                 );
-        //    }
-        //    else {
-        //        // Blank adventures
-        //        self.adventures([]);
-        //    }
-        //});
-
-        // Node properties
-        //self.nProp = ko.computed(function() {
-        //    return toArray(self.node());
-        //});
-
-        // Filter getter/setter
-        //self.filter = selector(self.filters, function(data) {
-        //    if(data && data['expr']) {
-        //        // Evaluate filter and update nodes
-        //        $.post(host + '/nodes/filter',
-        //               JSON.stringify({ filter: data['expr'] }),
-        //               function(res) {self.nodes(res.nodes)}
-        //              );
-        //    }
-        //    // Blank node
-        //    self.node({});
-        //});
-        //
-        //self.adventurate = function(data) {
-        //    if(data && data['id']) {
-        //        $.post(host + '/adventures/' + data['id'] + '/execute',
-        //               JSON.stringify({
-        //                   nodes: [self.node()['id']]
-        //               }),
-        //               function(res) {console.log(res)}
-        //              );
-        //    }
-        //};
-
-        self.items = ko.observable({
+        self.items = ko.mapping.fromJS([{
+            id: 1,
             name: 'root',
-            nodes: ko.observableArray([
-                { name: 'Unprovisioned', status: 'unprovisioned' },
-                { name: 'Unprovisioned', status: 'unprovisioned' }
-            ]),
-            children: ko.observableArray([
+            nodes: [
+                { id: 2, name: 'Unprovisioned', status: 'unprovisioned' },
+                { id: 3, name: 'Unprovisioned', status: 'unprovisioned' }
+            ],
+            children: [
                 {
-                    name: 'AZ1',
-                    nodes: ko.observableArray([
-                        { name: 'AZ1-Chef', status: 'good' }
-                    ]),
-                    children: ko.observableArray([
+                    id: 4,
+                    name: 'Nova Cluster 1',
+                    nodes: [
+                        { id: 5, name: 'Something', status: 'good' }
+                    ],
+                    children: [
                         {
-                            name: 'Nova1',
-                            nodes: ko.observableArray([
-                                { name: 'Controller1', status: 'good' },
-                                { name: 'Compute1', status: 'alert' },
-                                { name: 'Compute2', status: 'error' }
-                            ]),
-                            children: ko.observableArray([])
+                            id: 6,
+                            name: 'AZ1',
+                            nodes: [
+                                { id: 7, name: 'Controller1', status: 'good' },
+                                { id: 8, name: 'Compute1', status: 'alert' },
+                                { id: 9, name: 'Compute2', status: 'error' }
+                            ],
+                            children: []
                         },
                         {
-                            name: 'Swift1',
-                            nodes: ko.observableArray([
-                                { name: 'Proxy1', status: 'alert' },
-                                { name: 'Storage1', status: 'alert' }
-                            ]),
-                            children: ko.observableArray([])
+                            id: 10,
+                            name: 'AZ2',
+                            nodes: [
+                                { id: 11, name: 'Controller1', status: 'alert' },
+                                { id: 12, name: 'Compute1', status: 'alert' }
+                            ],
+                            children: []
                         }
-                    ])
+                    ]
                 },
                 {
-                    name: 'AZ2',
-                    nodes: ko.observableArray([
-                        { name: 'AZ2-Chef', status: 'alert' }
-                    ]),
-                    children: ko.observableArray([
+                    id: 13,
+                    name: 'Swift Cluster 1',
+                    nodes: [],
+                    children: [
                         {
-                            name: 'Nova1',
-                            nodes: ko.observableArray([]),
-                            children: ko.observableArray([])
+                            id: 14,
+                            name: 'Zone1',
+                            nodes: [],
+                            children: []
                         },
                         {
-                            name: 'Nova2',
-                            nodes: ko.observableArray([]),
-                            children: ko.observableArray([])
+                            id: 15,
+                            name: 'Zone2',
+                            nodes: [],
+                            children: []
+                        },
+                        {
+                            id: 16,
+                            name: 'Zone3',
+                            nodes: [],
+                            children: []
+                        },
+                        {
+                            id: 17,
+                            name: 'Zone4',
+                            nodes: [],
+                            children: []
+                        },
+                        {
+                            id: 18,
+                            name: 'Zone5',
+                            nodes: [
+                                { id: 13, name: 'Proxy1', status: 'good' }
+                            ],
+                            children: []
                         }
-                    ])
+                    ]
                 }
-            ])
-        });
+            ]
+        }]);
 
         self.statusColor = function(status) {
             switch(status) {
-                case 'unprovisioned':
+            case 'unprovisioned':
                 return '#3A87AD'; // label-info
                 break;
-                case 'good':
+            case 'good':
                 return '#468847'; // label-success
                 break;
-                case 'alert':
+            case 'alert':
                 return '#F89406'; // label-warning
                 break;
-                case 'error':
+            case 'error':
                 return '#B94A48'; // label-important
                 break;
             };
@@ -167,15 +131,52 @@ $(document).ready(function() {
                 break;
             };
         };
+
+        self.showPopover = function(data, event) {
+            $(event.target).popover('show');
+        };
+
+        self.hidePopover = function(data, event) {
+            $(event.target).popover('hide');
+        };
+
+        self.action = function(data, event) {
+            console.log(data);
+            var mapping = {
+                'nodes': {
+                    key: function(data) {
+                        return ko.utils.unwrapObservable(data.id);
+                    }
+                }
+            };
+
+            ko.mapping.fromJS(data, mapping);
+        };
     };
 
     // Store model variable for convenience
-    var indexModel = new IndexModel();
-    ko.applyBindings(indexModel);
+    $.indexModel = new IndexModel();
+    ko.applyBindings($.indexModel);
 
-    $("a[rel=popover]")
-      .popover()
-      .click(function(e) {
-        e.preventDefault()
-})
+    function get_popover_placement(pop, dom_el) {
+        var width = window.innerWidth;
+
+        if (width < 500)
+            return 'bottom';
+
+        var left_pos = $(dom_el).offset().left;
+
+        if (width - left_pos > 400)
+            return 'right';
+
+        return 'left';
+    }
+
+    $('.popper')
+        .popover({
+            animation: false,
+            trigger: 'hover',
+            delay: 0,
+            placement: get_popover_placement
+        });
 });

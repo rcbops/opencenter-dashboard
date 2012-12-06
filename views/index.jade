@@ -1,31 +1,31 @@
 extends layout
 extends navbar
 block body
-  .container
-    .row
-      .span12
-        #root(data-bind='template: {name: "itemTemplate", foreach: items}')
+  #root(data-bind='template: {name: "itemTemplate", foreach: items}')
 
   script(type='text/html', id='itemTemplate')
     .well.well-small.pull-left.drop-shadow
-      .pull-left: span.muted(data-bind='text: name')
+      .pull-left: span.muted(data-bind='text: name()')
       .pull-right.btn-group
         a.btn.btn-mini.dropdown-toggle(data-toggle='dropdown', href='#')
           i.icon-cog
-        ul.dropdown-menu(role='menu')
+        ul.dropdown-menu
           li.nav-header Actions
+          li.divider
           li: a(tabindex='-1', href='#') Action 1
           li: a(tabindex='-1', href='#') Action 2
 
       .clear-right
       // ko foreach: nodes()
       .btn-group
-        button.btn.btn-small(data-bind='text: name, css: $root.statusButton(status)')
-        button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status)', data-toggle='dropdown')
+        button.btn.btn-small.popper(data-content='This is a test', data-title='Title', data-bind='text: name(), css: $root.statusButton(status())')
+        // , event: {mouseover: $root.showPopover, mouseout: $root.hidePopover}')
+        button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status())', data-toggle='dropdown')
           i.icon-cog
-        ul.dropdown-menu(role='menu')
+        ul.dropdown-menu
           li.nav-header Actions
-          li: a(tabindex='-1', href='#') Action 1
+          li.divider
+          li: a(tabindex='-1', href='#', data-bind='click: $root.action') Action 1
           li: a(tabindex='-1', href='#') Action 2
       // /ko
-      .clear-left(data-bind='template: {name: "itemTemplate", foreach: children}')
+      .clear-left(data-bind='template: {name: "itemTemplate", foreach: children()}')
