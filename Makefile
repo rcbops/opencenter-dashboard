@@ -7,7 +7,7 @@ build:
 	@echo ${HR}
 	@echo "Syncing global NPM deps"
 	@echo ${HR}
-	npm install -g uglify-js@1 recess anvil.js bower forever
+	npm install -g uglify-js@1 recess anvil.js bower forever coffee-script
 	@echo ${HR}
 	@echo "Syncing local NPM deps"
 	@echo ${HR}
