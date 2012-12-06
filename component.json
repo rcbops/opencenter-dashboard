@@ -6,6 +6,7 @@
     "bootstrap": "latest",
     "jquery": "latest",
     "knockout": "latest",
-    "knockout-mapping": "latest"
+    "knockout-mapping": "latest",
+    "knockout-sortable": "latest"
   }
 }

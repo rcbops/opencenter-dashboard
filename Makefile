@@ -30,6 +30,10 @@ build:
 	@echo ${HR}
 	cd components/knockout-mapping/build; bash ./build-linux
 	uglifyjs -nc components/knockout-mapping/build/output/knockout.mapping-latest.js > components/knockout-mapping/build/output/knockout-mapping.min.js
+	@echo ${HR}
+	@echo "Building Knockout-Sortable"
+	@echo ${HR}
+	cd components/knockout-sortable; anvil
 
 link:
 	@echo ${HR}
@@ -41,6 +45,7 @@ link:
 	ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
 	ln -sf ${PWD}/components/knockout/build/output/knockout.min.js public/js
 	ln -sf ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
+	ln -sf ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
 	ln -sf ${PWD}/components/jquery/jquery.min.js public/js
 	@echo ${HR}
 	@echo "Linking nTrapy components"
