@@ -5,11 +5,15 @@ all: | clean build link
 
 build:
 	@echo ${HR}
-	@echo "Syncing NPM"
+	@echo "Syncing global NPM deps"
+	@echo ${HR}
+	npm install -g uglify-js@1 recess anvil.js bower forever
+	@echo ${HR}
+	@echo "Syncing local NPM deps"
 	@echo ${HR}
 	npm update
 	@echo ${HR}
-	@echo "Syncing Bower"
+	@echo "Syncing local Bower deps"
 	@echo ${HR}
 	bower update
 	@echo ${HR}
