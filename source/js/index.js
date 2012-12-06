@@ -15,7 +15,7 @@ $(document).ready(function() {
                     id: 4,
                     name: 'Nova Cluster 1',
                     nodes: [
-                        { id: 5, name: 'Something', status: 'good' }
+                        { id: 5, name: 'Chef1', status: 'good' }
                     ],
                     children: [
                         {
