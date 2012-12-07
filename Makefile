@@ -40,10 +40,14 @@ build:
 	cd components/knockout-sortable; anvil
 
 link:
+	mkdir -p public/{js,css,img}
+	@echo ${HR}
+	@echo "Processing coffeescripts"
+	@echo ${HR}
+	coffee -co source/js source/coffee
 	@echo ${HR}
 	@echo "Linking Bower components"
 	@echo ${HR}
-	mkdir -p public/{js,css,img}
 	ln -sf ${PWD}/components/bootstrap/bootstrap/js/*.min.js public/js
 	ln -sf ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
 	ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
