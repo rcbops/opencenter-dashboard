@@ -1,10 +1,10 @@
 extends layout
 extends navbar
 block body
-  #root(data-bind='template: {name: "itemTemplate", foreach: items}')
+  #root(style='position: relative; float: right; right: 50%', data-bind='template: {name: "itemTemplate", foreach: items}')
 
   script(type='text/html', id='itemTemplate')
-    .well.well-small.pull-left.drop-shadow
+    .well.well-small.pull-left.drop-shadow(style='position: relative; left: 50%')
       .pull-left: span.muted(data-bind='text: name()')
       .pull-right.btn-group
         a.btn.btn-mini.dropdown-toggle(data-toggle='dropdown', href='#')
@@ -14,8 +14,8 @@ block body
           li.divider
           li: a(tabindex='-1', href='#') Action 1
           li: a(tabindex='-1', href='#') Action 2
-
       .clear-right
+
       // ko foreach: nodes()
       .btn-group
         button.btn.btn-small.popper(data-content='This is a test', data-title='Title', data-bind='text: name(), css: $root.statusButton(status())')
@@ -28,4 +28,5 @@ block body
           li: a(tabindex='-1', href='#', data-bind='click: $root.action') Action 1
           li: a(tabindex='-1', href='#') Action 2
       // /ko
-      .clear-left(data-bind='template: {name: "itemTemplate", foreach: children()}')
+      .clear-left
+      div(style='position: relative; float: right; right: 50%', data-bind='template: {name: "itemTemplate", foreach: children()}')

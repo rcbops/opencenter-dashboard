@@ -1,6 +1,6 @@
 /* Space navbar */
 body {
-  padding-top: 60px;
+  padding-top: 50px;
   padding-bottom: 40px;
 }
 
@@ -16,9 +16,6 @@ body {
 .clear-left { clear: left; }
 .clear-both { clear: both; }
 
-/* Center root */
-.span12 > #root { margin: 0px auto; }
-
 /* Re-space wells */
 .well {
   min-width: 100px;
@@ -28,8 +25,14 @@ body {
   padding-bottom: 10px;
 }
 
-/* Don't space right of last sibling */
+/* Fix sibling-spacing so overflow aligns */
+.well { margin-right: 10px; }
+.well + .well { margin-left: 0px; margin-right: 10px; }
 .well:last-child { margin-right: 0px; }
+
+.btn-group { margin-right: 5px; }
+.btn-group + .btn-group { margin-left: 0px; margin-right: 5px; }
+.btn-group:last-child { margin-right: 0px; }
 
 /* Make some room above nodes */
 .btn-group button { margin-top: 10px; }
