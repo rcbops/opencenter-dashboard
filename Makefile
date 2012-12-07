@@ -44,7 +44,7 @@ link:
 	@echo ${HR}
 	@echo "Processing coffeescripts"
 	@echo ${HR}
-	coffee -co source/js source/coffee
+	coffee -co public/js source/coffee
 	@echo ${HR}
 	@echo "Linking Bower components"
 	@echo ${HR}
@@ -58,7 +58,6 @@ link:
 	@echo ${HR}
 	@echo "Linking nTrapy components"
 	@echo ${HR}
-	ln -sf ${PWD}/source/js/* public/js
 	ln -sf ${PWD}/source/css/* public/css
 
 cert:

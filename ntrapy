@@ -2,4 +2,4 @@
 
 NODE_ENV=development forever start -a -o ntrapy.log -e err.log --minUptime 200 --spinSleepTime 1000 -w ntrapy.js
 pkill -f "coffee -w -c -o source/js source/coffee"
-coffee -wco source/js source/coffee &>> coffee.log &
+coffee -wco public/js source/coffee &>> coffee.log &
