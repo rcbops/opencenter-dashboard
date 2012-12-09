@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-NODE_ENV=development forever start -a -o ntrapy.log -e err.log --minUptime 200 --spinSleepTime 1000 -w ntrapy.js
+forever stop ntrapy.js &> /dev/null
 pkill -f "coffee -w -c -o source/js source/coffee"
+
+NODE_ENV=development forever start -a -o ntrapy.log -e err.log --minUptime 200 --spinSleepTime 1000 -w ntrapy.js
 coffee -wco public/js source/coffee &>> coffee.log &
