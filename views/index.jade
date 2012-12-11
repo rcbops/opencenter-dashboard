@@ -7,7 +7,7 @@ block body
     .well.well-small.pull-left.drop-shadow
       .pull-left: span.muted(data-bind='text: name')
       .pull-right.btn-group
-        button.btn.btn-mini.dropdown-toggle(data-toggle='dropdown')
+        button.btn.btn-mini.dropdown-toggle(data-toggle='dropdown', data-bind='enable: actions().length')
           i.icon-cog
         ul.dropdown-menu
           li.nav-header Actions
@@ -20,7 +20,7 @@ block body
       .drop-target(data-bind='sortable: nodes')
         .btn-group
           button.btn.btn-small.popper(data-content='This is a test', data-title='Title', data-bind='text: name, css: $root.statusButton(status())')
-          button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status())', data-toggle='dropdown')
+          button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status()), enable: actions().length', data-toggle='dropdown')
             i.icon-cog
           ul.dropdown-menu
             li.nav-header Actions
