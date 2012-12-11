@@ -28,11 +28,13 @@ body {
 /* Fix sibling-spacing so overflow aligns */
 .well { margin-right: 10px; }
 .well + .well { margin-left: 0px; margin-right: 10px; }
-.well:last-child { margin-right: 0px; }
+.well:only-of-type { margin-right: 0px; }
+.well:last-of-type { margin-right: 0px; }
 
 .btn-group { margin-right: 5px; }
 .btn-group + .btn-group { margin-left: 0px; margin-right: 5px; }
-.btn-group:last-child { margin-right: 0px; }
+.btn-group:only-of-type { margin-right: 0px; }
+.btn-group:last-of-type { margin-right: 0px; }
 
 /* Make some room above nodes */
 .btn-group button { margin-top: 10px; }
