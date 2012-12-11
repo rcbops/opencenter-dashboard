@@ -11,93 +11,67 @@ $(document).ready ->
   IndexModel = ->
     self = this
 
-    self.items = ko.mapping.fromJS([
-      id: 1
-      name: "root"
-      nodes: [
-        id: 2
-        name: "Unprovisioned"
-        status: "unprovisioned"
-      ,
-        id: 3
-        name: "Unprovisioned"
-        status: "unprovisioned"
-      ]
+    self.items = ko.mapping.fromJS [
+      name: "Root"
+      nodes: []
       children: [
-        id: 4
-        name: "Nova Cluster 1"
+        name: "Unprovisioned"
         nodes: [
-          id: 5
-          name: "Chef1"
-          status: "good"
-        ]
-        children: [
-          id: 6
-          name: "AZ1"
-          nodes: [
-            id: 7
-            name: "Controller1"
-            status: "good"
-          ,
-            id: 8
-            name: "Compute1"
-            status: "alert"
-          ,
-            id: 9
-            name: "Compute2"
-            status: "error"
-          ]
-          children: []
+          name: "Unprovisioned"
+          status: "unprovisioned"
+          actions: []
         ,
-          id: 10
-          name: "AZ2"
-          nodes: [
-            id: 11
-            name: "Controller1"
-            status: "alert"
-          ,
-            id: 12
-            name: "Compute1"
-            status: "alert"
-          ]
-          children: []
+          name: "Unprovisioned"
+          status: "unprovisioned"
+          actions: []
         ]
+        children: []
+        actions: []
       ,
-        id: 13
-        name: "Swift Cluster 1"
+        name: "Support"
         nodes: []
-        children: [
-          id: 14
-          name: "Zone1"
-          nodes: []
-          children: []
-        ,
-          id: 15
-          name: "Zone2"
-          nodes: []
-          children: []
-        ,
-          id: 16
-          name: "Zone3"
-          nodes: []
-          children: []
-        ,
-          id: 17
-          name: "Zone4"
-          nodes: []
-          children: []
-        ,
-          id: 18
-          name: "Zone5"
-          nodes: [
-            id: 13
-            name: "Proxy1"
-            status: "good"
-          ]
-          children: []
+        children: []
+        actions: [
+          name: "Create Chef Server"
+          action: (data) ->
+            data.nodes.mappedCreate ko.mapping.fromJS
+              name: "Chef1"
+              status: "good"
+              actions: [
+                name: "Update cookbooks"
+                action: (data) ->
+                  console.log data
+              ]
         ]
       ]
-    ])
+      actions: [
+        name: "Add Nova Cluster"
+        action: (data) ->
+          data.children.mappedCreate ko.mapping.fromJS
+            name: "Nova Cluster 1"
+            nodes: []
+            children: [
+              name: "AZ Nova"
+              nodes: []
+              children: []
+              actions: []
+            ,
+              name: "Infra"
+              nodes: []
+              children: []
+              actions: []
+            ]
+            actions: [
+              name: "Create AZ"
+              action: (data) ->
+                data.children.mappedCreate ko.mapping.fromJS
+                  name: "New AZ"
+                  nodes: []
+                  children: []
+                  actions: []
+            ]
+      ]
+    ]
 
     self.statusColor = (status) ->
       switch status
@@ -138,23 +112,21 @@ $(document).ready ->
     self.hidePopover = (data, event) ->
       $(event.target).popover "hide"
 
-    self.action = (data, event) ->
-      console.log data
-      mapping = nodes:
-        key: (data) ->
-          ko.utils.unwrapObservable data.id
-
-      ko.mapping.fromJS data, mapping, self.items
-
     self # Return ourself
 
   ko.bindingHandlers.sortable.options.handle = '.btn'
   ko.bindingHandlers.sortable.options.cancel = ''
+#  ko.bindingHandlers.sortable.afterMove = (arg, event, ui) ->
+#    $("> .popper", ui.item).popover
+#      animation: false
+#      trigger: "click"
+#      delay: 0
+#      placement: get_popover_placement
 
   $.indexModel = new IndexModel()
   ko.applyBindings $.indexModel
-  $(".popper").popover
-    animation: false
-    trigger: "hover"
-    delay: 0
-    placement: get_popover_placement
+#  $(".popper").popover
+#    animation: false
+#    trigger: "click"
+#    delay: 0
+#    placement: get_popover_placement

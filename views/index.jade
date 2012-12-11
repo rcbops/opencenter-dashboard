@@ -12,8 +12,9 @@ block body
         ul.dropdown-menu
           li.nav-header Actions
           li.divider
-          li: a(tabindex='-1', href='#') Action 1
-          li: a(tabindex='-1', href='#') Action 2
+          // ko foreach: actions
+          li: a(tabindex='-1', href='#', data-bind='click: action.bind($data, $parent), text: name')
+          // /ko
       .clear-right
 
       .well-small(data-bind='sortable: nodes')
@@ -24,8 +25,9 @@ block body
           ul.dropdown-menu
             li.nav-header Actions
             li.divider
-            li: a(tabindex='-1', href='#', data-bind='click: $root.action') Action 1
-            li: a(tabindex='-1', href='#') Action 2
+            // ko foreach: actions
+            li: a(tabindex='-1', href='#', data-bind='click: action.bind($data, $parent), text: name')
+            // /ko
 
       .clear-left
       div(data-bind='template: {name: "itemTemplate", foreach: children}')
