@@ -1,13 +1,13 @@
 extends layout
 extends navbar
 block body
-  #root(style='position: relative; float: right; right: 50%', data-bind='template: {name: "itemTemplate", foreach: items}')
+  #root(data-bind='template: {name: "itemTemplate", foreach: items}')
 
   script(type='text/html', id='itemTemplate')
-    .well.well-small.pull-left.drop-shadow(style='position: relative; left: 50%')
-      .pull-left: span.muted(data-bind='text: name()')
+    .well.well-small.pull-left.drop-shadow
+      .pull-left: span.muted(data-bind='text: name')
       .pull-right.btn-group
-        a.btn.btn-mini.dropdown-toggle(data-toggle='dropdown', href='#')
+        button.btn.btn-mini.dropdown-toggle(data-toggle='dropdown')
           i.icon-cog
         ul.dropdown-menu
           li.nav-header Actions
@@ -16,17 +16,17 @@ block body
           li: a(tabindex='-1', href='#') Action 2
       .clear-right
 
-      // ko foreach: nodes()
-      .btn-group
-        button.btn.btn-small.popper(data-content='This is a test', data-title='Title', data-bind='text: name(), css: $root.statusButton(status())')
-        // , event: {mouseover: $root.showPopover, mouseout: $root.hidePopover}')
-        button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status())', data-toggle='dropdown')
-          i.icon-cog
-        ul.dropdown-menu
-          li.nav-header Actions
-          li.divider
-          li: a(tabindex='-1', href='#', data-bind='click: $root.action') Action 1
-          li: a(tabindex='-1', href='#') Action 2
-      // /ko
+      .well-small(data-bind='sortable: nodes')
+        .btn-group
+          button.btn.btn-small.popper(data-content='This is a test', data-title='Title', data-bind='text: name, css: $root.statusButton(status())')
+          button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status())', data-toggle='dropdown')
+            i.icon-cog
+          ul.dropdown-menu
+            li.nav-header Actions
+            li.divider
+            li: a(tabindex='-1', href='#', data-bind='click: $root.action') Action 1
+            li: a(tabindex='-1', href='#') Action 2
+
       .clear-left
-      div(style='position: relative; float: right; right: 50%', data-bind='template: {name: "itemTemplate", foreach: children()}')
+      div(data-bind='template: {name: "itemTemplate", foreach: children}')
+

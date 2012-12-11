@@ -1,3 +1,5 @@
+"use strict"
+
 $(document).ready ->
   get_popover_placement = (pop, dom_el) ->
     width = window.innerWidth
@@ -145,6 +147,9 @@ $(document).ready ->
       ko.mapping.fromJS data, mapping, self.items
 
     self # Return ourself
+
+  ko.bindingHandlers.sortable.options.handle = '.btn'
+  ko.bindingHandlers.sortable.options.cancel = ''
 
   $.indexModel = new IndexModel()
   ko.applyBindings $.indexModel

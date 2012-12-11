@@ -24,6 +24,7 @@ build:
 	@echo "Building jQuery"
 	@echo ${HR}
 	uglifyjs -nc components/jquery/jquery.js > components/jquery/jquery.min.js
+# jQuery UI comes pre-built, skipping
 	@echo ${HR}
 	@echo "Building Knockout"
 	@echo ${HR}
@@ -39,7 +40,10 @@ build:
 	@echo ${HR}
 	cd components/knockout-sortable; anvil
 
-link:
+link: | clean_pub
+	@echo ${HR}
+	@echo "Preparing to link"
+	@echo ${HR}
 	mkdir -p public/{js,css,img}
 	@echo ${HR}
 	@echo "Processing coffeescripts"
@@ -55,6 +59,7 @@ link:
 	ln -sf ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
 	ln -sf ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
 	ln -sf ${PWD}/components/jquery/jquery.min.js public/js
+	ln -sf ${PWD}/components/jquery-ui/ui/minified/jquery-ui.min.js public/js
 	@echo ${HR}
 	@echo "Linking nTrapy components"
 	@echo ${HR}
@@ -67,6 +72,9 @@ cert:
 	openssl x509 -req -in csr.pem -signkey key.pem -out cert.pem
 	rm -f csr.pem
 
-clean:
-	rm -rf components node_modules public
+clean: clean_pub
+	rm -rf components node_modules
 	rm -f *.log
+
+clean_pub:
+	rm -rf public

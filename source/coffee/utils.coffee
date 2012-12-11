@@ -1,3 +1,5 @@
+"use strict"
+
 # Overwrite $.post with application/json version
 $.post = (url, data, callback) ->
   jQuery.ajax
