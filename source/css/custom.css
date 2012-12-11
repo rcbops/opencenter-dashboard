@@ -48,3 +48,10 @@ body {
   padding-bottom: 3px;
   margin-left: 20px;
 }
+
+/* Keep drop target area open */
+.drop-target {
+  padding: 0px;
+  margin: 0px;
+  min-height: 40px;
+}
