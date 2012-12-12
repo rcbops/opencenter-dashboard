@@ -1,12 +1,41 @@
 "use strict"
 
 $(document).ready ->
-  get_popover_placement = (pop, dom_el) ->
-    width = window.innerWidth
-    return "bottom"  if width < 500
-    left_pos = $(dom_el).offset().left
-    return "right"  if width - left_pos > 400
-    "left"
+  get_popover_placement = (tip, element) ->
+    isWithinBounds = (elementPosition) ->
+      boundTop < elementPosition.top and boundLeft < elementPosition.left and boundRight > (elementPosition.left + actualWidth) and boundBottom > (elementPosition.top + actualHeight)
+    $element = $(element)
+    pos = $.extend({}, $element.offset(),
+      width: element.offsetWidth
+      height: element.offsetHeight
+    )
+    actualWidth = 283
+    actualHeight = 117
+    boundTop = $(document).scrollTop()
+    boundLeft = $(document).scrollLeft()
+    boundRight = boundLeft + $(window).width()
+    boundBottom = boundTop + $(window).height()
+    elementAbove =
+      top: pos.top - actualHeight
+      left: pos.left + pos.width / 2 - actualWidth / 2
+
+    elementBelow =
+      top: pos.top + pos.height
+      left: pos.left + pos.width / 2 - actualWidth / 2
+
+    elementLeft =
+      top: pos.top + pos.height / 2 - actualHeight / 2
+      left: pos.left - actualWidth
+
+    elementRight =
+      top: pos.top + pos.height / 2 - actualHeight / 2
+      left: pos.left + pos.width
+
+    above = isWithinBounds(elementAbove)
+    below = isWithinBounds(elementBelow)
+    left = isWithinBounds(elementLeft)
+    right = isWithinBounds(elementRight)
+    (if above then "top" else (if below then "bottom" else (if left then "left" else (if right then "right" else "right"))))
 
   IndexModel = ->
     self = this
@@ -106,29 +135,27 @@ $(document).ready ->
         when "error"
           return "btn-danger"
 
-    self.showPopover = (data, event) ->
-      $(event.target).popover "show"
-
-    self.hidePopover = (data, event) ->
-      $(event.target).popover "hide"
-
     self # Return ourself
 
-  ko.bindingHandlers.sortable.options.handle = '.btn'
-  ko.bindingHandlers.sortable.options.cancel = ''
-  ko.bindingHandlers.sortable.options.opacity = 0.35
-  ko.bindingHandlers.sortable.options.tolerance = 'pointer'
-#  ko.bindingHandlers.sortable.afterMove = (arg, event, ui) ->
-#    $("> .popper", ui.item).popover
-#      animation: false
-#      trigger: "click"
-#      delay: 0
-#      placement: get_popover_placement
+  popoverOptions =
+    delay: 0
+    trigger: "hover"
+    animation: true
+    placement: get_popover_placement
+
+  ko.bindingHandlers.popper =
+    init: (element, valueAccessor) ->
+      $(element).popover popoverOptions
+
+  ko.bindingHandlers.sortable.options =
+    handle: ".btn"
+    cancel: ""
+    opacity: 0.35
+    tolerance: "pointer"
+    start: (event, ui) ->
+      $(ui.item).find('button[data-bind*="popper"]')
+        .popover("disable")
+        .popover "hide"
 
   $.indexModel = new IndexModel()
   ko.applyBindings $.indexModel
-#  $(".popper").popover
-#    animation: false
-#    trigger: "click"
-#    delay: 0
-#    placement: get_popover_placement

@@ -19,7 +19,7 @@ block body
 
       .drop-target(data-bind='sortable: nodes')
         .btn-group
-          button.btn.btn-small.popper(data-content='This is a test', data-title='Title', data-bind='text: name, css: $root.statusButton(status())')
+          button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: $root.statusButton(status()), popper: true')
           button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status()), enable: actions().length', data-toggle='dropdown')
             i.icon-cog
           ul.dropdown-menu

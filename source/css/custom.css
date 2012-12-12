@@ -43,9 +43,14 @@ body {
 .well:last-of-type { margin-right: 0px; }
 
 .btn-group { margin-right: 5px; }
-.btn-group + .btn-group { margin-left: 0px; margin-right: 5px; }
-.btn-group:only-of-type { margin-right: 0px; }
-.btn-group:last-of-type { margin-right: 0px; }
+.btn-group + .btn-group {
+  margin-left: 0px;
+  margin-right: 5px;
+}
+.btn-group:only-of-type, .btn-group:last-of-type {
+  margin-right: 0px;
+  padding-right: 0px;
+}
 
 /* Tweak container cogs */
 .btn-group.pull-right { margin-right: 0px; }
@@ -65,5 +70,5 @@ body {
 .drop-target {
   padding: 0px;
   margin: 0px;
-  min-height: 40px;
+  min-height: 36px;
 }
