@@ -1,12 +1,19 @@
-/* Space navbar */
 body {
+  /* Space navbar */
   padding-top: 50px;
   padding-bottom: 40px;
+
+  /* Prepare to center floats */
   margin: 0 auto;
   text-align: center;
 }
 
-#root {display: inline-block}
+#root {
+  /* Be centerable */
+  display: inline-block;
+  /* Reset alignment for contents */
+  text-align: left;
+}
 
 /* Drop shadow yay */
 .drop-shadow {
