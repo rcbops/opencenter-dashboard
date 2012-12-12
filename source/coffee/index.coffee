@@ -12,7 +12,7 @@ $(document).ready ->
     self = this
 
     self.items = ko.mapping.fromJS [
-      name: "Root"
+      name: "Workspace"
       nodes: []
       children: [
         name: "Unprovisioned"
