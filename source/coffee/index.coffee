@@ -51,12 +51,12 @@ $(document).ready ->
             name: "Nova Cluster 1"
             nodes: []
             children: [
-              name: "AZ Nova"
+              name: "Infra"
               nodes: []
               children: []
               actions: []
             ,
-              name: "Infra"
+              name: "AZ Nova"
               nodes: []
               children: []
               actions: []
@@ -116,6 +116,7 @@ $(document).ready ->
 
   ko.bindingHandlers.sortable.options.handle = '.btn'
   ko.bindingHandlers.sortable.options.cancel = ''
+  ko.bindingHandlers.sortable.options.opacity = 0.35
 #  ko.bindingHandlers.sortable.afterMove = (arg, event, ui) ->
 #    $("> .popper", ui.item).popover
 #      animation: false

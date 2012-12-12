@@ -2,7 +2,11 @@
 body {
   padding-top: 50px;
   padding-bottom: 40px;
+  margin: 0 auto;
+  text-align: center;
 }
+
+#root {display: inline-block}
 
 /* Drop shadow yay */
 .drop-shadow {
@@ -36,18 +40,19 @@ body {
 .btn-group:only-of-type { margin-right: 0px; }
 .btn-group:last-of-type { margin-right: 0px; }
 
+/* Tweak container cogs */
+.btn-group.pull-right { margin-right: 0px; }
+.pull-right.btn-group > button {
+  margin-left: 20px;
+  margin-top: 0px;
+}
+
 /* Make some room above nodes */
 .btn-group button { margin-top: 10px; }
 
 /* Fix popover fallout */
 .btn-group .popover { font-size: 14px; }
 .btn-group > .btn + .popover + .btn.dropdown-toggle { margin-left: -1px; padding-left: 8px; padding-right: 8px; }
-
-/* Tweak container cogs */
-.btn-group .btn {
-  padding-bottom: 3px;
-  margin-left: 20px;
-}
 
 /* Keep drop target area open */
 .drop-target {
