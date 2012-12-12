@@ -117,6 +117,7 @@ $(document).ready ->
   ko.bindingHandlers.sortable.options.handle = '.btn'
   ko.bindingHandlers.sortable.options.cancel = ''
   ko.bindingHandlers.sortable.options.opacity = 0.35
+  ko.bindingHandlers.sortable.options.tolerance = 'pointer'
 #  ko.bindingHandlers.sortable.afterMove = (arg, event, ui) ->
 #    $("> .popper", ui.item).popover
 #      animation: false
