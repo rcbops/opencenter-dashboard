@@ -5,67 +5,8 @@ ntrapy = exports?.ntrapy ? @ntrapy
 
 $ ->
   IndexModel = ->
-    @items = ko.mapping.fromJS [
-      name: "Workspace"
-      nodes: []
-      children: [
-        name: "Unprovisioned"
-        nodes: [
-          name: "Unprovisioned"
-          status: "unprovisioned"
-          actions: []
-        ,
-          name: "Unprovisioned"
-          status: "unprovisioned"
-          actions: []
-        ]
-        children: []
-        actions: []
-      ,
-        name: "Support"
-        nodes: []
-        children: []
-        actions: [
-          name: "Create Chef Server"
-          action: (data) ->
-            data.nodes.mappedCreate ko.mapping.fromJS
-              name: "Chef1"
-              status: "good"
-              actions: [
-                name: "Update cookbooks"
-                action: (data) ->
-                  console.log data
-              ]
-        ]
-      ]
-      actions: [
-        name: "Add Nova Cluster"
-        action: (data) ->
-          data.children.mappedCreate ko.mapping.fromJS
-            name: "Nova Cluster 1"
-            nodes: []
-            children: [
-              name: "Infra"
-              nodes: []
-              children: []
-              actions: []
-            ,
-              name: "AZ Nova"
-              nodes: []
-              children: []
-              actions: []
-            ]
-            actions: [
-              name: "Create AZ"
-              action: (data) ->
-                data.children.mappedCreate ko.mapping.fromJS
-                  name: "New AZ"
-                  nodes: []
-                  children: []
-                  actions: []
-            ]
-      ]
-    ]
+    $.getJSON "http://roush.propter.net:8080/nodes/2/tree", (data) =>
+      @items = ko.mapping.fromJS [data.tree]
 
     @statusColor = (status) ->
       switch status
@@ -111,8 +52,8 @@ $ ->
       template: "settingsTemplate"
     ]
 
-    @section = ntrapy.selector @sections(), (data) ->
-      console.log data
+    @section = ntrapy.selector @sections, (data) ->
+      # Do something on selection
     , @sections()[0] # Set default
 
     @ # Return ourself
