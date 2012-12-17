@@ -1,7 +1,7 @@
 "use strict"
 
 # Create and store namespace
-utils = exports?.utils ? @utils = {}
+ntrapy = exports?.ntrapy ? @ntrapy = {}
 
 # Overwrite $.post with application/json version
 $.post = (url, data, callback) ->
@@ -14,7 +14,7 @@ $.post = (url, data, callback) ->
     contentType: "application/json; charset=utf-8"
 
 # Selector wrapper
-utils.selector = (parent, callback, def) ->
+ntrapy.selector = (parent, callback, def) ->
   ko.computed
     read: ->
       parent.sub = ko.observable(def) unless parent.sub
@@ -28,7 +28,7 @@ utils.selector = (parent, callback, def) ->
     owner: parent
 
 # Object -> Array mapper
-utils.toArray = (obj) ->
+ntrapy.toArray = (obj) ->
   array = []
   for prop of obj
     if obj.hasOwnProperty(prop)
@@ -38,7 +38,7 @@ utils.toArray = (obj) ->
 
   array # Return mapped array
 
-utils.get_popover_placement = (tip, element) ->
+ntrapy.get_popover_placement = (tip, element) ->
   isWithinBounds = (elementPosition) ->
     boundTop < elementPosition.top and boundLeft < elementPosition.left and boundRight > (elementPosition.left + actualWidth) and boundBottom > (elementPosition.top + actualHeight)
   $element = $(element)

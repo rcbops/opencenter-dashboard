@@ -1,7 +1,7 @@
 "use strict"
 
 # Grab namespace
-utils = exports?.utils ? @utils
+ntrapy = exports?.ntrapy ? @ntrapy
 
 $ ->
   IndexModel = ->
@@ -111,7 +111,7 @@ $ ->
       template: "settingsTemplate"
     ]
 
-    @section = utils.selector @sections(), (data) ->
+    @section = ntrapy.selector @sections(), (data) ->
       console.log data
     , @sections()[0] # Set default
 
@@ -121,7 +121,7 @@ $ ->
     delay: 0
     trigger: "hover"
     animation: true
-    placement: utils.get_popover_placement
+    placement: ntrapy.get_popover_placement
 
   ko.bindingHandlers.popper =
     init: (element, valueAccessor) ->
