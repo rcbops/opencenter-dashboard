@@ -14,10 +14,10 @@ $.post = (url, data, callback) ->
     contentType: "application/json; charset=utf-8"
 
 # Selector wrapper
-utils.selector = (parent, callback) ->
+utils.selector = (parent, callback, def) ->
   ko.computed
     read: ->
-      parent.sub = ko.observable() unless parent.sub
+      parent.sub = ko.observable(def) unless parent.sub
       parent.sub()
 
     write: (data) ->

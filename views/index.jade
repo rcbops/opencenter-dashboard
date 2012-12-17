@@ -1,34 +1,6 @@
 extends layout
-extends navbar
-block body
-  #root(data-bind='template: {name: "itemTemplate", foreach: items}')
-
-  script(type='text/html', id='itemTemplate')
-    .well.well-small.pull-left.drop-shadow
-      .pull-left: span.muted(data-bind='text: name')
-      .pull-right.btn-group
-        button.btn.btn-mini.dropdown-toggle(data-toggle='dropdown', data-bind='enable: actions().length')
-          i.icon-cog
-        ul.dropdown-menu
-          li.nav-header Actions
-          li.divider
-          // ko foreach: actions
-          li: a(tabindex='-1', href='#', data-bind='click: action.bind($data, $parent), text: name')
-          // /ko
-      .clear-right
-
-      .drop-target(data-bind='sortable: nodes')
-        .btn-group
-          button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: $root.statusButton(status()), popper: true')
-          button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status()), enable: actions().length', data-toggle='dropdown')
-            i.icon-cog
-          ul.dropdown-menu
-            li.nav-header Actions
-            li.divider
-            // ko foreach: actions
-            li: a(tabindex='-1', href='#', data-bind='click: action.bind($data, $parent), text: name')
-            // /ko
-
-      .clear-left
-      div(data-bind='template: {name: "itemTemplate", foreach: children}')
-
+block content
+  include navbar
+  include templates
+  // ko template: section().template
+  // /ko

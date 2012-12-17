@@ -102,14 +102,18 @@ $ ->
 
     @sections = ko.observableArray [
       name: "Workspace"
+      template: "indexTemplate"
     ,
       name: "Profile"
+      template: "profileTemplate"
     ,
       name: "Settings"
+      template: "settingsTemplate"
     ]
 
     @section = utils.selector @sections(), (data) ->
       console.log data
+    , @sections()[0] # Set default
 
     @ # Return ourself
 
@@ -133,8 +137,4 @@ $ ->
         .popover("disable")
         .popover "hide"
 
-  indexModel = new IndexModel()
-  ko.applyBindings indexModel
-
-  # Select first section
-  indexModel.section indexModel.sections()[0]
+  ko.applyBindings new IndexModel()
