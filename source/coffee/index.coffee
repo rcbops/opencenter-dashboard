@@ -53,7 +53,7 @@ $ ->
     ]
 
     @section = ntrapy.selector @sections, (data) ->
-      # Do something on selection
+      undefined
     , @sections()[0] # Set default
 
     @ # Return ourself
