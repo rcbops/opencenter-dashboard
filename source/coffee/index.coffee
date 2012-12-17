@@ -1,10 +1,10 @@
 "use strict"
 
 # Grab namespace
-utils = exports? and exports.utils or @utils
+utils = exports?.utils ? @utils
 
 $ ->
-  IndexModel = =>
+  IndexModel = ->
     @items = ko.mapping.fromJS [
       name: "Workspace"
       nodes: []
@@ -100,6 +100,17 @@ $ ->
         when "error"
           return "btn-danger"
 
+    @sections = ko.observableArray [
+      name: "Workspace"
+    ,
+      name: "Profile"
+    ,
+      name: "Settings"
+    ]
+
+    @section = utils.selector @sections(), (data) ->
+      console.log data
+
     @ # Return ourself
 
   popoverOptions =
@@ -122,4 +133,8 @@ $ ->
         .popover("disable")
         .popover "hide"
 
-  ko.applyBindings new IndexModel()
+  indexModel = new IndexModel()
+  ko.applyBindings indexModel
+
+  # Select first section
+  indexModel.section indexModel.sections()[0]

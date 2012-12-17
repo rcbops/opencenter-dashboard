@@ -5,5 +5,6 @@ block navbar
     .navbar-inner
       .container-fluid
         a.brand(href='/')= title
-        ul.nav
-          li.active: a(href='#') Overview
+        ul.nav(data-bind='foreach: sections')
+          li(data-bind='click: $parent.section, css: {active: $parent.section() === $data}')
+            a(href='#', data-bind='text: name')

@@ -1,7 +1,7 @@
 "use strict"
 
 # Create and store namespace
-utils = exports? and exports or @utils = {}
+utils = exports?.utils ? @utils = {}
 
 # Overwrite $.post with application/json version
 $.post = (url, data, callback) ->
@@ -17,7 +17,7 @@ $.post = (url, data, callback) ->
 utils.selector = (parent, callback) ->
   ko.computed
     read: ->
-      parent.sub = ko.observable()  unless parent.sub
+      parent.sub = ko.observable() unless parent.sub
       parent.sub()
 
     write: (data) ->
