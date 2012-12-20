@@ -15,14 +15,21 @@ $.post = (url, data, callback) ->
 
 # Selector wrapper
 ntrapy.selector = (parent, callback, def) ->
+  return unless parent?
+
+  unless parent.sub?
+    parent.sub = def? and ko.observable(def) or ko.observable({})
+
+  if callback? and def?
+    callback def
+
   ko.computed
     read: ->
-      parent.sub = ko.observable(def) unless parent.sub
       parent.sub()
 
     write: (data) ->
       parent.sub data
-      callback data
+      callback data if callback?
 
     deferEvaluation: true
     owner: parent

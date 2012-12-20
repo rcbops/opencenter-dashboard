@@ -5,9 +5,8 @@ ntrapy = exports?.ntrapy ? @ntrapy
 
 $ ->
   IndexModel = ->
-    $.getJSON "http://roush.propter.net:8080/nodes/2/tree", (data) =>
-      @items = ko.mapping.fromJS [data.tree]
-
+    @items = ko.observableArray()
+  
     @statusColor = (status) ->
       switch status
         when "unprovisioned"
@@ -52,9 +51,38 @@ $ ->
       template: "settingsTemplate"
     ]
 
-    @section = ntrapy.selector @sections, (data) ->
-      undefined
-    , @sections()[0] # Set default
+    mapping =
+      children:
+        key: (data) ->
+          ko.utils.unwrapObservable data.id
+        create: (options) ->
+          createNode options.data
+
+    createNode = (node) ->
+#      ko.mapping.fromJS
+#        nodes: (->
+#          [n for n in node.children ? [] when "container" in n.facts.backends]
+#        )()
+#        nodes: []
+#        actions: []
+#      , {}, ko.mapping.fromJS node, mapping
+      ko.mapping.fromJS node
+
+    topmap =
+      tree:
+        key: (data) ->
+          ko.utils.unwrapObservable data.id
+        create: (options) ->
+          ko.mapping.fromJS options.data, mapping
+
+    @section = ntrapy.selector @sections, (data) =>
+      console.log "Triggered with: ", data
+      if data?.name is "Workspace"
+##        $.getJSON "http://roush.propter.net:8080/nodes/1/tree", (data) =>
+        $.getJSON "js/testdata.json", (data) =>
+          ko.mapping.fromJS [data], topmap, @items
+          console.log "Items: ", @items()
+    , @sections()[0] # Activate first section by default
 
     @ # Return ourself
 
@@ -78,4 +106,5 @@ $ ->
         .popover("disable")
         .popover "hide"
 
-  ko.applyBindings new IndexModel()
+  ntrapy.indexModel = new IndexModel()
+#  ko.applyBindings ntrapy.indexModel
