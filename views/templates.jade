@@ -1,6 +1,6 @@
 block templates
   script(type='text/html', id='indexTemplate')
-    #root(data-bind='template: {name: "itemTemplate", foreach: items}')
+    #root(data-bind='template: {name: "itemTemplate", foreach: wsItems}')
    
     script(type='text/html', id='itemTemplate')
       .well.well-small.pull-left.drop-shadow
@@ -18,8 +18,8 @@ block templates
    
         .drop-target(data-bind='sortable: nodes')
           .btn-group
-            button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: $root.statusButton(status()), popper: true')
-            button.btn.btn-small.dropdown-toggle(data-bind='css: $root.statusButton(status()), enable: actions().length', data-toggle='dropdown')
+            button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: ntrapy.statusButton(status()), popper: true')
+            button.btn.btn-small.dropdown-toggle(data-bind='css: ntrapy.statusButton(status()), enable: actions().length', data-toggle='dropdown')
               i.icon-cog
             ul.dropdown-menu
               li.nav-header Actions

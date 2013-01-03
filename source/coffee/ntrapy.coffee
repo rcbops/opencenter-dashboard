@@ -3,6 +3,39 @@
 # Create and store namespace
 ntrapy = exports?.ntrapy ? @ntrapy = {}
 
+ntrapy.statusColor = (status) ->
+ switch status
+   when "unprovisioned"
+     return "#3A87AD"
+   when "good"
+     return "#468847"
+   when "alert"
+     return "#F89406"
+   when "error"
+     return "#B94A48"
+
+ntrapy.statusLabel = (status) ->
+ switch status
+   when "unprovisioned"
+     return "label-info"
+   when "good"
+     return "label-success"
+   when "alert"
+     return "label-warning"
+   when "error"
+     return "label-important"
+
+ntrapy.statusButton = (status) ->
+ switch status
+   when "unprovisioned"
+     return "btn-info"
+   when "good"
+     return "btn-success"
+   when "alert"
+     return "btn-warning"
+   when "error"
+     return "btn-danger"
+
 # Overwrite $.post with application/json version
 $.post = (url, data, callback) ->
   $.ajax
@@ -13,26 +46,14 @@ $.post = (url, data, callback) ->
     dataType: "json"
     contentType: "application/json; charset=utf-8"
 
-# Selector wrapper
-ntrapy.selector = (parent, callback, def) ->
-  return unless parent?
-
-  unless parent.sub?
-    parent.sub = def? and ko.observable(def) or ko.observable({})
-
-  if callback? and def?
-    callback def
-
+ntrapy.selector = (cb, def) ->
+  @selected = ko.observable def ? {} unless @selected?
   ko.computed
-    read: ->
-      parent.sub()
-
-    write: (data) ->
-      parent.sub data
-      callback data if callback?
-
-    deferEvaluation: true
-    owner: parent
+    read: =>
+      @selected()
+    write: (data) =>
+      @selected data
+      cb data if cb?
 
 # Object -> Array mapper
 ntrapy.toArray = (obj) ->
