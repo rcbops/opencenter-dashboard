@@ -5,6 +5,7 @@ ntrapy = exports?.ntrapy ? @ntrapy
 
 $ ->
   IndexModel = ->
+    @wsTemp = ko.observableArray([])
     @wsItems = ko.observableArray([])
 
     # TODO: Map from data source
@@ -24,19 +25,26 @@ $ ->
         key: (data) ->
           ko.utils.unwrapObservable data.id
         create: (options) ->
-          createNode options.data
+          ret = createNode options
+          console.log "Ret: ", ret, "Options: ", options
+          console.log "Id: ", options.data
+          ret.children if options.parent?()?.id?() is not "1" else ret
 
-    createNode = (node) ->
+    createNode = (options) =>
+      @node = options.data
       ko.mapping.fromJS
-        nodes: ({n, actions: []} for n in node.children ? [] when "container" in n.facts.backends)
+        nodes: ({n, actions: [], status: "good"} for n in @node.children ? [] when "container" in n.facts.backends)
+        children: (n for n in @node.children ? [] when "container" not in n.facts.backends)
         actions: []
-      , {}, ko.mapping.fromJS node, mapping
+      , {}, ko.mapping.fromJS @node, mapping
 
     @siteActive = ntrapy.selector (data) =>
       console.log "Triggered with: ", data
-      switch data?.name
+      switch data.name
         when "Workspace"
-          @getMappedData "http://roush.propter.net:8080/nodes/1/tree", @wsItems, mapping
+          @getMappedData "http://roush.propter.net:8080/nodes/1/tree", @wsTemp, mapping, =>
+            console.log @wsTemp()
+            #@wsItems = [@wsTemp()[0].children]
     , @siteNav()[0] # Set to first by default
 
     @getMappedData = (url, pin, map={}, cb=null) ->
@@ -46,10 +54,13 @@ $ ->
 
     # Template accessor that avoids data-loading race
     @getTemplate = ko.computed =>
-      @siteActive().template ? {} # Needs .template?() if @siteNav is mapped
+      @siteActive()?.template ? {} # Needs .template?() if @siteNav is mapped
 
     # Preload data
-    @getMappedData "http://roush.propter.net:8080/nodes/1/tree", @wsItems, mapping
+    @getMappedData "http://roush.propter.net:8080/nodes/1/tree", @wsTemp, mapping, =>
+      console.log @wsTemp()
+      #@wsItems = [@wsTemp()[0].children]
+      #@siteActive @siteNav()[0]
 
     @ # Return ourself
 
