@@ -1,7 +1,7 @@
 HR="=========================================="
 SHELL=bash
 
-all: | clean build link
+all: | build link
 
 build:
 	@echo ${HR}
@@ -72,9 +72,14 @@ cert:
 	openssl x509 -req -in csr.pem -signkey key.pem -out cert.pem
 	rm -f csr.pem
 
-clean: clean_pub
-	rm -rf components node_modules
+clean: clean_com clean_node clean_pub
 	rm -f *.log
+
+clean_com:
+	rm -rf components
+
+clean_node:
+	rm -rf node_modules
 
 clean_pub:
 	rm -rf public
