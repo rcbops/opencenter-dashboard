@@ -21,11 +21,12 @@ app.configure ->
   app.use express.logger "dev"
   app.use express.bodyParser()
   app.use express.methodOverride()
+  app.use express.cookieParser config.secret
   app.use(express.session
     store: new SQLiteStore
-      db: "sessions"
-      dir: "."
-    secret: '???'
+      db: config.db
+      dir: config.db_dir
+    secret: config.secret
     cookie:
       maxAge: 24 * 60 * 60 * 1000) # one day
   app.use app.router
