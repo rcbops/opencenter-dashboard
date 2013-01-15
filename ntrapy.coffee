@@ -78,8 +78,9 @@ app.post "/api/logout", (req, res) ->
   res.send "Logged out!"
 
 app.all "/roush/?*", (req, res) ->
+  
   req.pipe(request
-    url: "https://localhost:8080/" + req?.params?[0]
+    url: config.roush_url + req?.params?[0]
     followRedirect: true
   ).pipe(res)
 
