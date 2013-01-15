@@ -1,5 +1,7 @@
 var config = {}
 
-config.option1 = {test: 1}
+config.db = "ntrapy";
+config.db_dir = "."
+config.secret = "???"
 
 module.exports = config;
