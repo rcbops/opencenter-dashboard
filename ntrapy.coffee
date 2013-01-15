@@ -77,37 +77,11 @@ app.post "/api/logout", (req, res) ->
   res.clearCookie "AuthSession"
   res.send "Logged out!"
 
-app.post "/roush/*", (req, res) ->
-  console.log req.params[0]
-  res.send "Stub"
-  #auth = req.cookies["AuthSession"]
-  #unless auth?
-  #  res.send 401, "Error: Login first"
-  #else
-    #nano = require("nano")
-    #  url: "http://localhost:5984"
-    #  cookie: "AuthSession=" + auth
-    # 
-    #db = nano.use req.params.db
-    #db.get req.params.doc, (err, body) ->
-    #  if err?
-    #    res.send 400, "Error: /" + req.params.db + "/" + req.params.doc + " returned: " + err.reason
-    #  else
-    #    res.cookie headers["set-cookie"] if headers?["set-cookie"]
-    #    res.send body
-    #res.send "Stub"
-
-app.get "/roush/*", (req, res) ->
-  
-  #nano = require("nano") "http://localhost:5984"
-  #db = nano.use req.params.db
-  #db.get req.params.doc, (err, body) ->
-  #  if err?
-  #    res.send 400, "Error: /" + req.params.db + "/" + req.params.doc + " returned: " + err.reason
-  #  else
-  #    res.cookie headers["set-cookie"] if headers?["set-cookie"]
-  #    res.send body
-
+app.all "/roush/?*", (req, res) ->
+  req.pipe(request
+    url: "https://localhost:8080/" + req?.params?[0]
+    followRedirect: true
+  ).pipe(res)
 
 # HTTP server
 http.createServer(app).listen app.get("port"), ->
