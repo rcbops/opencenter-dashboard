@@ -6,6 +6,7 @@ https = require "https"
 gzippo = require "gzippo"
 express = require "express"
 config = require "./config"
+SQLiteStore = require("connect-sqlite3")(express)
 
 # App
 app = express()
@@ -20,6 +21,13 @@ app.configure ->
   app.use express.logger "dev"
   app.use express.bodyParser()
   app.use express.methodOverride()
+  app.use(express.session
+    store: new SQLiteStore
+      db: "sessions"
+      dir: "."
+    secret: '???'
+    cookie:
+      maxAge: 24 * 60 * 60 * 1000) # one day
   app.use app.router
 
 # Profiles
