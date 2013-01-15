@@ -5,6 +5,7 @@ http = require "http"
 https = require "https"
 gzippo = require "gzippo"
 express = require "express"
+request = require "request"
 config = require "./config"
 SQLiteStore = require("connect-sqlite3")(express)
 
@@ -76,11 +77,13 @@ app.post "/api/logout", (req, res) ->
   res.clearCookie "AuthSession"
   res.send "Logged out!"
 
-app.post "/api/:db/:doc", (req, res) ->
-  auth = req.cookies["AuthSession"]
-  unless auth?
-    res.send 401, "Error: Login first"
-  else
+app.post "/roush/*", (req, res) ->
+  console.log req.params[0]
+  res.send "Stub"
+  #auth = req.cookies["AuthSession"]
+  #unless auth?
+  #  res.send 401, "Error: Login first"
+  #else
     #nano = require("nano")
     #  url: "http://localhost:5984"
     #  cookie: "AuthSession=" + auth
@@ -92,9 +95,10 @@ app.post "/api/:db/:doc", (req, res) ->
     #  else
     #    res.cookie headers["set-cookie"] if headers?["set-cookie"]
     #    res.send body
-    res.send "Stub"
+    #res.send "Stub"
 
-app.get "/api/:db/:doc", (req, res) ->
+app.get "/roush/*", (req, res) ->
+  
   #nano = require("nano") "http://localhost:5984"
   #db = nano.use req.params.db
   #db.get req.params.doc, (err, body) ->
