@@ -1,23 +1,8 @@
-**/.git/**
-
-lib-cov
-*.seed
 *.log
-*.csv
-*.dat
-*.out
-*.pid
-*.gz
 *.pem
 *.db
 
-pids
-logs
-results
-
 node_modules
-npm-debug.log
-
 components
 public
 

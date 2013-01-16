@@ -46,7 +46,7 @@ $ ->
       console.log "Triggered with: ", data
       switch data.name
         when "Workspace"
-          @getMappedData "http://roush.propter.net:8080/nodes/1/tree", @wsTemp, mapping, =>
+          @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping, =>
             #@wsItems = [@wsTemp()[0].children]
     , @siteNav()[0] # Set to first by default
 

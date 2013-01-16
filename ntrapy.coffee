@@ -50,8 +50,7 @@ app.get "/", (req, res) ->
   res.render "index",
     title: "nTrapy"
 
-# TODO: Rewrite sessiony bits for MySQL
-
+# TODO: Rewrite sessiony bits for SQLiteStore
 # API
 app.post "/api/login", (req, res) ->
   #nano = require("nano") "http://localhost:5984"
@@ -78,10 +77,15 @@ app.post "/api/logout", (req, res) ->
   res.send "Logged out!"
 
 app.all "/roush/?*", (req, res) ->
-  
   req.pipe(request
     url: config.roush_url + req?.params?[0]
-    followRedirect: true
+    followAllRedirects: true
+    timeout: 1000 # 1 sec
+  , (err, resp, body) ->
+    if err?
+      res.status 502 # Bad gateway
+      res.send resp if resp? # Send something if we got it
+      res.send err # Send error
   ).pipe(res)
 
 # HTTP server
