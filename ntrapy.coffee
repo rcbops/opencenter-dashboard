@@ -78,9 +78,9 @@ app.post "/api/logout", (req, res) ->
 
 app.all "/roush/?*", (req, res) ->
   req.pipe(request
-    url: config.roush_url + req?.params?[0]
+    url: config.roush_url.replace(/\/$/, "") + "/" + req?.params?[0]
     followAllRedirects: true
-    timeout: 1000 # 1 sec
+    timeout: 2000 # 2 sec
   , (err, resp, body) ->
     if err?
       res.status 502 # Bad gateway
