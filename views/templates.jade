@@ -16,7 +16,7 @@ block templates
             // /ko
         .clear-right
    
-        .drop-target(data-bind='sortable: nodes')
+        .drop-target(data-bind='sortable: servers')
           .btn-group
             button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: ntrapy.statusButton(status()), popper: true')
             button.btn.btn-small.dropdown-toggle(data-bind='css: ntrapy.statusButton(status()), enable: actions().length', data-toggle='dropdown')
@@ -29,7 +29,7 @@ block templates
               // /ko
    
         .clear-left
-        div(data-bind='template: {name: "itemTemplate", foreach: children}')
+        div(data-bind='template: {name: "itemTemplate", foreach: containers}')
 
   script(type='text/html', id='profileTemplate')
     .well

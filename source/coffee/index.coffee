@@ -31,8 +31,8 @@ $ ->
       @node = options.data
       console.log @node.name, @node?.facts?.backends
       ko.mapping.fromJS
-        nodes: n for n in @node.children ? [] when "container" in n.facts.backends
-        containers: n for n in @node.children ? [] when "container" not in n.facts.backends
+        servers: (n for n in @node.children ? [] when "agent" in n.facts.backends)
+        containers: (n for n in @node.children ? [] when "container" in n.facts.backends)
         actions: []
         status: ""
       , {}, ko.mapping.fromJS @node, mapping
@@ -47,7 +47,7 @@ $ ->
       switch data.name
         when "Workspace"
           @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping, =>
-            #@wsItems = [@wsTemp()[0].children]
+            @wsItems [@wsTemp()[0].children]
     , @siteNav()[0] # Set to first by default
 
     # Template accessor that avoids data-loading race
