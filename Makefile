@@ -1,5 +1,6 @@
 HR="=========================================="
 SHELL=bash
+export PYTHON=python2
 
 all: | build link
 
