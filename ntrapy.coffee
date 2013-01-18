@@ -76,6 +76,22 @@ app.post "/api/logout", (req, res) ->
   res.clearCookie "AuthSession"
   res.send "Logged out!"
 
+# Allowed config keys
+allowedKeys = ["timeout"]
+
+# Get all allowed keys
+app.get "/api/config", (req, res) ->
+  res.send k: config[k] for k in allowedKeys
+
+# Get key by name
+app.get "/api/config/:key", (req, res) ->
+  key = req.param "key"
+  if key in allowedKeys
+    res.send config?[key] ? {}
+  else
+    res.send "Invalid key"
+
+# Roush proxy, woo!
 app.all "/roush/?*", (req, res) ->
   req.pipe(request
     url: config.roush_url.replace(/\/$/, "") + "/" + req?.params?[0]
