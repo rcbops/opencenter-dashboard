@@ -5,8 +5,24 @@ ntrapy = exports?.ntrapy ? @ntrapy
 
 $ ->
   IndexModel = ->
-    @wsTemp = ko.observableArray([])
-    @wsItems = ko.observableArray([])
+    @getData = (url, cb) ->
+      $.getJSON url, (data) ->
+        cb data if cb?
+
+    @mapData = (data, pin, map={}, wrap=true) ->
+      data = [data] if wrap?
+      ko.mapping.fromJS data, map, pin
+
+    @getMappedData = (url, pin, map={}, wrap=true) =>
+      @getData url, (data) => @mapData(data, pin, map, wrap)
+
+    @config = {}
+    @getData "/api/config/timeout", (data) =>
+      @config.timeout = data
+
+    @wsTemp = ko.observableArray()
+    @wsItems = ko.computed =>
+      @wsTemp()?[0]?.children ? []
 
     # TODO: Map from data source
     @siteNav = ko.observableArray [
@@ -26,6 +42,9 @@ $ ->
           ko.utils.unwrapObservable data.id
         create: (options) ->
           createNode options
+      node:
+        key: (data) ->
+          ko.utils.unwrapObservable data.id
 
     createNode = (options) =>
       @node = options.data
