@@ -1,8 +1,9 @@
-var config = {}
+var config = {};
 
-config.roush_url = "http://localhost:8080"
+config.roush_url = "http://localhost:8080";
 config.db = "ntrapy";
-config.db_dir = "."
-config.secret = "???"
+config.db_dir = ".";
+config.secret = "???";
+config.timeout = {short: 2000, long: 30000};
 
 module.exports = config;
