@@ -53,7 +53,7 @@ $ ->
         servers: (n for n in @node.children ? [] when "agent" in n.facts.backends)
         containers: (n for n in @node.children ? [] when "container" in n.facts.backends)
         actions: []
-        status: ""
+        status: "good"
       , {}, ko.mapping.fromJS @node, mapping
 
     # Long-poller
@@ -77,13 +77,12 @@ $ ->
       console.log "Triggered with: ", data
       switch data.name
         when "Workspace"
-          @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping, =>
-            @wsItems [@wsTemp()[0].children]
+          @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
     , @siteNav()[0] # Set to first by default
 
     # Template accessor that avoids data-loading race
     @getTemplate = ko.computed =>
-      @siteActive()?.template ? {} # Needs .template?() if @siteNav is mapped
+      @siteActive()?.template ? {} # TODO: Needs .template?() if @siteNav is mapped
 
     @ # Return ourself
 
