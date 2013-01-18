@@ -94,9 +94,9 @@ app.get "/api/config/:key", (req, res) ->
 # Roush proxy, woo!
 app.all "/roush/?*", (req, res) ->
   req.pipe(request
-    url: config.roush_url.replace(/\/$/, "") + "/" + req?.params?[0]
+    url: config.roush_url.replace(/\/$/, "") + req.originalUrl.replace(/\/roush/, "")
     followAllRedirects: true
-    timeout: 2000 # 2 sec
+    timeout: unless req.param("poll")? config.timeout.short else (config.timeout.long + 1000)
   , (err, resp, body) ->
     if err?
       res.status 502 # Bad gateway

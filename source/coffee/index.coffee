@@ -37,10 +37,22 @@ $ ->
         status: ""
       , {}, ko.mapping.fromJS @node, mapping
 
-    @getMappedData = (url, pin, map={}, cb=null) ->
-      $.getJSON url, (data) ->
-        ko.mapping.fromJS [data], map, pin
-        cb() if cb?
+    # Long-poller
+    (poll = =>
+      $.ajax
+        url: "/roush/nodes/4?poll"
+        success: (data) =>
+          console.log "Zomg polled!"
+          @mapData data, @wsTemp, mapping, wrap=false
+        dataType: "json"
+        complete: (xhr, txt) ->
+          console.log "Txt: ", txt
+          if txt is not "success"
+            setTimeout poll, 1000
+          else
+            setTimeout poll, 0
+        timeout: @config?.timeout?.long ? 30000
+    )()
 
     @siteActive = ntrapy.selector (data) =>
       console.log "Triggered with: ", data
