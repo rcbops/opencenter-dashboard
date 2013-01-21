@@ -5,5 +5,6 @@ config.db = "ntrapy";
 config.db_dir = ".";
 config.secret = "???";
 config.timeout = {short: 2000, long: 30000};
+config.interval = 5000;
 
 module.exports = config;
