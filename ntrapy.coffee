@@ -77,11 +77,14 @@ app.post "/api/logout", (req, res) ->
   res.send "Logged out!"
 
 # Allowed config keys
-allowedKeys = ["timeout"]
+allowedKeys = ["interval", "timeout"]
 
 # Get all allowed keys
 app.get "/api/config", (req, res) ->
-  res.send k: config[k] for k in allowedKeys
+  ret = {}
+  for k,v of config when k in allowedKeys
+    ret[k] = v
+  res.send ret
 
 # Get key by name
 app.get "/api/config/:key", (req, res) ->
@@ -114,7 +117,7 @@ try
   tlsOptions =
     key: fs.readFileSync "key.pem"
     cert: fs.readFileSync "cert.pem"
-  
+
   # HTTPS server
   https.createServer(tlsOptions, app).listen app.get("sport"), ->
     console.log "Express https server listening on port " + app.get("sport") + " in " + app.settings.env + " mode"
