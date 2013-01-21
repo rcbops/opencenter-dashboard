@@ -25,7 +25,10 @@ build:
 	@echo "Building jQuery"
 	@echo ${HR}
 	uglifyjs -nc components/jquery/jquery.js > components/jquery/jquery.min.js
-# jQuery UI comes pre-built, skipping
+	@echo ${HR}
+	@echo "Building jQuery UI"
+	@echo ${HR}
+	uglifyjs -nc components/jquery-ui/ui/*.js > components/jquery-ui/ui/minified/jquery-ui.min.js
 	@echo ${HR}
 	@echo "Building Knockout"
 	@echo ${HR}
