@@ -78,6 +78,7 @@ cert:
 
 clean: clean_com clean_node clean_pub
 	rm -f *.log
+	rm -f *.db*
 
 clean_com:
 	rm -rf components
