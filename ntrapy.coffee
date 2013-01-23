@@ -98,6 +98,7 @@ app.get "/api/config/:key", (req, res) ->
 app.all "/roush/?*", (req, res) ->
   req.pipe(request
     url: config.roush_url.replace(/\/$/, "") + req.originalUrl.replace(/\/roush/, "")
+    method: req.method
     followAllRedirects: true
     timeout: unless req.param("poll")? config.timeout.short else (config.timeout.long + 1000)
   , (err, resp, body) ->

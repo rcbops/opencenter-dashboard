@@ -75,12 +75,12 @@ $ ->
       clearInterval ntrapy.poller
 
     @getData "/api/config", (data) =>
+      # Store config
       @config = data
 
       # Load initial data, and poll every config.interval ms
       @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
       ntrapy.pollTree()
-      console.log "Setting first: ", ntrapy.poller
 
     @siteActive = ntrapy.selector (data) =>
       null
@@ -114,13 +114,18 @@ $ ->
       $(ui.item).find('button[data-bind*="popper"]')
         .popover("disable")
         .popover "hide"
-      console.log "Clearing: ", ntrapy.poller
-      ntrapy.stopTree()
-    afterMove: (options) ->
-      console.log "Item: ", options.item
+      ntrapy.stopTree() # Stop polling on drag start
     stop: (event, ui) ->
-      ntrapy.pollTree()
-      console.log "Setting: ", ntrapy.poller
+      ntrapy.pollTree() # Resume polling
+
+  ko.bindingHandlers.sortable.afterMove = (options) ->
+    parent = options.sourceParentNode.attributes["data-id"].value
+    $.post "/roush/facts/", JSON.stringify
+      key: "parent_id"
+      value: parent
+      node_id: options.item.id()
+    , (data) ->
+      console.log "Success: ", data
 
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel

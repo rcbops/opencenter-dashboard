@@ -16,7 +16,7 @@ block templates
             // /ko
         .clear-right
    
-        .drop-target(data-bind='sortable: servers')
+        .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
           .btn-group
             button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: ntrapy.statusButton(status()), popper: true')
             button.btn.btn-small.dropdown-toggle(data-bind='css: ntrapy.statusButton(status()), enable: actions().length', data-toggle='dropdown')

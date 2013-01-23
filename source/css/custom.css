@@ -53,9 +53,12 @@ body {
 }
 
 /* Tweak container cogs */
-.btn-group.pull-right { margin-right: 0px; }
-.pull-right.btn-group > button {
+.btn-group.pull-right {
   margin-left: 20px;
+  margin-right: 0px;
+}
+.pull-right.btn-group > button {
+  margin-left: 30px;
   margin-top: 0px;
 }
 
