@@ -94,19 +94,26 @@ app.get "/api/config/:key", (req, res) ->
   else
     res.send "Invalid key"
 
+# Because *SOMEBODY* doesn't know how to check for {}
+isEmpty = (obj) ->
+  !Object.keys(obj).length > 0
+
 # Roush proxy, woo!
 app.all "/roush/?*", (req, res) ->
-  req.pipe(request
+  options =
     url: config.roush_url.replace(/\/$/, "") + req.originalUrl.replace(/\/roush/, "")
+    json: if isEmpty req.body then "" else req.body
+    # TODO: Figure out why this is broken: headers: req.headers ? {}
     method: req.method
     followAllRedirects: true
-    timeout: unless req.param("poll")? config.timeout.short else (config.timeout.long + 1000)
-  , (err, resp, body) ->
+    timeout: unless req.param("poll")? then config.timeout.short else (config.timeout.long + 1000)
+
+  req.pipe(request options, (err, resp, body) ->
     if err?
       res.status 502 # Bad gateway
       res.send resp if resp? # Send something if we got it
       res.send err # Send error
-  ).pipe(res)
+  ).pipe res
 
 # HTTP server
 http.createServer(app).listen app.get("port"), ->

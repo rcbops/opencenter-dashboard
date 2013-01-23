@@ -120,10 +120,11 @@ $ ->
 
   ko.bindingHandlers.sortable.afterMove = (options) ->
     parent = options.sourceParentNode.attributes["data-id"].value
-    $.post "/roush/facts/", JSON.stringify
-      key: "parent_id"
-      value: parent
-      node_id: options.item.id()
+    $.post "/roush/facts/",
+      JSON.stringify
+        key: "parent_id"
+        value: parent
+        node_id: options.item.id()
     , (data) ->
       console.log "Success: ", data
 
