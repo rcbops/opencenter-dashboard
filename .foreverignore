@@ -1,1 +1,8 @@
-.gitignore
+**/.git/**
+
+*.log
+*.pem
+*.db*
+
+node_modules
+components

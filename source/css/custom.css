@@ -1,4 +1,74 @@
 body {
-  padding-top: 60px;
+  /* Space navbar */
+  padding-top: 50px;
   padding-bottom: 40px;
+
+  /* Prepare to center floats */
+  margin: 0 auto;
+  text-align: center;
+}
+
+#root {
+  /* Be centerable */
+  display: inline-block;
+  /* Reset alignment for contents */
+  text-align: left;
+}
+
+/* Drop shadow yay */
+.drop-shadow {
+  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,.5);
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,.5);
+  box-shadow: 1px 1px 5px rgba(0,0,0,.5);
+}
+
+/* Convenience classes */
+.clear-right { clear: right; }
+.clear-left { clear: left; }
+.clear-both { clear: both; }
+
+/* Re-space wells */
+.well {
+  min-width: 100px;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 0px;
+  padding-bottom: 10px;
+}
+
+/* Fix sibling-spacing so overflow aligns */
+.well { margin-right: 10px; }
+.well + .well { margin-left: 0px; margin-right: 10px; }
+.well:only-of-type { margin-right: 0px; }
+.well:last-of-type { margin-right: 0px; }
+
+.btn-group { margin-right: 5px; }
+.btn-group + .btn-group {
+  margin-left: 0px;
+  margin-right: 5px;
+}
+.btn-group:only-of-type, .btn-group:last-of-type {
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+/* Tweak container cogs */
+.btn-group.pull-right { margin-right: 0px; }
+.pull-right.btn-group > button {
+  margin-left: 20px;
+  margin-top: 0px;
+}
+
+/* Make some room above nodes */
+.btn-group button { margin-top: 10px; }
+
+/* Fix popover fallout */
+.btn-group .popover { font-size: 14px; }
+.btn-group > .btn + .popover + .btn.dropdown-toggle { margin-left: -1px; padding-left: 8px; padding-right: 8px; }
+
+/* Keep drop target area open */
+.drop-target {
+  padding: 0px;
+  margin: 0px;
+  min-height: 36px;
 }
