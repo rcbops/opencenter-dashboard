@@ -26,10 +26,6 @@ build:
 	@echo ${HR}
 	uglifyjs -nc components/jquery/jquery.js > components/jquery/jquery.min.js
 	@echo ${HR}
-	@echo "Building jQuery UI"
-	@echo ${HR}
-	uglifyjs -nc components/jquery-ui/ui/*.js > components/jquery-ui/ui/minified/jquery-ui.min.js
-	@echo ${HR}
 	@echo "Building Knockout"
 	@echo ${HR}
 	cd components/knockout/build; ./build-linux
@@ -63,7 +59,7 @@ link: | clean_pub
 	ln -sf ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
 	ln -sf ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
 	ln -sf ${PWD}/components/jquery/jquery.min.js public/js
-	ln -sf ${PWD}/components/jquery-ui/ui/minified/jquery-ui.min.js public/js
+	ln -sf ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
 	@echo ${HR}
 	@echo "Linking nTrapy components"
 	@echo ${HR}
