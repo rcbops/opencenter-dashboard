@@ -1,12 +1,8 @@
-extends layout
-
 block navbar
   .navbar.navbar-fixed-top
     .navbar-inner
       .container-fluid
         a.brand(href='/')= title
-        ul.nav(data-bind='foreach: filters')
-          li(data-bind='click: $parent.filter, css: {active: $parent.filter() === $data}')
+        ul.nav(data-bind='foreach: siteNav')
+          li(data-bind='click: $parent.siteActive, css: {active: $parent.siteActive() === $data}')
             a(href='#', data-bind='text: name')
-        form.navbar-search.pull-right
-          input.search-query(type='text', placeholder='Custom Filter')
