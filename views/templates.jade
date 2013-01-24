@@ -1,5 +1,9 @@
 block templates
   script(type='text/html', id='indexTemplate')
+    #splash.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='splash', aria-hidden='true')
+      .modal-body
+        img(src='/img/logo.png')
+
     #root(data-bind='template: {name: "itemTemplate", foreach: wsItems}')
    
     script(type='text/html', id='itemTemplate')
@@ -18,7 +22,7 @@ block templates
    
         .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
           .btn-group
-            button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: ntrapy.statusButton(status()), popper: true')
+            button.btn.btn-small(data-bind='text: name, css: ntrapy.statusButton(status()), popper: $data')
             button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions, css: ntrapy.statusButton(status())', data-toggle='dropdown')
               i.icon-cog
             ul.dropdown-menu

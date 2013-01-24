@@ -64,6 +64,7 @@ link: | clean_pub
 	@echo "Linking nTrapy components"
 	@echo ${HR}
 	ln -sf ${PWD}/source/css/* public/css
+	ln -sf ${PWD}/source/img/* public/img
 
 cert:
 	rm -f *.pem

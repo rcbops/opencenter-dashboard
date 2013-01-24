@@ -109,14 +109,35 @@ $ ->
     @ # Return ourself
 
   popoverOptions =
+    html: true
     delay: 0
     trigger: "hover"
     animation: true
-    placement: ntrapy.get_popover_placement
+    placement: ntrapy.getPopoverPlacement
 
   ko.bindingHandlers.popper =
-    init: (element, valueAccessor) ->
-      $(element).popover popoverOptions
+    init: (el, data) ->
+      $(el).on "mouseover", ntrapy.stopTree
+      $(el).on "mouseout", ntrapy.pollTree
+      opts = popoverOptions
+      opts["title"] = ->
+        console.log "title"
+        data()?.name?() ? "Details"
+      opts["content"] = ->
+        console.log "content"
+        ret = """
+          <ul>
+        """
+        ret += for backend in data().facts.backends()
+          """
+            <li>#{backend}</li>
+          """
+        ret += """
+          </ul>
+        """
+        console.log ret
+        ret
+      $(el).popover opts
 
   ko.bindingHandlers.sortable.options =
     handle: ".btn"
@@ -145,3 +166,6 @@ $ ->
   ko.applyBindings ntrapy.indexModel
 
   $(document).on "click.dropdown.data-api", ntrapy.pollTree
+
+  $("#splash").modal "show"
+  setInterval (-> $("#splash").modal "hide"), 5000

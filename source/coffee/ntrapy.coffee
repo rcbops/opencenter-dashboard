@@ -67,7 +67,7 @@ ntrapy.toArray = (obj) ->
 
   array # Return mapped array
 
-ntrapy.get_popover_placement = (tip, element) ->
+ntrapy.getPopoverPlacement = (tip, element) ->
   isWithinBounds = (elementPosition) ->
     boundTop < elementPosition.top and boundLeft < elementPosition.left and boundRight > (elementPosition.left + actualWidth) and boundBottom > (elementPosition.top + actualHeight)
   $element = $ element
