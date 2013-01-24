@@ -93,6 +93,14 @@ $ ->
     @getTemplate = ko.computed =>
       @siteActive()?.template ? {} # TODO: Needs .template?() if @siteNav is mapped
 
+    @getActions = (node) =>
+      ntrapy.stopTree()
+      @getData "/roush/nodes/#{node.id()}/adventures", (data) ->
+        node.actions (n for n in data.adventures)
+
+    @doAction = (data, parent) =>
+      console.log data, parent
+
     @ # Return ourself
 
   popoverOptions =

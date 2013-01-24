@@ -6,26 +6,26 @@ block templates
       .well.well-small.pull-left.drop-shadow
         .pull-left: span.muted(data-bind='text: name')
         .pull-right.btn-group
-          button.btn.btn-mini.dropdown-toggle(data-toggle='dropdown', data-bind='enable: actions().length')
+          button.btn.btn-mini.dropdown-toggle(data-bind="click: $root.getActions", data-toggle='dropdown')
             i.icon-cog
           ul.dropdown-menu
             li.nav-header Actions
             li.divider
             // ko foreach: actions
-            li: a(tabindex='-1', href='#', data-bind='click: action.bind($data, $parent), text: name')
+            li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
             // /ko
         .clear-right
    
         .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
           .btn-group
             button.btn.btn-small(data-content='This is a test', data-title='Title', data-bind='text: name, css: ntrapy.statusButton(status()), popper: true')
-            button.btn.btn-small.dropdown-toggle(data-bind='css: ntrapy.statusButton(status()), enable: actions().length', data-toggle='dropdown')
+            button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions, css: ntrapy.statusButton(status())', data-toggle='dropdown')
               i.icon-cog
             ul.dropdown-menu
               li.nav-header Actions
               li.divider
               // ko foreach: actions
-              li: a(tabindex='-1', href='#', data-bind='click: action.bind($data, $parent), text: name')
+              li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
               // /ko
    
         .clear-left
