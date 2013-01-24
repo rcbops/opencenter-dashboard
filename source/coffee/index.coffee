@@ -111,7 +111,7 @@ $ ->
     delay: 0
     trigger: "hover"
     animation: true
-    placement: ntrapy.getPopoverPlacement
+    #placement: ntrapy.getPopoverPlacement
 
   ko.bindingHandlers.popper =
     init: (el, data) ->
@@ -122,19 +122,17 @@ $ ->
         #TODO: Figure out why this fires twice: console.log "title"
         data()?.name?() ? "Details"
       opts["content"] = ->
-        console.log "content"
-        ret = """
-          <ul>
-        """
-        ret += for backend in data().facts.backends()
-          """
-            <li>#{backend}</li>
-          """
-        ret += """
-          </ul>
-        """
-        console.log ret
-        ret
+        ret  = "<ul>"
+        ret += "<li><strong>ID:</strong> #{data().id()}</li>"
+        ret += "<li><strong>Status:</strong> #{data().status()}</li>"
+        ret += "<li><strong>Adventure:</strong> #{data().adventure_id() ? 'idle'}</li>"
+        ret += "<li><strong>Task:</strong> #{data().task_id() ? 'idle'}</li>"
+        ret += "<li><strong>Backends:</strong><ul>"
+        ret += "<li>#{backend}</li>" for backend in data().facts.backends()
+        ret += "</ul></li>"
+        #ret += "Attributes:<ul>"
+        #ret += "<li>#{attr}</li>" for attr in data().attrs()
+        #ret += "</ul>"
       $(el).popover opts
 
   ko.bindingHandlers.sortable.options =
