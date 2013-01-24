@@ -2,7 +2,7 @@ block templates
   script(type='text/html', id='indexTemplate')
     #splash.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='splash', aria-hidden='true')
       .modal-body
-        img(src='/img/logo.png')
+        a(data-dismiss="modal"): img(src='/img/logo.png')
 
     #root(data-bind='template: {name: "itemTemplate", foreach: wsItems}')
    
