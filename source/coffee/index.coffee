@@ -69,10 +69,12 @@ $ ->
     #)()
 
     ntrapy.pollTree = =>
-      ntrapy.poller = setInterval @getMappedData, @config.interval, "/roush/nodes/1/tree", @wsTemp, mapping
+      unless ntrapy.poller? then ntrapy.poller = setInterval @getMappedData, @config.interval, "/roush/nodes/1/tree", @wsTemp, mapping
+      console.log "poller: ", ntrapy.poller
 
-    ntrapy.stopTree = =>
-      clearInterval ntrapy.poller
+    ntrapy.stopTree = ->
+      ntrapy.poller = clearInterval ntrapy.poller if ntrapy.poller?
+      console.log "poller: ", ntrapy.poller
 
     @getData "/api/config", (data) =>
       # Store config
@@ -94,12 +96,15 @@ $ ->
       @siteActive()?.template ? {} # TODO: Needs .template?() if @siteNav is mapped
 
     @getActions = (node) =>
-      ntrapy.stopTree()
+      if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
       @getData "/roush/nodes/#{node.id()}/adventures", (data) ->
         node.actions (n for n in data.adventures)
 
-    @doAction = (data, parent) =>
-      console.log data, parent
+    @doAction = (object, action) =>
+      $.post "/roush/adventures/#{action.id}/execute",
+        JSON.stringify node: object.id()
+      , (data) ->
+        console.log "Success: ", data
 
     @ # Return ourself
 
@@ -138,3 +143,5 @@ $ ->
 
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel
+
+  $(document).on "click.dropdown.data-api", ntrapy.pollTree
