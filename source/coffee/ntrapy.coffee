@@ -100,4 +100,4 @@ ntrapy.getPopoverPlacement = (tip, element) ->
   below = isWithinBounds elementBelow
   left = isWithinBounds elementLeft
   right = isWithinBounds elementRight
-  if above then "top" else if below then "bottom" else if left then "left" else if right then "right" else "right"
+  (if above then "top" else (if below then "bottom" else (if left then "left" else (if right then "right" else "right"))))

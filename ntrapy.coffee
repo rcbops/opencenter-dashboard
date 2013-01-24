@@ -117,7 +117,7 @@ app.all "/roush/?*", (req, res) ->
 
 # HTTP server
 http.createServer(app).listen app.get("port"), ->
-  console.log "Express server listening on port " + app.get("port") + " in " + app.settings.env + " mode"
+  console.log "Express server listening on port #{app.get('port')} in #{app.settings.env} mode"
 
 # TODO: See about stuffing this logic into callbacks on readFile
 try
@@ -128,7 +128,7 @@ try
 
   # HTTPS server
   https.createServer(tlsOptions, app).listen app.get("sport"), ->
-    console.log "Express https server listening on port " + app.get("sport") + " in " + app.settings.env + " mode"
+    console.log "Express https server listening on port #{app.get('sport')} in #{app.settings.env} mode"
 
 catch e
   console.log e

@@ -70,11 +70,9 @@ $ ->
 
     ntrapy.pollTree = =>
       unless ntrapy.poller? then ntrapy.poller = setInterval @getMappedData, @config.interval, "/roush/nodes/1/tree", @wsTemp, mapping
-      console.log "poller: ", ntrapy.poller
 
     ntrapy.stopTree = ->
       ntrapy.poller = clearInterval ntrapy.poller if ntrapy.poller?
-      console.log "poller: ", ntrapy.poller
 
     @getData "/api/config", (data) =>
       # Store config
@@ -104,7 +102,7 @@ $ ->
       $.post "/roush/adventures/#{action.id}/execute",
         JSON.stringify node: object.id()
       , (data) ->
-        console.log "Success: ", data
+        null #TODO: Use success for something
 
     @ # Return ourself
 
@@ -121,7 +119,7 @@ $ ->
       $(el).on "mouseout", ntrapy.pollTree
       opts = popoverOptions
       opts["title"] = ->
-        console.log "title"
+        #TODO: Figure out why this fires twice: console.log "title"
         data()?.name?() ? "Details"
       opts["content"] = ->
         console.log "content"
