@@ -25,7 +25,7 @@ block templates
           .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
             .btn-group.node
               button.btn.btn-small.statusDescription(data-bind='css: ntrapy.statusButton(status())')
-              button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions, data-toggle='dropdown')
+              button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
                 li.nav-header Actions
