@@ -1,8 +1,15 @@
 block navbar
-  .navbar.navbar-fixed-top
+  #banner.navbar.navbar-fixed-top
+    ul#top-links.container-fluid
+      li#user-menu.menu
+        a(href="#")= "Some Support Link"
+        a(href="#")= "Some Support Link"
+        a(href="#")= "Hello Username"
     .navbar-inner
       .container-fluid
-        a.brand(href='/')= title
-        ul.nav(data-bind='foreach: siteNav')
+        #logo-wrapper
+          a.brand(href='/')
+            span
+        ul#links.nav(data-bind='foreach: siteNav')
           li(data-bind='click: $parent.siteActive, css: {active: $parent.siteActive() === $data}')
             a(href='#', data-bind='text: name')
