@@ -4,26 +4,13 @@ block templates
       .modal-body
         a(data-dismiss="modal"): img(src='/img/logo.png')
 
-    #root(data-bind='template: {name: "itemTemplate", foreach: wsItems}')
+    #root.container-fluid(data-bind='template: {name: "itemTemplate", foreach: wsItems}')
    
     script(type='text/html', id='itemTemplate')
-      .well.well-small.pull-left.drop-shadow
-        .pull-left: span.muted(data-bind='text: name')
-        .pull-right.btn-group
-          button.btn.btn-mini.dropdown-toggle(data-bind="click: $root.getActions", data-toggle='dropdown')
-            i.icon-cog
-          ul.dropdown-menu
-            li.nav-header Actions
-            li.divider
-            // ko foreach: actions
-            li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
-            // /ko
-        .clear-right
-   
-        .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
-          .btn-group
-            button.btn.btn-small(data-bind='text: name, css: ntrapy.statusButton(status()), popper: $data')
-            button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions, css: ntrapy.statusButton(status())', data-toggle='dropdown')
+      .well.well-small.pull-left.roush-container
+        header.container-header
+          .pull-left.btn-group
+            button.btn.btn-mini.dropdown-toggle(data-bind="click: $root.getActions", data-toggle='dropdown')
               i.icon-cog
             ul.dropdown-menu
               li.nav-header Actions
@@ -31,14 +18,31 @@ block templates
               // ko foreach: actions
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
               // /ko
-   
-        .clear-left
-        div(data-bind='template: {name: "itemTemplate", foreach: containers}')
+          .pull-left.container-name: span(data-bind='text: name')
+        .clear-right
+
+        .container-body
+          .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
+            .btn-group.node
+              button.btn.btn-small.statusDescription(data-bind='css: ntrapy.statusButton(status())')
+              button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions, data-toggle='dropdown')
+                i.icon-cog
+              ul.dropdown-menu
+                li.nav-header Actions
+                li.divider
+                // ko foreach: actions
+                li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
+                // /ko
+              button.btn.btn-small.node-name(data-bind='text: name, popper: $data')
+
+          div(data-bind='template: {name: "itemTemplate", foreach: containers}')
 
   script(type='text/html', id='profileTemplate')
-    .well
-      h1 Profile test!
+    #main
+      #content.container-fluid
+        h1 Profile test!
 
   script(type='text/html', id='settingsTemplate')
-    .well
-      h1 Settings test!
+    #main
+      #content.container-fluid
+        h1 Settings test!
