@@ -84,5 +84,5 @@ clean_node:
 	rm -rf node_modules
 
 clean_pub:
-	pkill -f "coffee -co public/js source/coffee"
+	pkill -f "coffee -wco public/js source/coffee"
 	rm -rf public

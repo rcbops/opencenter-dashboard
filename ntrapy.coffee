@@ -116,7 +116,7 @@ app.all "/roush/?*", (req, res) ->
   ).pipe res
 
 # HTTP server
-http.createServer(app).listen app.get("port"), ->
+http.createServer(app).listen app.get("port"), "::", ->
   console.log "Express server listening on port #{app.get('port')} in #{app.settings.env} mode"
 
 # TODO: See about stuffing this logic into callbacks on readFile
@@ -127,7 +127,7 @@ try
     cert: fs.readFileSync "cert.pem"
 
   # HTTPS server
-  https.createServer(tlsOptions, app).listen app.get("sport"), ->
+  https.createServer(tlsOptions, app).listen app.get("sport"), "::", ->
     console.log "Express https server listening on port #{app.get('sport')} in #{app.settings.env} mode"
 
 catch e
