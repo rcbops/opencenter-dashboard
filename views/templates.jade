@@ -33,22 +33,12 @@ block templates
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
-    #indexInputModal.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-      form#inputForm.form-horizontal.modal-form
-        .modal-header
-          // button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-          h3 Additional Input Required
-        .modal-body
-          // ko foreach: getPlans
-          .control-group
-            label.control-label(data-bind='text: key, attr: {for: key}')
-            .controls
-              input(type='text', data-bind='attr: {id: key, name: key}, css: {required: value.required}')
-              // span.help-inline(data-bind='text: value.friendly')
-          // /ko
-          // .form-actions
-          //  button.btn.btn-small(type='reset', data-dismiss='modal') Cancel
-          //  button.btn.btn-small.btn-primary(type='submit') Submit
-        .modal-footer
-          button.btn.btn-small(type='reset', data-dismiss='modal', aria-hidden='true') Cancel
-          button.btn.btn-small.btn-primary(type='submit') Submit
+  script(type='text/html', id='profileTemplate')
+    #main.container-fluid
+      #content
+        h1 Profile test!
+
+  script(type='text/html', id='settingsTemplate')
+    #main.container-fluid
+      #content
+        h1 Settings test!
