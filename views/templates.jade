@@ -9,7 +9,7 @@ block templates
             button.btn.btn-mini.dropdown-toggle(data-bind="click: $root.getActions", data-toggle='dropdown')
               i.icon-cog
             ul.dropdown-menu
-              li.nav-header Actions
+              li.nav-header Manage
               li.divider
               // ko foreach: actions
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
@@ -23,7 +23,7 @@ block templates
               button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
-                li.nav-header Actions
+                li.nav-header Manage
                 li.divider
                 // ko foreach: actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
