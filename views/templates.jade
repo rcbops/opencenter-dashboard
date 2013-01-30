@@ -16,7 +16,7 @@ block templates
               li.nav-header Manage
               li.divider
               // ko foreach: actions
-              li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
+              li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
               // /ko
           .pull-left.container-name: span(data-bind='text: name')
 
@@ -30,7 +30,7 @@ block templates
                 li.nav-header Manage
                 li.divider
                 // ko foreach: actions
-                li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
+                li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
                 // /ko
               button.btn.btn-small.node-name(data-bind='text: name, popper: $data')
 
