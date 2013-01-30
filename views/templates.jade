@@ -19,7 +19,6 @@ block templates
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
               // /ko
           .pull-left.container-name: span(data-bind='text: name')
-        .clear-right
 
         .container-body
           .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
@@ -38,11 +37,11 @@ block templates
           div(data-bind='template: {name: "itemTemplate", foreach: containers}')
 
   script(type='text/html', id='profileTemplate')
-    #main
-      #content.container-fluid
+    #main.container-fluid
+      #content
         h1 Profile test!
 
   script(type='text/html', id='settingsTemplate')
-    #main
-      #content.container-fluid
+    #main.container-fluid
+      #content
         h1 Settings test!

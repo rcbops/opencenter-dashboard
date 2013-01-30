@@ -178,16 +178,13 @@ Content
   border: 1px solid #ccc;
   background-color: #fff;
   min-height: 300px;
-  width: 98%;
   text-align: left;
 }
 #root > .well {
-  max-width: 1400px;
   display: block;
   margin: 0 auto;
   border: 0px;
-  width: 100%;
-
+  float: none !important
 }
 #root > .well > header.container-header {
   height: 70px;
@@ -225,10 +222,12 @@ Content
 .well:last-of-type { margin-right: 0px; }
 
 .btn-group { margin-right: 5px; }
+/*
 .btn-group + .btn-group {
   margin-left: 0px;
   margin-right: 5px;
 }
+*/
 .btn-group:only-of-type, .btn-group:last-of-type {
   margin-right: 0px;
   padding-right: 0px;
@@ -313,7 +312,7 @@ Content
 /* Nodes */
 .node {
   padding: 5px 5px 5px 20px;
-  margin: 0px;
+  margin: 0px 0px 2px 0px;
   border: 1px solid #ccc;
   position: relative;
 }
@@ -396,7 +395,7 @@ Content
 }
 .dropdown-menu li > a {
   display: block;
-  padding: 5px;
+  padding: 0px 5px;
   clear: both;
   font-weight: normal;
   line-height: 20px;
@@ -442,11 +441,15 @@ Footer
   font-size: 12px;
   line-height: 10px;
   z-index: 40;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
 }
 #footer {
   text-align: left;
 }
-#footer a{
+#footer a {
   color: #999;
 }
 #feedback-link {
