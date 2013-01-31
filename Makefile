@@ -66,6 +66,20 @@ link: | clean_pub
 	ln -sf ${PWD}/source/css/* public/css
 	ln -sf ${PWD}/source/img/* public/img
 
+deploy: | build link
+	@echo ${HR}
+	@echo "Building deployment tarball"
+	@echo ${HR}
+	rm -f public.tgz
+	mkdir -p tmp/public
+	ln -sf ../../public/js tmp/public
+	ln -sf ../../public/css tmp/public
+	ln -sf ../../public/img tmp/public
+	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public/index.html
+	coffee -co tmp/public/js source/coffee
+	tar -Lczvf public.tgz -C tmp public
+	rm -rf tmp
+
 cert:
 	rm -f *.pem
 	openssl genrsa -out key.pem 2048
@@ -84,4 +98,5 @@ clean_node:
 	rm -rf node_modules
 
 clean_pub:
+	pkill -f "coffee -wco public/js source/coffee"; true
 	rm -rf public

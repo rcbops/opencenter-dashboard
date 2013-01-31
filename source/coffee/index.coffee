@@ -122,17 +122,16 @@ $ ->
         #TODO: Figure out why this fires twice: console.log "title"
         data()?.name?() ? "Details"
       opts["content"] = ->
-        ret  = "<ul>"
-        ret += "<li><strong>ID:</strong> #{data().id()}</li>"
-        ret += "<li><strong>Status:</strong> #{data().status()}</li>"
-        ret += "<li><strong>Adventure:</strong> #{data().adventure_id() ? 'idle'}</li>"
-        ret += "<li><strong>Task:</strong> #{data().task_id() ? 'idle'}</li>"
-        ret += "<li><strong>Backends:</strong><ul>"
-        ret += "<li>#{backend}</li>" for backend in data().facts.backends()
-        ret += "</ul></li>"
-        #ret += "Attributes:<ul>"
-        #ret += "<li>#{attr}</li>" for attr in data().attrs()
-        #ret += "</ul>"
+        """
+        <ul>
+        <li><strong>ID:</strong> #{data().id()}</li>
+        <li><strong>Status:</strong> #{data().status()}</li>
+        <li><strong>Adventure:</strong> #{data().adventure_id() ? 'idle'}</li>
+        <li><strong>Task:</strong> #{data().task_id() ? 'idle'}</li>
+        <li><strong>Backends:</strong><ul>
+        #{("<li>#{backend}</li>" for backend in data().facts.backends()).join("")}
+        </ul></li>
+        """
       $(el).popover opts
 
   ko.bindingHandlers.sortable.options =
