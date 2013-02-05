@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "main": "./ntrapy.js",
   "dependencies": {
-    "bootstrap": "latest",
-    "jquery": "latest",
-    "jquery-ui": "latest",
-    "knockout": "latest",
+    "bootstrap": "2.2.2",
+    "jquery": "1.9.0",
+    "jquery-ui": "1.10.0",
+    "knockout": "2.2.1",
     "knockout-mapping": "latest",
     "knockout-sortable": "latest"
   }

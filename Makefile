@@ -52,19 +52,19 @@ link: | clean_pub
 	@echo ${HR}
 	@echo "Linking Bower components"
 	@echo ${HR}
-	-ln -s ${PWD}/components/bootstrap/bootstrap/js/*.min.js public/js
-	-ln -s ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
-	-ln -s ${PWD}/components/bootstrap/bootstrap/img/* public/img
-	-ln -s ${PWD}/components/knockout/build/output/knockout.min.js public/js
-	-ln -s ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
-	-ln -s ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
-	-ln -s ${PWD}/components/jquery/jquery.min.js public/js
-	-ln -s ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
+	-ln -sf ${PWD}/components/bootstrap/bootstrap/js/*.min.js public/js
+	-ln -sf ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
+	-ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
+	-ln -sf ${PWD}/components/knockout/build/output/knockout.min.js public/js
+	-ln -sf ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
+	-ln -sf ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
+	-ln -sf ${PWD}/components/jquery/jquery.min.js public/js
+	-ln -sf ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
 	@echo ${HR}
 	@echo "Linking nTrapy components"
 	@echo ${HR}
-	-ln -s ${PWD}/source/css/* public/css
-	-ln -s ${PWD}/source/img/* public/img
+	-ln -sf ${PWD}/source/css/* public/css
+	-ln -sf ${PWD}/source/img/* public/img
 
 deploy: | build link
 	@echo ${HR}
@@ -72,13 +72,13 @@ deploy: | build link
 	@echo ${HR}
 	-rm -f public.tgz
 	mkdir -p tmp/public
-	-ln -s ../../public/js tmp/public
-	-ln -s ../../public/css tmp/public
-	-ln -s ../../public/img tmp/public
+	-ln -sf ../../public/js tmp/public
+	-ln -sf ../../public/css tmp/public
+	-ln -sf ../../public/img tmp/public
 	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public/index.html
 	coffee -co tmp/public/js source/coffee
 	tar -Lczvf public.tgz -C tmp public
-	-rm -f tmp
+	-rm -rf tmp
 
 cert:
 	-rm -f *.pem
@@ -88,15 +88,15 @@ cert:
 	-rm -f csr.pem
 
 clean: clean_com clean_node clean_pub
-	-rm *.log
-	-rm *.db*
+	-rm -f *.log
+	-rm -f *.db*
 
 clean_com:
-	-rm -r components
+	-rm -rf components
 
 clean_node:
-	-rm -r node_modules
+	-rm -rf node_modules
 
 clean_pub:
 	-pkill -f "coffee -wco public/js source/coffee"
-	-rm -r public
+	-rm -rf public

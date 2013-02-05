@@ -20,16 +20,18 @@ $ ->
     @wsItems = ko.computed =>
       @wsTemp()?[0]?.children ? []
 
+    @wsPlans = ko.observableArray()
+
     # TODO: Map from data source
     @siteNav = ko.observableArray [
       name: "Workspace"
       template: "indexTemplate"
-    ,
-      name: "Profile"
-      template: "profileTemplate"
-    ,
-      name: "Settings"
-      template: "settingsTemplate"
+    #,
+    #  name: "Profile"
+    #  template: "profileTemplate"
+    #,
+    #  name: "Settings"
+    #  template: "settingsTemplate"
     ]
 
     mapping =
@@ -38,9 +40,6 @@ $ ->
           ko.utils.unwrapObservable data.id
         create: (options) ->
           createNode options
-      node:
-        key: (data) ->
-          ko.utils.unwrapObservable data.id
 
     createNode = (options) =>
       @node = options.data
@@ -93,16 +92,32 @@ $ ->
     @getTemplate = ko.computed =>
       @siteActive()?.template ? {} # TODO: Needs .template?() if @siteNav is mapped
 
+    @getIndexTemplate = ko.computed =>
+      name: "indexItemTemplate"
+      foreach: @wsItems
+
+    @getPlans = ko.computed =>
+      if not @wsPlans()?.length
+        return null
+      @wsPlans()
+
     @getActions = (node) =>
       if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
       @getData "/roush/nodes/#{node.id()}/adventures", (data) ->
         node.actions (n for n in data.adventures)
 
     @doAction = (object, action) =>
-      $.post "/roush/adventures/#{action.id}/execute",
+      ntrapy.post "/roush/adventures/#{action.id}/execute",
         JSON.stringify node: object.id()
-      , (data) ->
+      , (data) -> # success handler
         null #TODO: Use success for something
+      , (jqXHR, textStatus, errorThrown) => # error handler
+        switch jqXHR.status
+          when 409 # Need more data
+            @wsPlans ntrapy.toArray n?.args for n in JSON.parse(jqXHR.responseText).plan
+            $("#indexInputModal").modal "show"
+          else
+            console.log "Error (#{jqXHR.status}): ", errorThrown
 
     @ # Return ourself
 
@@ -149,18 +164,17 @@ $ ->
 
   ko.bindingHandlers.sortable.afterMove = (options) ->
     parent = options.sourceParentNode.attributes["data-id"].value
-    $.post "/roush/facts/",
+    ntrapy.post "/roush/facts/",
       JSON.stringify
         key: "parent_id"
         value: parent
         node_id: options.item.id()
     , (data) ->
       console.log "Success: ", data
+    , (jqXHR) ->
+      console.log "Error: ", jqXHR
 
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel
 
   $(document).on "click.dropdown.data-api", ntrapy.pollTree
-
-  $("#splash").modal "show"
-  setInterval (-> $("#splash").modal "hide"), 5000
