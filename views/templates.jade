@@ -15,13 +15,12 @@ block templates
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
               // /ko
           .pull-left.container-name: span(data-bind='text: name')
-        .clear-right
 
         .container-body
           .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
             .btn-group.node
-              button.btn.btn-small.statusDescription(data-bind='css: ntrapy.statusButton(status())')
-              button.btn.btn-small.dropdown-toggle(data-bind='click: $root.getActions', data-toggle='dropdown')
+              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: ntrapy.statusButton(status())')
+              button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
                 li.nav-header Actions
@@ -29,13 +28,14 @@ block templates
                 // ko foreach: actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name')
                 // /ko
-              button.btn.btn-small.node-name(data-bind='text: name, popper: $data')
+              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data')
+            .clear-right
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
     #indexInputModal.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-header
-        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+        // button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
         h3 Additional Input Required
       .modal-body
         form.form-horizontal

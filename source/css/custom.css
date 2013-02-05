@@ -1,10 +1,12 @@
 /****************
 General
 ****************/
+/*
 * {
   margin: 0px;
   padding: 0px;
 }
+*/
 body {
   background: #ddd;
   /* Space navbar */
@@ -186,7 +188,6 @@ Content
   margin: 0 auto;
   border: 0px;
   width: 100%;
-
 }
 #root > .well > header.container-header {
   height: 70px;
@@ -222,7 +223,7 @@ Content
 .well + .well { margin-left: 0px; margin-right: 10px; }
 .well:only-of-type { margin-right: 0px; }
 .well:last-of-type { margin-right: 0px; }
-
+/*
 .btn-group { margin-right: 5px; }
 .btn-group + .btn-group {
   margin-left: 0px;
@@ -232,8 +233,9 @@ Content
   margin-right: 0px;
   padding-right: 0px;
 }
-
+*/
 /* Tweak container cogs */
+/*
 .btn-group.pull-right {
   margin-left: 20px;
   margin-right: 0px;
@@ -242,10 +244,11 @@ Content
   margin-left: 30px;
   margin-top: 0px;
 }
-
+*/
 /* Make some room above nodes */
+/*
 .btn-group button { margin-top: 10px; }
-
+*/
 /* Fix popover fallout */
 .btn-group .popover { font-size: 14px; }
 .btn-group > .btn + .popover + .btn.dropdown-toggle { margin-left: -1px; padding-left: 8px; padding-right: 8px; }
@@ -258,21 +261,21 @@ Content
 }
 
 /* Let's reset button styles for now */
-.btn,
-.btn-group > .btn:first-child,
-.btn-group > .btn:last-child {
+.btn-node,
+.btn-group > .btn-node:first-child,
+.btn-group > .btn-node:last-child {
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   border-radius: 0px;
  }
-.btn.active, .btn:active {
+.btn-node.active, .btn-node:active {
   background-image: none;
   outline: 0;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
 }
-.btn {
+.btn-node {
   border: none;
   display: inline-block;
   background-position: center center;
@@ -289,6 +292,7 @@ Content
  .container-header .btn-group {
   margin-top: 10px;
   margin-left: 10px;
+  margin-right: 10px;
  }
  .dropdown-toggle {
   background-image: none;

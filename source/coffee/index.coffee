@@ -26,12 +26,12 @@ $ ->
     @siteNav = ko.observableArray [
       name: "Workspace"
       template: "indexTemplate"
-    ,
-      name: "Profile"
-      template: "profileTemplate"
-    ,
-      name: "Settings"
-      template: "settingsTemplate"
+    #,
+    #  name: "Profile"
+    #  template: "profileTemplate"
+    #,
+    #  name: "Settings"
+    #  template: "settingsTemplate"
     ]
 
     mapping =
