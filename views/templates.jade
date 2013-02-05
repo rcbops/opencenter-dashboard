@@ -38,20 +38,18 @@ block templates
         // button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
         h3 Additional Input Required
       .modal-body
-        form.form-horizontal
-          .control-group(data-bind='foreach: getPlans')
-            label.control-label(data-bind='text: key, attr: {for: key}')
-            .controls: input.input-medium(type='text', data-bind='attr: {id: key}')
-      .modal-footer
-        button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
-        button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: function(){alert("Do the things!")}') Submit
-
-  script(type='text/html', id='profileTemplate')
-    #main
-      #content.container-fluid
-        h1 Profile test!
-
-  script(type='text/html', id='settingsTemplate')
-    #main
-      #content.container-fluid
-        h1 Settings test!
+        form#inputForm.form-horizontal
+          fieldset
+            // ko foreach: getPlans
+            .control-group
+              label.control-label(data-bind='text: key, attr: {for: key}')
+              .controls
+                input(type='text', data-bind='attr: {id: key, name: key}, css: {required: value.required}')
+                // span.help-inline(data-bind='text: value.friendly')
+            // /ko
+            .form-actions
+              button.btn.btn-small(type='reset', data-dismiss='modal') Cancel
+              button.btn.btn-small.btn-primary(type='submit') Submit
+      // .modal-footer
+      //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
+      //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit

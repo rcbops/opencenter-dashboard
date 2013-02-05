@@ -144,7 +144,7 @@ $ ->
         <li><strong>Adventure:</strong> #{data().adventure_id() ? 'idle'}</li>
         <li><strong>Task:</strong> #{data().task_id() ? 'idle'}</li>
         <li><strong>Backends:</strong><ul>
-        #{("<li>#{backend}</li>" for backend in data().facts.backends()).join("")}
+        #{('<li>' + backend + '</li>' for backend in data().facts.backends()).join('')}
         </ul></li>
         """
       $(el).popover opts
@@ -178,3 +178,12 @@ $ ->
   ko.applyBindings ntrapy.indexModel
 
   $(document).on "click.dropdown.data-api", ntrapy.pollTree
+
+  $('#inputForm').validate
+    debug: true
+    highlight: (element) ->
+      $(element).closest('.control-group').removeClass('success').addClass('error')
+    success: (element) ->
+      $(element).text('OK').addClass('valid').closest('.control-group').removeClass('error').addClass('success')
+    submitHandler: (form) ->
+      console.log "Submitting form: ", form
