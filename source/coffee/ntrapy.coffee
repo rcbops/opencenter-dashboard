@@ -36,13 +36,14 @@ ntrapy.statusButton = (status) ->
     when "error"
       return "btn-danger"
 
-# Overwrite $.post with application/json version
-$.post = (url, data, callback) ->
+ntrapy.post = (url, data, success, error, statusCode) ->
   $.ajax
     type: "POST"
     url: url
     data: data
-    success: callback
+    success: success
+    error: error
+    statusCode: statusCode
     dataType: "json"
     contentType: "application/json; charset=utf-8"
 

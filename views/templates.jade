@@ -1,12 +1,8 @@
 block templates
   script(type='text/html', id='indexTemplate')
-    #splash.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='splash', aria-hidden='true')
-      .modal-body
-        a(data-dismiss="modal"): img(src='/img/logo.png')
+    #root.container-fluid(data-bind='template: getIndexTemplate')
 
-    #root.container-fluid(data-bind='template: {name: "itemTemplate", foreach: wsItems}')
-   
-    script(type='text/html', id='itemTemplate')
+    script(type='text/html', id='indexItemTemplate')
       .well.well-small.pull-left.roush-container
         header.container-header
           .pull-left.btn-group
@@ -35,7 +31,20 @@ block templates
                 // /ko
               button.btn.btn-small.node-name(data-bind='text: name, popper: $data')
 
-          div(data-bind='template: {name: "itemTemplate", foreach: containers}')
+          div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
+
+    #indexInputModal.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+        h3 Additional Input Required
+      .modal-body
+        form.form-horizontal
+          .control-group(data-bind='foreach: getPlans')
+            label.control-label(data-bind='text: key, attr: {for: key}')
+            .controls: input.input-medium(type='text', data-bind='attr: {id: key}')
+      .modal-footer
+        button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
+        button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: function(){alert("Do the things!")}') Submit
 
   script(type='text/html', id='profileTemplate')
     #main
