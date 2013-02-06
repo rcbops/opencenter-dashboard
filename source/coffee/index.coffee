@@ -14,6 +14,30 @@ $ ->
     @getMappedData = (url, pin, map={}, wrap=true) =>
       @getData url, (data) => @mapData(data, pin, map, wrap)
 
+    @getNodes = (data, pin, keyed={}, root={}) ->
+      # Index node list by ID
+      for node in data.nodes
+        keyed[node.id] = node
+
+      # Step through IDs
+      for id of keyed
+        node = keyed[id]
+        pid = node.facts?.parent_id
+        if pid? # Has parent?
+          pnode = keyed?[pid]
+          pnode.children ?= [] # Initialize if first child
+          pnode.children.push node # Add to parent's children
+        else # Must be root node
+          root = node # Point at it
+
+      pin keyed if pin?
+      children: root
+
+    # Be sure to use a harness for the chillin'folk!
+    #@getTree = (start) =>
+    #  if start?.children?
+    #    @getTree c for c in start.children
+
     @wsTemp = ko.observableArray()
     @wsItems = ko.computed =>
       @wsTemp()?[0]?.children ? []
@@ -48,22 +72,7 @@ $ ->
         status: "good"
       , {}, ko.mapping.fromJS @node, mapping
 
-    # Long-poller
-    #(poll = =>
-    #  $.ajax
-    #    url: "/roush/nodes/4?poll"
-    #    success: (data) =>
-    #      console.log "Zomg polled!"
-    #      @mapData data, @wsTemp, mapping, wrap=false
-    #    dataType: "json"
-    #    complete: (xhr, txt) ->
-    #      console.log "Txt: ", txt
-    #      if txt is not "success"
-    #        setTimeout poll, 1000
-    #      else
-    #        setTimeout poll, 0
-    #    timeout: @config?.timeout?.long ? 30000
-    #)()
+    @wsKeys = ko.observable()
 
     ntrapy.pollTree = =>
       unless ntrapy.poller? then ntrapy.poller = setInterval @getMappedData, @config.interval, "/roush/nodes/1/tree", @wsTemp, mapping
@@ -76,8 +85,10 @@ $ ->
       @config = data
 
       # Load initial data, and poll every config.interval ms
-      @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
-      ntrapy.pollTree()
+      #@getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
+      #ntrapy.pollTree()
+      @getData "/roush/nodes", (data) =>
+        @mapData @getNodes(data, @wsKeys), @wsTemp, mapping
 
     @siteActive = ntrapy.selector (data) =>
       null
