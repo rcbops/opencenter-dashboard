@@ -100,7 +100,10 @@ $ ->
       if not @wsPlans()?.plan?.length
         return null
 
-      return ntrapy.toArray n?.args for n in @wsPlans()?.plan
+      ret = []
+      ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      console.log "Ret: ", ret
+      ret
 
     @getActions = (node) =>
       if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
@@ -126,12 +129,14 @@ $ ->
       highlight: (element) ->
         $(element).closest('.control-group').removeClass('success').addClass('error')
       success: (element) ->
-        $(element).addClass('valid').closest('.control-group').removeClass('error').addClass('success')
+        $(element).text('').addClass('valid').closest('.control-group').removeClass('error').addClass('success')
       submitHandler: (form) =>
         $(form).find('.control-group').each (index, element) =>
           key = $(element).find('label').first().text()
           val = $(element).find('input').val()
-          @wsPlans().plan[0].args[key].value = val
+          for n in @wsPlans().plan
+            if args?[key]
+              args[key].value = val
         ntrapy.post "/roush/plan/",
           JSON.stringify
             node: @wsPlans().node
