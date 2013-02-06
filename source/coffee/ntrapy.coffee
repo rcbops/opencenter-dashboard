@@ -28,13 +28,13 @@ ntrapy.statusLabel = (status) ->
 ntrapy.statusButton = (status) ->
   switch status
     when "unprovisioned"
-      return "btn-info"
+      return "processing_state"
     when "good"
-      return "btn-success"
+      return "ok_state"
     when "alert"
-      return "btn-warning"
+      return "warning_state"
     when "error"
-      return "btn-danger"
+      return "error_state"
 
 ntrapy.post = (url, data, success, error, statusCode) ->
   $.ajax
