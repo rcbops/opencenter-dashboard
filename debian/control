@@ -10,6 +10,7 @@ XCBS-RCB-Component: rcb-utils
 
 Package: ntrapy-dashboard
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends},
+ apache2
 Provides: ${web:Provides}
 Description: nTrapy Dashboard
