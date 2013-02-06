@@ -1,5 +1,3 @@
-"use strict"
-
 # Grab namespace
 ntrapy = exports?.ntrapy ? @ntrapy
 

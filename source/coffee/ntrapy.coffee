@@ -1,5 +1,3 @@
-"use strict"
-
 # Create and store namespace
 ntrapy = exports?.ntrapy ? @ntrapy = {}
 
