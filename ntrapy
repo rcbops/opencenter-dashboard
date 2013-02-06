@@ -3,5 +3,5 @@
 forever stop ntrapy.coffee &> /dev/null
 pkill -f "coffee -wco public/js source/coffee"
 
-NODE_ENV=development forever start -a -o ntrapy.log -e err.log --minUptime 200 --spinSleepTime 1000 -w -c coffee ntrapy.coffee
+NODE_ENV=development forever start -a -o ntrapy.log -e err.log --minUptime 200 --spinSleepTime 200 -w -c coffee ntrapy.coffee
 coffee -wco public/js source/coffee &>> coffee.log &
