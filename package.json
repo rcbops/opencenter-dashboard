@@ -9,7 +9,6 @@
     "express": "*",
     "request": "*",
     "jade": "*",
-    "gzippo": "*",
-    "connect-sqlite3": "*"
+    "gzippo": "*"
   }
 }
