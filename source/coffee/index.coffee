@@ -139,6 +139,7 @@ $ ->
         , (data) ->
           $("#indexInputModal").modal "hide"
         , (jqXHR, textStatus, errorThrown) ->
+          $("#indexInputModal").modal "hide"
           console.log "Error: ", jqXHR.status, textStatus, errorThrown
 
     @ # Return ourself
