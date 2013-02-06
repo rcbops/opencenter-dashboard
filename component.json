@@ -6,6 +6,7 @@
     "bootstrap": "2.2.2",
     "jquery": "1.9.0",
     "jquery-ui": "1.10.0",
+    "jquery.validation": "1.11.0",
     "knockout": "2.2.1",
     "knockout-mapping": "latest",
     "knockout-sortable": "latest"

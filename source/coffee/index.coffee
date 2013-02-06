@@ -97,9 +97,12 @@ $ ->
       foreach: @wsItems
 
     @getPlans = ko.computed =>
-      if not @wsPlans()?.length
+      if not @wsPlans()?.plan?.length
         return null
-      @wsPlans()
+
+      ret = []
+      ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      ret
 
     @getActions = (node) =>
       if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
@@ -114,10 +117,34 @@ $ ->
       , (jqXHR, textStatus, errorThrown) => # error handler
         switch jqXHR.status
           when 409 # Need more data
-            @wsPlans ntrapy.toArray n?.args for n in JSON.parse(jqXHR.responseText).plan
+            @wsPlans JSON.parse jqXHR.responseText
+            @wsPlans().node = object.id()
             $("#indexInputModal").modal "show"
           else
             console.log "Error (#{jqXHR.status}): ", errorThrown
+
+    $('#inputForm').validate
+      debug: true
+      highlight: (element) ->
+        $(element).closest('.control-group').removeClass('success').addClass('error')
+      success: (element) ->
+        $(element).text('').addClass('valid').closest('.control-group').removeClass('error').addClass('success')
+      submitHandler: (form) =>
+        $(form).find('.control-group').each (index, element) =>
+          key = $(element).find('label').first().text()
+          val = $(element).find('input').val()
+          for plan in @wsPlans().plan
+            if plan?.args?[key]?
+              plan.args[key].value = val
+        ntrapy.post "/roush/plan/",
+          JSON.stringify
+            node: @wsPlans().node
+            plan: @wsPlans().plan
+        , (data) ->
+          $("#indexInputModal").modal "hide"
+        , (jqXHR, textStatus, errorThrown) ->
+          $("#indexInputModal").modal "hide"
+          console.log "Error: ", jqXHR.status, textStatus, errorThrown
 
     @ # Return ourself
 
@@ -144,7 +171,7 @@ $ ->
         <li><strong>Adventure:</strong> #{data().adventure_id() ? 'idle'}</li>
         <li><strong>Task:</strong> #{data().task_id() ? 'idle'}</li>
         <li><strong>Backends:</strong><ul>
-        #{("<li>#{backend}</li>" for backend in data().facts.backends()).join("")}
+        #{('<li>' + backend + '</li>' for backend in data().facts.backends()).join('')}
         </ul></li>
         """
       $(el).popover opts

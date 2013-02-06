@@ -26,6 +26,10 @@ build:
 	@echo ${HR}
 	uglifyjs -nc components/jquery/jquery.js > components/jquery/jquery.min.js
 	@echo ${HR}
+	@echo "Building jQuery Validation"
+	@echo ${HR}
+	uglifyjs -nc components/jquery.validation/jquery.validate.js > components/jquery.validation/jquery-validate.min.js
+	@echo ${HR}
 	@echo "Building Knockout"
 	@echo ${HR}
 	cd components/knockout/build; ./build-linux
@@ -60,25 +64,28 @@ link: | clean_pub
 	-ln -sf ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
 	-ln -sf ${PWD}/components/jquery/jquery.min.js public/js
 	-ln -sf ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
+	-ln -sf ${PWD}/components/jquery.validation/jquery-validate.min.js public/js
 	@echo ${HR}
 	@echo "Linking nTrapy components"
 	@echo ${HR}
 	-ln -sf ${PWD}/source/css/* public/css
 	-ln -sf ${PWD}/source/img/* public/img
 
-deploy: | build link
+deploy:
 	@echo ${HR}
 	@echo "Building deployment tarball"
 	@echo ${HR}
-	-rm -f public.tgz
-	mkdir -p tmp/public
-	-ln -sf ../../public/js tmp/public
-	-ln -sf ../../public/css tmp/public
-	-ln -sf ../../public/img tmp/public
-	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public/index.html
-	coffee -co tmp/public/js source/coffee
-	tar -Lczvf public.tgz -C tmp public
-	-rm -rf tmp
+	# -rm -f public.tgz
+	# mkdir -p tmp/public
+	# -ln -sf ../../public/js tmp/public
+	# -ln -sf ../../public/css tmp/public
+	# -ln -sf ../../public/img tmp/public
+	# node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public/index.html
+	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out public/index.html
+	# coffee -co tmp/public/js source/coffee
+	coffee -co public/js source/coffee
+	# tar -hczvf public.tgz -C tmp public
+	# -rm -rf tmp
 
 cert:
 	-rm -f *.pem
