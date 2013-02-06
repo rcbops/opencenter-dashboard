@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+
+%:
+	dh $@
+
+override_dh_auto_test:
+
+override_dh_auto_build:
+	make deploy
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf public
+	rm -rf node_modules
+	rm -rf components
