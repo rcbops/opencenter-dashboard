@@ -102,7 +102,6 @@ $ ->
 
       ret = []
       ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
-      console.log "Ret: ", ret
       ret
 
     @getActions = (node) =>
