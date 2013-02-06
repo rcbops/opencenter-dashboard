@@ -80,8 +80,8 @@ deploy:
 	# -ln -sf ../../public/js tmp/public
 	# -ln -sf ../../public/css tmp/public
 	# -ln -sf ../../public/img tmp/public
-	# node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public/index.html
-	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out public/index.html
+	# node_modules/jade/bin/jade -Do "{title: 'OpenCenter'}" views/index.jade --out tmp/public/index.html
+	node_modules/jade/bin/jade -Do "{title: 'OpenCenter'}" views/index.jade --out public/index.html
 	# coffee -co tmp/public/js source/coffee
 	coffee -co public/js source/coffee
 	# tar -hczvf public.tgz -C tmp public
