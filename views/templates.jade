@@ -36,7 +36,7 @@ block templates
     #indexInputModal.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-header
         //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-        h3 Nova Cluster Creation
+        h3 Additional Input Required
       .modal-body
         form#inputForm.form-horizontal
           fieldset
@@ -48,8 +48,8 @@ block templates
                 // span.help-inline(data-bind='text: value.friendly')
             // /ko
             .form-actions
-              button.btn.btn-small(type='reset', data-dismiss='modal') Cancel
               button.btn.btn-small.btn-primary(type='submit') Submit
+              button.cancel(type='reset', data-dismiss='modal') Cancel
       // .modal-footer
       //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
       //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
