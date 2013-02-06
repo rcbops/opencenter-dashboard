@@ -69,7 +69,7 @@ $ ->
         servers: (n for n in @node.children ? [] when "agent" in n.facts.backends)
         containers: (n for n in @node.children ? [] when "container" in n.facts.backends)
         actions: []
-        status: "good"
+        status: "unknown"
       , {}, ko.mapping.fromJS @node, mapping
 
     @wsKeys = ko.observable()
