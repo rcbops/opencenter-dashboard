@@ -36,19 +36,23 @@ block templates
     #indexInputModal.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-header
         //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-        h3 Nova Cluster Creation
+        h3 Additional Input Required
       .modal-body
-        form.form-horizontal
-          p We need some additional information before we can create your new Nova Cluster.
-          .control-group(data-bind='foreach: getPlans')
-            label.control-label(data-bind='text: key, attr: {for: key}')
-            .controls: input.input-medium(type='text', data-bind='attr: {id: key}')
-          p.warning-text-paragraph
-            strong Warning: 
-            | Submitting this form will create a new Nova Cluster.
-      .modal-footer
-        button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: function(){alert("Do the things!")}') Create Nova Cluster
-        a.cancel(data-dismiss='modal', aria-hidden='true', href='#') Cancel
+        form#inputForm.form-horizontal
+          fieldset
+            // ko foreach: getPlans
+            .control-group
+              label.control-label(data-bind='text: key, attr: {for: key}')
+              .controls
+                input(type='text', data-bind='attr: {id: key, name: key}, css: {required: value.required}')
+                // span.help-inline(data-bind='text: value.friendly')
+            // /ko
+            .form-actions
+              button.btn.btn-small.btn-primary(type='submit') Submit
+              button.cancel(type='reset', data-dismiss='modal') Cancel
+      // .modal-footer
+      //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
+      //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
 
   script(type='text/html', id='profileTemplate')
     #main.container-fluid
