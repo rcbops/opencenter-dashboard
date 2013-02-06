@@ -80,7 +80,7 @@ deploy: | build link
 	-ln -sf ../../public/js tmp/public
 	-ln -sf ../../public/css tmp/public
 	-ln -sf ../../public/img tmp/public
-	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public/index.html
+	node_modules/jade/bin/jade -Do "{title: 'nTrapy'}" views/index.jade --out tmp/public
 	coffee -co tmp/public/js source/coffee
 	tar -hczvf public.tgz -C tmp public
 	-rm -rf tmp
