@@ -134,9 +134,9 @@ $ ->
         $(form).find('.control-group').each (index, element) =>
           key = $(element).find('label').first().text()
           val = $(element).find('input').val()
-          for n in @wsPlans().plan
-            if args?[key]
-              args[key].value = val
+          for plan in @wsPlans().plan
+            if plan?.args?[key]?
+              plan.args[key].value = val
         ntrapy.post "/roush/plan/",
           JSON.stringify
             node: @wsPlans().node

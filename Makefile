@@ -71,7 +71,7 @@ link: | clean_pub
 	-ln -sf ${PWD}/source/css/* public/css
 	-ln -sf ${PWD}/source/img/* public/img
 
-deploy: | build link
+deploy:
 	@echo ${HR}
 	@echo "Building deployment tarball"
 	@echo ${HR}
