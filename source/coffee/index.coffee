@@ -3,47 +3,6 @@ ntrapy = exports?.ntrapy ? @ntrapy
 
 $ ->
   IndexModel = ->
-    @getData = (url, cb) ->
-      $.getJSON url, (data) ->
-        cb data if cb?
-
-    @mapData = (data, pin, map={}, wrap=true) ->
-      data = [data] if wrap?
-      ko.mapping.fromJS data, map, pin
-
-    @getMappedData = (url, pin, map={}, wrap=true) =>
-      @getData url, (data) => @mapData(data, pin, map, wrap)
-
-    @getNodes = (data, pin, keyed={}, root={}) ->
-      # Index node list by ID
-      for node in data.nodes
-        keyed[node.id] = node
-
-      # Step through IDs
-      for id of keyed
-        node = keyed[id]
-        pid = node.facts?.parent_id
-        if pid? # Has parent?
-          pnode = keyed?[pid]
-          pnode.children ?= [] # Initialize if first child
-          pnode.children.push node # Add to parent's children
-        else # Must be root node
-          root = node # Point at it
-
-      pin keyed if pin?
-      children: root
-
-    # Be sure to use a harness for the chillin'folk!
-    #@getTree = (start) =>
-    #  if start?.children?
-    #    @getTree c for c in start.children
-
-    @wsTemp = ko.observableArray()
-    @wsItems = ko.computed =>
-      @wsTemp()?[0]?.children ? []
-
-    @wsPlans = ko.observableArray()
-
     # TODO: Map from data source
     @siteNav = ko.observableArray [
       name: "Workspace"
@@ -55,6 +14,47 @@ $ ->
     #  name: "Settings"
     #  template: "settingsTemplate"
     ]
+
+    # Basic JSON grabber
+    @getData = (url, cb) ->
+      $.getJSON url, (data) ->
+        cb data if cb?
+
+    # Use the mapping plugin on a JS object, optional mapping mapping (yo dawg), wrap for array
+    @mapData = (data, pin, map={}, wrap=true) ->
+      data = [data] if wrap?
+      ko.mapping.fromJS data, map, pin
+
+    # Get and map data, f'reals
+    @getMappedData = (url, pin, map={}, wrap=true) =>
+      @getData url, (data) => @mapData(data, pin, map, wrap)
+
+    # Parse a flat node list, injecting children arrays for traversal
+    @parseNodes = (data, pin, keyed={}) ->
+      root = {}
+
+      # Index node list by ID, merging/updating if keyed was provided
+      for node in data.nodes
+        keyed[node.id] = node
+
+      # Step through IDs
+      for id of keyed
+        node = keyed[id]
+        pid = node.facts?.parent_id
+        if pid? # Has parent ID?
+          pnode = keyed?[pid]
+          if pnode? # Parent exists?
+            pnode.children ?= [] # Initialize if first child
+            pnode.children.push node # Add to parent's children
+          else # We're an orphan (broken data or from previous merge)
+            delete keyed[id] # No mercy for orphans!
+        else if node.name is "workspace" # Mebbe root node?
+          root = node # Point at it
+        else # Invalid root node!
+          delete keyed[id] # Pew Pew!
+
+      pin keyed if pin? # Update pin with keyed
+      children: root # Return in format appropriate for mapping
 
     mapping =
       children:
@@ -72,14 +72,18 @@ $ ->
         status: "unknown"
       , {}, ko.mapping.fromJS @node, mapping
 
+    @updateNodes = (url, keys, pin) =>
+      @getData url, (data) =>
+        @mapData @parseNodes(data, keys), pin, mapping
+
+    @wsTemp = ko.observableArray()
+    @wsItems = ko.computed =>
+      @wsTemp()?[0]?.children ? []
+
+    @wsPlans = ko.observableArray()
     @wsKeys = ko.observable()
 
-    ntrapy.pollTree = =>
-      unless ntrapy.poller? then ntrapy.poller = setInterval @getMappedData, @config.interval, "/roush/nodes/1/tree", @wsTemp, mapping
-
-    ntrapy.stopTree = ->
-      ntrapy.poller = clearInterval ntrapy.poller if ntrapy.poller?
-
+    # Get config and grab initial set of nodes
     @getData "/api/config", (data) =>
       # Store config
       @config = data
@@ -87,11 +91,10 @@ $ ->
       # Load initial data, and poll every config.interval ms
       #@getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
       #ntrapy.pollTree()
-      @getData "/roush/nodes", (data) =>
-        @mapData @getNodes(data, @wsKeys), @wsTemp, mapping
+      @updateNodes "/roush/nodes", @wsKeys, @wsTemp
 
     @siteActive = ntrapy.selector (data) =>
-      null
+      null # TODO:
       #switch data.name
       #  when "Workspace"
       #    @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
@@ -101,10 +104,12 @@ $ ->
     @getTemplate = ko.computed =>
       @siteActive()?.template ? {} # TODO: Needs .template?() if @siteNav is mapped
 
+    # Index template sub-accessor. TODO: unstub for zero-state template progression
     @getIndexTemplate = ko.computed =>
       name: "indexItemTemplate"
       foreach: @wsItems
 
+    # Plan flattener. TODO: Stop flattening plans into a single object to handle multi-step plans intelligently
     @getPlans = ko.computed =>
       if not @wsPlans()?.plan?.length
         return null
@@ -114,7 +119,7 @@ $ ->
       ret
 
     @getActions = (node) =>
-      if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
+      #if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
       @getData "/roush/nodes/#{node.id()}/adventures", (data) ->
         node.actions (n for n in data.adventures)
 
@@ -133,11 +138,15 @@ $ ->
             console.log "Error (#{jqXHR.status}): ", errorThrown
 
     $('#inputForm').validate
-      debug: true
+      #onsubmit: true
+      #onfocusout: true
+      #onkeyup: true
+      #onclick: true
+      focusCleanup: true
       highlight: (element) ->
         $(element).closest('.control-group').removeClass('success').addClass('error')
       success: (element) ->
-        $(element).text('').addClass('valid').closest('.control-group').removeClass('error').addClass('success')
+        $(element).closest('.control-group').removeClass('error').addClass('success')
       submitHandler: (form) =>
         $(form).find('.control-group').each (index, element) =>
           key = $(element).find('label').first().text()
@@ -166,8 +175,6 @@ $ ->
 
   ko.bindingHandlers.popper =
     init: (el, data) ->
-      $(el).on "mouseover", ntrapy.stopTree
-      $(el).on "mouseout", ntrapy.pollTree
       opts = popoverOptions
       opts["title"] = ->
         #TODO: Figure out why this fires twice: console.log "title"
@@ -194,9 +201,8 @@ $ ->
       $(ui.item).find('button[data-bind*="popper"]')
         .popover("disable")
         .popover "hide"
-      ntrapy.stopTree() # Stop polling on drag start
     stop: (event, ui) ->
-      ntrapy.pollTree() # Resume polling
+      null
 
   ko.bindingHandlers.sortable.afterMove = (options) ->
     parent = options.sourceParentNode.attributes["data-id"].value
@@ -213,4 +219,4 @@ $ ->
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel
 
-  $(document).on "click.dropdown.data-api", ntrapy.pollTree
+  #$(document).on "click.dropdown.data-api", ntrapy.pollTree
