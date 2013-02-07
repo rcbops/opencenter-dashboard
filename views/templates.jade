@@ -2,6 +2,33 @@ block templates
   script(type='text/html', id='indexTemplate')
     #root.container-fluid(data-bind='template: getIndexTemplate')
 
+    script(type='text/html', id='zeroStateTemplate')
+      .well.well-small.pull-left.roush-container
+        header.container-header
+          .pull-left.btn-group
+            button.btn.btn-mini.dropdown-toggle.disabled(data-bind="click: $root.getActions", data-toggle='dropdown')
+              i.icon-cog
+            ul.dropdown-menu
+              li.nav-header Manage
+              li.divider
+              // ko foreach: actions
+              li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
+              // /ko
+          .pull-left.container-name: span(data-bind='text: name')
+
+        .container-body
+          div.empty_overlay_widget
+            div.create_one_now_arrow
+            div.create_one_now_section
+              div.create_one_message
+                div
+                  p.create_one_message_top You don't have Roush Agent nodes yet.
+                div
+                  p.create_one_message_middle Install some now.
+                div
+                  p.create_one_message_description The Roush agent allows your nodes to show up in this control panel. Learn more about 
+                    a.external(href="#") Roush Agent.
+
     script(type='text/html', id='indexItemTemplate')
       .well.well-small.pull-left.roush-container
         header.container-header
@@ -49,7 +76,7 @@ block templates
             // /ko
             .form-actions
               button.btn.btn-small.btn-primary(type='submit') Submit
-              button.cancel(type='reset', data-dismiss='modal') Cancel
+              button.cancel.btn-link(type='reset', data-dismiss='modal') Cancel
       // .modal-footer
       //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
       //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
