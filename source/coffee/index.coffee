@@ -83,15 +83,31 @@ $ ->
     @wsPlans = ko.observableArray()
     @wsKeys = ko.observable()
 
+    @poll = (url, cb, timeout=@config?.timeout?.long) =>
+      $.ajax
+        url: url
+        success: (data) ->
+          cb data
+        dataType: "json"
+        complete: (=> @poll url, cb, timeout)
+        timeout: timeout ? 30000
+
     # Get config and grab initial set of nodes
     @getData "/api/config", (data) =>
       # Store config
       @config = data
 
-      # Load initial data, and poll every config.interval ms
-      #@getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
-      #ntrapy.pollTree()
-      @updateNodes "/roush/nodes", @wsKeys, @wsTemp
+      @getData "/roush/updates", (data) =>
+        @sKey = data?.transaction?.session_key
+        @txID = data?.transaction?.txid
+        console.log "Got transaction: ", @sKey, @txID
+        # Start long-poller
+        @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (data) =>
+          console.log "Got update: ", data
+          @updateNodes "/roush/nodes/", @wsKeys, @wsTemp
+
+        # Load initial data, and poll every config.interval ms
+        @updateNodes "/roush/nodes/", @wsKeys, @wsTemp
 
     @siteActive = ntrapy.selector (data) =>
       null # TODO:
@@ -119,7 +135,6 @@ $ ->
       ret
 
     @getActions = (node) =>
-      #if ntrapy.poller? then ntrapy.stopTree() else ntrapy.pollTree()
       @getData "/roush/nodes/#{node.id()}/adventures", (data) ->
         node.actions (n for n in data.adventures)
 
@@ -138,10 +153,6 @@ $ ->
             console.log "Error (#{jqXHR.status}): ", errorThrown
 
     $('#inputForm').validate
-      #onsubmit: true
-      #onfocusout: true
-      #onkeyup: true
-      #onclick: true
       focusCleanup: true
       highlight: (element) ->
         $(element).closest('.control-group').removeClass('success').addClass('error')
@@ -218,5 +229,3 @@ $ ->
 
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel
-
-  #$(document).on "click.dropdown.data-api", ntrapy.pollTree
