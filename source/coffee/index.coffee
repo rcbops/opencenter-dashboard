@@ -33,12 +33,16 @@ $ ->
     @parseNodes = (data, pin, keyed={}) ->
       root = {}
 
+      console.log "Keyed: ", keyed
+
       # Index node list by ID, merging/updating if keyed was provided
       for node in data.nodes
+        console.log "Node: ", node
         keyed[node.id] = node
 
       # Step through IDs
       for id of keyed
+        console.log "Id: ", id
         node = keyed[id]
         pid = node.facts?.parent_id
         if pid? # Has parent ID?
@@ -47,10 +51,12 @@ $ ->
             pnode.children ?= [] # Initialize if first child
             pnode.children.push node # Add to parent's children
           else # We're an orphan (broken data or from previous merge)
+            console.log "Deleting orphan: ", keyed[id], node
             delete keyed[id] # No mercy for orphans!
         else if node.name is "workspace" # Mebbe root node?
           root = node # Point at it
         else # Invalid root node!
+          console.log "Deleting invalid root: ", id, node
           delete keyed[id] # Pew Pew!
 
       pin keyed if pin? # Update pin with keyed
@@ -72,24 +78,46 @@ $ ->
         status: "unknown"
       , {}, ko.mapping.fromJS @node, mapping
 
-    @updateNodes = (url, keys, pin) =>
+    @updateNodes = (data, pin, keys) =>
+      @mapData @parseNodes(data, null, keys), pin, mapping
+
+    @getNodes = (url, pin, keys) =>
       @getData url, (data) =>
-        @mapData @parseNodes(data, keys), pin, mapping
+        @updateNodes data, pin, keys
 
     @wsTemp = ko.observableArray()
-    @wsItems = ko.computed =>
-      @wsTemp()?[0]?.children ? []
+    @wsItems = ko.computed(=>
+      @wsTemp()?[0]?.children ? []).extend throttle: 200 # Coalesce node changes
 
     @wsPlans = ko.observableArray()
     @wsKeys = ko.observable()
 
     @poll = (url, cb, timeout=@config?.timeout?.long) =>
+      rePoll = (data) =>
+        if data?
+          @sKey = data.transaction.session_key
+          @txID = data.transaction.txid
+          console.log "Updating transaction: ", @sKey, @txID
+        # Restart long-poller for new transaction
+        setTimeout (=> @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", cb, timeout), 1
+
       $.ajax
         url: url
-        success: (data) ->
+        success: (data) =>
           cb data
+          rePoll data
+        error: (jqXHR, textStatus, errorThrown) =>
+          switch jqXHR.status
+            when 410 # Gone, cycle txID
+              @getData "/roush/updates", (data) =>
+                rePoll data
+            when 0 # Timeout
+              console.log "Retrying"
+              rePoll()
+            else # Other errors
+              console.log "Error (#{jqXHR.status}): #{errorThrown}"
+              setTimeout (=> @poll url, cb, timeout), 1000 # Throttle retry
         dataType: "json"
-        complete: (=> @poll url, cb, timeout)
         timeout: timeout ? 30000
 
     # Get config and grab initial set of nodes
@@ -104,10 +132,10 @@ $ ->
         # Start long-poller
         @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (data) =>
           console.log "Got update: ", data
-          @updateNodes "/roush/nodes/", @wsKeys, @wsTemp
+          setTimeout @updateNodes(data, @wsKeys, @wsTemp), 1000
 
         # Load initial data, and poll every config.interval ms
-        @updateNodes "/roush/nodes/", @wsKeys, @wsTemp
+        @getNodes "/roush/nodes/", @wsKeys, @wsTemp
 
     @siteActive = ntrapy.selector (data) =>
       null # TODO:
