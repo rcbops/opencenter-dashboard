@@ -17,7 +17,7 @@ block templates
           .pull-left.container-name: span(data-bind='text: name')
 
         .container-body
-          .drop-target(data-bind='sortable: servers, attr: {"data-id": id}')
+          .drop-target(data-bind='sortable: agents, attr: {"data-id": id}')
             .btn-group.node
               button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: ntrapy.statusButton(status())')
               button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions', data-toggle='dropdown')
