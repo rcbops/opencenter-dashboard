@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-forever stop ntrapy.coffee &> /dev/null
-pkill -f "coffee -wco public/js source/coffee"
+pkill -f "node-dev"
+pkill -f "coffee"
+pkill -f "jade"
 
-NODE_ENV=development forever start -a -o ntrapy.log -e err.log --minUptime 200 --spinSleepTime 200 -w -c coffee ntrapy.coffee
-coffee -wco public/js source/coffee &>> coffee.log &
+node_modules/jade/bin/jade -w -o '{title: "OpenCenter"}' views/index.jade --out public &>> jade.log &
+node_modules/coffee-script/bin/coffee -wco public/js source/coffee &>> coffee.log &
+NODE_ENV=development node_modules/node-dev/node-dev ntrapy.coffee &>> ntrapy.log &
