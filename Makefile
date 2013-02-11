@@ -72,7 +72,7 @@ build: | clean
 	@echo ${HR}
 	@echo "Syncing NPM build deps"
 	@echo ${HR}
-	npm install uglify-js@1 recess bower coffee-script
+	npm install coffee-script
 	@echo ${HR}
 	@echo "Syncing NPM runtime deps"
 	@echo ${HR}
