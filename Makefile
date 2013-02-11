@@ -8,7 +8,7 @@ build:
 	@echo ${HR}
 	@echo "Syncing global NPM deps"
 	@echo ${HR}
-	npm install -g uglify-js@1 recess anvil.js bower forever coffee-script
+	npm install -g uglify-js@1 recess bower coffee-script
 	@echo ${HR}
 	@echo "Syncing local NPM deps"
 	@echo ${HR}
@@ -39,10 +39,6 @@ build:
 	@echo ${HR}
 	cd components/knockout-mapping/build; bash ./build-linux
 	uglifyjs -nc components/knockout-mapping/build/output/knockout.mapping-latest.js > components/knockout-mapping/build/output/knockout-mapping.min.js
-	@echo ${HR}
-	@echo "Building Knockout-Sortable"
-	@echo ${HR}
-	cd components/knockout-sortable; anvil
 
 link: | clean_pub
 	@echo ${HR}
