@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app"
+    "start": "node-dev ntrapy.coffee"
   },
   "dependencies": {
+    "node-dev": "*",
     "express": "*",
     "request": "*",
     "jade": "*",

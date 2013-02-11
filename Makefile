@@ -2,21 +2,23 @@ HR="=========================================="
 SHELL=bash
 export PYTHON=python2
 
-all: | build link
+all: | build publish
 
-build:
+dev: | devbuild devpub
+
+devbuild:
 	@echo ${HR}
-	@echo "Syncing global NPM deps"
+	@echo "Syncing NPM build deps"
 	@echo ${HR}
-	npm install -g uglify-js@1 recess bower coffee-script
+	npm install uglify-js@1 recess bower coffee-script
 	@echo ${HR}
-	@echo "Syncing local NPM deps"
+	@echo "Syncing NPM runtime deps"
 	@echo ${HR}
 	npm update
 	@echo ${HR}
 	@echo "Syncing local Bower deps"
 	@echo ${HR}
-	bower update
+	node_modules/bower/bin/bower update
 	@echo ${HR}
 	@echo "Building Bootstrap"
 	@echo ${HR}
@@ -24,50 +26,73 @@ build:
 	@echo ${HR}
 	@echo "Building jQuery"
 	@echo ${HR}
-	uglifyjs -nc components/jquery/jquery.js > components/jquery/jquery.min.js
+	node_modules/uglify-js/bin/uglifyjs -nc components/jquery/jquery.js > components/jquery/jquery.min.js
 	@echo ${HR}
 	@echo "Building jQuery Validation"
 	@echo ${HR}
-	uglifyjs -nc components/jquery.validation/jquery.validate.js > components/jquery.validation/jquery-validate.min.js
+	node_modules/uglify-js/bin/uglifyjs -nc components/jquery.validation/jquery.validate.js > components/jquery.validation/jquery-validate.min.js
 	@echo ${HR}
 	@echo "Building Knockout"
 	@echo ${HR}
 	cd components/knockout/build; ./build-linux
-	uglifyjs -nc components/knockout/build/output/knockout-latest.js > components/knockout/build/output/knockout.min.js
+	node_modules/uglify-js/bin/uglifyjs -nc components/knockout/build/output/knockout-latest.js > components/knockout/build/output/knockout.min.js
 	@echo ${HR}
 	@echo "Building Knockout-Mapping"
 	@echo ${HR}
 	cd components/knockout-mapping/build; bash ./build-linux
-	uglifyjs -nc components/knockout-mapping/build/output/knockout.mapping-latest.js > components/knockout-mapping/build/output/knockout-mapping.min.js
+	node_modules/uglify-js/bin/uglifyjs -nc components/knockout-mapping/build/output/knockout.mapping-latest.js > components/knockout-mapping/build/output/knockout-mapping.min.js
 
-link: | clean_pub
+devpub: | clean_pub
 	@echo ${HR}
-	@echo "Preparing to link"
+	@echo "Preparing to publish"
 	@echo ${HR}
 	mkdir -p public/{js,css,img}
 	@echo ${HR}
 	@echo "Processing coffeescripts"
 	@echo ${HR}
-	coffee -co public/js source/coffee
+	node_modules/coffee-script/bin/coffee -co public/js source/coffee
 	@echo ${HR}
-	@echo "Linking Bower components"
+	@echo "Publishing Bower components"
 	@echo ${HR}
-	-ln -sf ${PWD}/components/bootstrap/bootstrap/js/*.min.js public/js
-	-ln -sf ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
-	-ln -sf ${PWD}/components/bootstrap/bootstrap/img/* public/img
-	-ln -sf ${PWD}/components/knockout/build/output/knockout.min.js public/js
-	-ln -sf ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
-	-ln -sf ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
-	-ln -sf ${PWD}/components/jquery/jquery.min.js public/js
-	-ln -sf ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
-	-ln -sf ${PWD}/components/jquery.validation/jquery-validate.min.js public/js
+	-cp -f ${PWD}/components/bootstrap/bootstrap/js/*.min.js public/js
+	-cp -f ${PWD}/components/bootstrap/bootstrap/css/*.min.css public/css
+	-cp -f ${PWD}/components/bootstrap/bootstrap/img/* public/img
+	-cp -f ${PWD}/components/knockout/build/output/knockout.min.js public/js
+	-cp -f ${PWD}/components/knockout-mapping/build/output/knockout-mapping.min.js public/js
+	-cp -f ${PWD}/components/knockout-sortable/build/knockout-sortable.min.js public/js
+	-cp -f ${PWD}/components/jquery/jquery.min.js public/js
+	-cp -f ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
+	-cp -f ${PWD}/components/jquery.validation/jquery-validate.min.js public/js
 	@echo ${HR}
-	@echo "Linking nTrapy components"
+	@echo "Publishing nTrapy components"
 	@echo ${HR}
-	-ln -sf ${PWD}/source/css/* public/css
-	-ln -sf ${PWD}/source/img/* public/img
+	-cp -rn ${PWD}/source/ public
 
-deploy:
+build: | clean
+	@echo ${HR}
+	@echo "Syncing NPM build deps"
+	@echo ${HR}
+	npm install uglify-js@1 recess bower coffee-script
+	@echo ${HR}
+	@echo "Syncing NPM runtime deps"
+	@echo ${HR}
+	npm update
+
+publish: | clean_pub
+	@echo ${HR}
+	@echo "Preparing to publish"
+	@echo ${HR}
+	mkdir -p public/{js,css,img}
+	@echo ${HR}
+	@echo "Processing coffeescripts"
+	@echo ${HR}
+	node_modules/coffee-script/bin/coffee -co public/js source/coffee
+	@echo ${HR}
+	@echo "Publishing nTrapy components"
+	@echo ${HR}
+	-cp -fr ${PWD}/source/* public
+
+tarball: | publish
 	@echo ${HR}
 	@echo "Building deployment tarball"
 	@echo ${HR}

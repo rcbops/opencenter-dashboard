@@ -15,8 +15,8 @@ app = express()
 app.configure ->
   app.set "port", process.env.PORT or 3000
   app.set "sport", process.env.SPORT or 3443
-  app.set "views", __dirname + "/views"
-  app.set "view engine", "jade"
+  #app.set "views", __dirname + "/views"
+  #app.set "view engine", "jade"
   app.use express.favicon()
   app.use express.logger "dev"
   app.use express.bodyParser()
@@ -36,11 +36,6 @@ app.configure "development", ->
   app.use express.errorHandler
     dumpExceptions: true
     showStack: true
-
-# Routes
-app.get "/", (req, res) ->
-  res.render "index",
-    title: "OpenCenter"
 
 # TODO: Rewrite sessiony bits for SQLiteStore
 # API
