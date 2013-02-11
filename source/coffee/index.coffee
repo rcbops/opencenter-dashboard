@@ -1,6 +1,11 @@
 # Grab namespace
 ntrapy = exports?.ntrapy ? @ntrapy
 
+# Implement array filter unless we have ECMA5
+unless Array::filter
+  Array::filter = (callback) ->
+    element for element in this when callback(element)
+
 $ ->
   IndexModel = ->
     # TODO: Map from data source
@@ -33,53 +38,68 @@ $ ->
     @parseNodes = (data, pin, keyed={}) ->
       root = {}
 
-      console.log "Keyed: ", keyed
+      parseChildren = (node) ->
+        $.extend node,
+          servers: (v for k,v of node?.children ? {} when "agent" in v.facts.backends)
+          containers: (v for k,v of node?.children ? {} when "container" in v.facts.backends)
 
       # Index node list by ID, merging/updating if keyed was provided
       for node in data.nodes
-        console.log "Node: ", node
-        keyed[node.id] = node
+        nid = node.id
+        if keyed[nid]? # Updating existing node?
+          console.log "Updating node: ", nid
+          pid = keyed[nid].facts?.parent_id # Grab current parent
+          if pid? and pid isnt node.facts?.parent_id # If new parent is different
+            delete keyed[pid].children[nid] # Remove node from old parent's children
+        else # New node, stub it
+          console.log "New node: ", nid
+          $.extend node,
+            actions: []
+            status: "unknown"
+        keyed[nid] = node # Add/update node
 
       # Step through IDs
       for id of keyed
-        console.log "Id: ", id
         node = keyed[id]
         pid = node.facts?.parent_id
         if pid? # Has parent ID?
           pnode = keyed?[pid]
           if pnode? # Parent exists?
-            pnode.children ?= [] # Initialize if first child
-            pnode.children.push node # Add to parent's children
+            pnode.children ?= {} # Initialize if first child
+            pnode.children[id] = node # Add to parent's children
+            parseChildren pnode
           else # We're an orphan (broken data or from previous merge)
-            console.log "Deleting orphan: ", keyed[id], node
             delete keyed[id] # No mercy for orphans!
         else if node.name is "workspace" # Mebbe root node?
           root = node # Point at it
+          parseChildren node
         else # Invalid root node!
-          console.log "Deleting invalid root: ", id, node
           delete keyed[id] # Pew Pew!
 
       pin keyed if pin? # Update pin with keyed
       children: root # Return in format appropriate for mapping
 
     mapping =
-      children:
-        key: (data) ->
-          ko.utils.unwrapObservable data.id
-        create: (options) ->
-          createNode options
+      #children:
+      #  key: (data) ->
+      #    ko.utils.unwrapObservable data.id
+      #  create: (options) ->
+      #    createNode options
+        #update: (options) ->
+        #  createNode options
 
-    createNode = (options) =>
-      @node = options.data
-      ko.mapping.fromJS
-        servers: (n for n in @node.children ? [] when "agent" in n.facts.backends)
-        containers: (n for n in @node.children ? [] when "container" in n.facts.backends)
-        actions: []
-        status: "unknown"
-      , {}, ko.mapping.fromJS @node, mapping
+    createNode = (options) ->
+      #node = options.data
+      #console.log "Extending: ", node
+      #$.extend node,
+      #  servers: v for k,v of node?.children ? {} when "agent" in v.facts.backends
+      #  containers: v for k,v of node?.children ? {} when "container" in v.facts.backends
+      #  actions: []
+      #  status: "unknown"
+      #ko.mapping.fromJS node, mapping
 
     @updateNodes = (data, pin, keys) =>
-      @mapData @parseNodes(data, null, keys), pin, mapping
+      @mapData @parseNodes(data, pin, keys), pin #, mapping
 
     @getNodes = (url, pin, keys) =>
       @getData url, (data) =>
@@ -90,22 +110,24 @@ $ ->
       @wsTemp()?[0]?.children ? []).extend throttle: 200 # Coalesce node changes
 
     @wsPlans = ko.observableArray()
-    @wsKeys = ko.observable()
+    @wsKeys = {}
+
+    @updateTransaction = (data) =>
+      if data?
+        @sKey = data.transaction.session_key
+        @txID = data.transaction.txid
+        console.log "Updating transaction: ", @sKey, @txID
 
     @poll = (url, cb, timeout=@config?.timeout?.long) =>
       rePoll = (data) =>
-        if data?
-          @sKey = data.transaction.session_key
-          @txID = data.transaction.txid
-          console.log "Updating transaction: ", @sKey, @txID
+        @updateTransaction data
         # Restart long-poller for new transaction
         setTimeout (=> @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", cb, timeout), 1
 
       $.ajax
         url: url
         success: (data) =>
-          cb data
-          rePoll data
+          cb data, (-> rePoll data)
         error: (jqXHR, textStatus, errorThrown) =>
           switch jqXHR.status
             when 410 # Gone, cycle txID
@@ -126,16 +148,24 @@ $ ->
       @config = data
 
       @getData "/roush/updates", (data) =>
-        @sKey = data?.transaction?.session_key
-        @txID = data?.transaction?.txid
-        console.log "Got transaction: ", @sKey, @txID
+        @updateTransaction data
         # Start long-poller
-        @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (data) =>
-          console.log "Got update: ", data
-          setTimeout @updateNodes(data, @wsKeys, @wsTemp), 1000
+        @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (data, cb) =>
+          #console.log "Got update: ", data
+          pnodes = []
+          resolver = (stack) =>
+            id = stack.pop()
+            unless id? # End of ID list
+              setTimeout @updateNodes(nodes: pnodes, @wsTemp, @wsKeys), 1000
+              cb() if cb?
+            else
+              @getData "/roush/nodes/#{id}", (node) =>
+                pnodes.push node.node
+                resolver stack
+          resolver data.nodes
 
         # Load initial data, and poll every config.interval ms
-        @getNodes "/roush/nodes/", @wsKeys, @wsTemp
+        @getNodes "/roush/nodes/", @wsTemp, @wsKeys
 
     @siteActive = ntrapy.selector (data) =>
       null # TODO:
