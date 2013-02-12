@@ -112,7 +112,7 @@ $ ->
             switch jqXHR.status
               when 410 # Gone, cycle transaction
                 updateTransaction null, -> rePoll()
-              when 502 # Bad gateway; proxy failure
+              when 502 # Bad gateway; proxy successfully failed
                 rePoll true
               else # Other errors
                 if textStatus is "timeout"
