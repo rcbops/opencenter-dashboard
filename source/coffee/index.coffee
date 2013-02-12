@@ -48,12 +48,12 @@ $ ->
         # Stub if missing
         node.actions ?= []
         node.status ?= "unknown"
+        node.children ?= {}
         keyed[nid] = node # Add/update node
 
       # Step through IDs
       for id of keyed
         node = keyed[id]
-        node.children ?= {}
         pid = node.facts?.parent_id
         if pid? # Has parent ID?
           pnode = keyed?[pid]
@@ -97,9 +97,9 @@ $ ->
         if update?
           @getData "/roush/updates", (data) =>
             @updateTransaction data
-            setTimeout doit, 1 unless throttle else 1000
+            setTimeout doit, if throttle then 1000 else 1
         else
-          setTimeout doit, 1 unless throttle else 1000
+          setTimeout doit, if throttle then 1000 else 1
 
       $.ajax
         url: url
