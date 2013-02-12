@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-
+NODE_ENV="${NODE_ENV:-production}"
 pkill -f "node-dev"
 pkill -f "coffee"
 pkill -f "jade"
 
 node_modules/jade/bin/jade -w -o '{title: "OpenCenter"}' views/index.jade --out public &>> jade.log &
 node_modules/coffee-script/bin/coffee -wco public/js source/coffee &>> coffee.log &
-NODE_ENV=development node_modules/node-dev/node-dev ntrapy.coffee &>> ntrapy.log &
+node_modules/node-dev/node-dev ntrapy.coffee &>> ntrapy.log &
