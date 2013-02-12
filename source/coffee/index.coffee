@@ -39,42 +39,40 @@ $ ->
       root = {}
 
       parseChildren = (node) ->
-        $.extend node,
-          servers: (v for k,v of node?.children ? {} when "agent" in v.facts.backends)
-          containers: (v for k,v of node?.children ? {} when "container" in v.facts.backends)
+        node.agents = (v for k,v of node?.children when "agent" in v.facts.backends)
+        node.containers = (v for k,v of node?.children  when "container" in v.facts.backends)
 
       # Index node list by ID, merging/updating if keyed was provided
       for node in data.nodes
         nid = node.id
         if keyed[nid]? # Updating existing node?
-          console.log "Updating node: ", nid
           pid = keyed[nid].facts?.parent_id # Grab current parent
           if pid? and pid isnt node.facts?.parent_id # If new parent is different
             delete keyed[pid].children[nid] # Remove node from old parent's children
-        else # New node, stub it
-          console.log "New node: ", nid
-          $.extend node,
-            actions: []
-            status: "unknown"
+
+        # Stub if missing
+        node.actions ?= []
+        node.status ?= "unknown"
         keyed[nid] = node # Add/update node
 
       # Step through IDs
       for id of keyed
         node = keyed[id]
+        node.children ?= {}
         pid = node.facts?.parent_id
         if pid? # Has parent ID?
           pnode = keyed?[pid]
           if pnode? # Parent exists?
-            pnode.children ?= {} # Initialize if first child
             pnode.children[id] = node # Add to parent's children
-            parseChildren pnode
           else # We're an orphan (broken data or from previous merge)
             delete keyed[id] # No mercy for orphans!
         else if node.name is "workspace" # Mebbe root node?
           root = node # Point at it
-          parseChildren node
         else # Invalid root node!
           delete keyed[id] # Pew Pew!
+
+      for id of keyed
+        parseChildren keyed[id]
 
       pin keyed if pin? # Update pin with keyed
       children: root # Return in format appropriate for mapping
@@ -107,7 +105,7 @@ $ ->
 
     @wsTemp = ko.observableArray()
     @wsItems = ko.computed(=>
-      @wsTemp()?[0]?.children ? []).extend throttle: 200 # Coalesce node changes
+      @wsTemp()?[0]?.children ? []).extend throttle: 100 # Coalesce node changes
 
     @wsPlans = ko.observableArray()
     @wsKeys = {}
@@ -116,7 +114,7 @@ $ ->
       if data?
         @sKey = data.transaction.session_key
         @txID = data.transaction.txid
-        console.log "Updating transaction: ", @sKey, @txID
+        #console.log "Updating transaction: ", @sKey, @txID
 
     @poll = (url, cb, timeout=@config?.timeout?.long) =>
       rePoll = (data) =>
@@ -134,7 +132,7 @@ $ ->
               @getData "/roush/updates", (data) =>
                 rePoll data
             when 0 # Timeout
-              console.log "Retrying"
+              #console.log "Retrying"
               rePoll()
             else # Other errors
               console.log "Error (#{jqXHR.status}): #{errorThrown}"
@@ -281,7 +279,8 @@ $ ->
         value: parent
         node_id: options.item.id()
     , (data) ->
-      console.log "Success: ", data
+      null
+      #console.log "Success: ", data
     , (jqXHR) ->
       console.log "Error: ", jqXHR
 
