@@ -1,11 +1,6 @@
 # Grab namespace
 ntrapy = exports?.ntrapy ? @ntrapy
 
-# Implement array filter unless we have ECMA5
-unless Array::filter
-  Array::filter = (callback) ->
-    element for element in this when callback(element)
-
 $ ->
   IndexModel = ->
     # TODO: Map from data source
