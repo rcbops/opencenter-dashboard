@@ -29,7 +29,7 @@ $ ->
     @getMappedData = (url, pin, map={}, wrap=true) =>
       @getData url, (data) => @mapData(data, pin, map, wrap)
 
-    # Parse a flat node list, injecting children arrays for traversal
+    # Parse node array into a flat, keyed boject, injecting children for traversal
     @parseNodes = (data, pin, keyed={}) ->
       root = {}
 
@@ -66,24 +66,34 @@ $ ->
         else # Invalid root node!
           delete keyed[id] # Pew Pew!
 
+      # And run a chillin' parseage
       for id of keyed
         parseChildren keyed[id]
 
       pin keyed if pin? # Update pin with keyed
-      children: root # Return in format appropriate for mapping
+      root # Return root for mapping
 
+    # Process nodes and map to pin
     @updateNodes = (data, pin, keys) =>
       @mapData @parseNodes(data, pin, keys), pin
 
+    # Get and process nodes from url
     @getNodes = (url, pin, keys) =>
       @getData url, (data) =>
         @updateNodes data, pin, keys
 
+    # Temp storage for node mapping
     @wsTemp = ko.observableArray()
-    @wsItems = ko.computed(=>
-      @wsTemp()?[0]?.children ? []).extend throttle: 100 # Coalesce node changes
+    # Computed wrapper for coalescing changes
+    @wsItems = ko.computed =>
+      @wsTemp()
+    # Enable coalesced node changes (x msec settling period)
+    @wsItems.extend throttle: config?.coalesce ? 500
 
+    # Execution plans
     @wsPlans = ko.observableArray()
+
+    # Flat node list, keyed by id
     @wsKeys = {}
 
     @poll = (url, cb, timeout=@config?.timeout?.long ? 30000) =>
@@ -211,6 +221,19 @@ $ ->
           $("#indexInputModal").modal "hide"
           console.log "Error (#{jqXHR.status}): errorThrown"
 
+    ko.bindingHandlers.sortable.afterMove = (options) =>
+      parent = options.sourceParentNode.attributes["data-id"].value
+      ntrapy.post "/roush/facts/",
+        JSON.stringify
+          key: "parent_id"
+          value: parent
+          node_id: options.item.id()
+      , (data) ->
+        null # TODO: Do something with success?
+      , (jqXHR) =>
+        console.log "Error: ", jqXHR
+        @updateNodes null, @wsTemp, @wsKeys # Remap from keys on fails
+
     @ # Return ourself
 
   popoverOptions =
@@ -252,17 +275,6 @@ $ ->
       null
       # TODO: Do something on sort stop?
 
-  ko.bindingHandlers.sortable.afterMove = (options) ->
-    parent = options.sourceParentNode.attributes["data-id"].value
-    ntrapy.post "/roush/facts/",
-      JSON.stringify
-        key: "parent_id"
-        value: parent
-        node_id: options.item.id()
-    , (data) ->
-      null # TODO: Do something with success?
-    , (jqXHR) ->
-      console.log "Error: ", jqXHR
 
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel
