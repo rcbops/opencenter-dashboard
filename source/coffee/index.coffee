@@ -72,27 +72,8 @@ $ ->
       pin keyed if pin? # Update pin with keyed
       children: root # Return in format appropriate for mapping
 
-    mapping =
-      #children:
-      #  key: (data) ->
-      #    ko.utils.unwrapObservable data.id
-      #  create: (options) ->
-      #    createNode options
-        #update: (options) ->
-        #  createNode options
-
-    createNode = (options) ->
-      #node = options.data
-      #console.log "Extending: ", node
-      #$.extend node,
-      #  servers: v for k,v of node?.children ? {} when "agent" in v.facts.backends
-      #  containers: v for k,v of node?.children ? {} when "container" in v.facts.backends
-      #  actions: []
-      #  status: "unknown"
-      #ko.mapping.fromJS node, mapping
-
     @updateNodes = (data, pin, keys) =>
-      @mapData @parseNodes(data, pin, keys), pin #, mapping
+      @mapData @parseNodes(data, pin, keys), pin
 
     @getNodes = (url, pin, keys) =>
       @getData url, (data) =>
@@ -106,16 +87,19 @@ $ ->
     @wsKeys = {}
 
     @updateTransaction = (data) =>
-      if data?
+      if data?.transaction?
         @sKey = data.transaction.session_key
         @txID = data.transaction.txid
-        #console.log "Updating transaction: ", @sKey, @txID
 
     @poll = (url, cb, timeout=@config?.timeout?.long) =>
-      rePoll = (data) =>
-        @updateTransaction data
-        # Restart long-poller for new transaction
-        setTimeout (=> @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", cb, timeout), 1
+      rePoll = (throttle=false, update=false) =>
+        doit = (=> @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", cb, timeout)
+        if update?
+          @getData "/roush/updates", (data) =>
+            @updateTransaction data
+            setTimeout doit, 1 unless throttle else 1000
+        else
+          setTimeout doit, 1 unless throttle else 1000
 
       $.ajax
         url: url
@@ -124,14 +108,10 @@ $ ->
         error: (jqXHR, textStatus, errorThrown) =>
           switch jqXHR.status
             when 410 # Gone, cycle txID
-              @getData "/roush/updates", (data) =>
-                rePoll data
-            when 0 # Timeout
-              #console.log "Retrying"
-              rePoll()
+              rePoll false, true
             else # Other errors
               console.log "Error (#{jqXHR.status}): #{errorThrown}"
-              setTimeout (=> @poll url, cb, timeout), 1000 # Throttle retry
+              rePoll true
         dataType: "json"
         timeout: timeout ? 30000
 
@@ -144,7 +124,6 @@ $ ->
         @updateTransaction data
         # Start long-poller
         @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (data, cb) =>
-          #console.log "Got update: ", data
           pnodes = []
           resolver = (stack) =>
             id = stack.pop()
@@ -201,7 +180,7 @@ $ ->
             @wsPlans().node = object.id()
             $("#indexInputModal").modal "show"
           else
-            console.log "Error (#{jqXHR.status}): ", errorThrown
+            console.log "Error (#{jqXHR.status}): errorThrown"
 
     $('#inputForm').validate
       focusCleanup: true
@@ -224,7 +203,7 @@ $ ->
           $("#indexInputModal").modal "hide"
         , (jqXHR, textStatus, errorThrown) ->
           $("#indexInputModal").modal "hide"
-          console.log "Error: ", jqXHR.status, textStatus, errorThrown
+          console.log "Error (#{jqXHR.status}): errorThrown"
 
     @ # Return ourself
 
@@ -233,7 +212,7 @@ $ ->
     delay: 0
     trigger: "hover"
     animation: true
-    #placement: ntrapy.getPopoverPlacement
+    placement: ntrapy.getPopoverPlacement
 
   ko.bindingHandlers.popper =
     init: (el, data) ->
@@ -265,6 +244,7 @@ $ ->
         .popover "hide"
     stop: (event, ui) ->
       null
+      # TODO: Do something on sort stop?
 
   ko.bindingHandlers.sortable.afterMove = (options) ->
     parent = options.sourceParentNode.attributes["data-id"].value
@@ -274,8 +254,7 @@ $ ->
         value: parent
         node_id: options.item.id()
     , (data) ->
-      null
-      #console.log "Success: ", data
+      null # TODO: Do something with success?
     , (jqXHR) ->
       console.log "Error: ", jqXHR
 
