@@ -86,58 +86,64 @@ $ ->
     @wsPlans = ko.observableArray()
     @wsKeys = {}
 
-    @updateTransaction = (data) =>
-      if data?.transaction?
-        @sKey = data.transaction.session_key
-        @txID = data.transaction.txid
+    @poll = (url, cb, timeout=@config?.timeout?.long ? 30000) =>
+      rePoll = (throttle=false) =>
+        setTimeout (=> @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", cb, timeout), if throttle then 1000 else 1
 
-    @poll = (url, cb, timeout=@config?.timeout?.long) =>
-      rePoll = (throttle=false, update=false) =>
-        doit = (=> @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", cb, timeout)
-        if update?
-          @getData "/roush/updates", (data) =>
-            @updateTransaction data
-            setTimeout doit, if throttle then 1000 else 1
+      updateTransaction = (trans, cb) =>
+        unless trans?
+          @getData "/roush/updates", (pass) =>
+            updateTransaction pass?.transaction
+            cb() if cb?
         else
-          setTimeout doit, if throttle then 1000 else 1
+          @sKey = trans.session_key
+          @txID = trans.txid
 
-      $.ajax
-        url: url
-        success: (data) =>
-          cb data, (-> rePoll data)
-        error: (jqXHR, textStatus, errorThrown) =>
-          switch jqXHR.status
-            when 410 # Gone, cycle txID
-              rePoll false, true
-            else # Other errors
-              console.log "Error (#{jqXHR.status}): #{errorThrown}"
-              rePoll true
-        dataType: "json"
-        timeout: timeout ? 30000
+      unless @sKey? and @txID?
+        updateTransaction null, -> rePoll true
+      else
+        $.ajax
+          url: url
+          success: (data) ->
+            cb data.nodes
+            updateTransaction data.transaction
+            rePoll()
+          error: (jqXHR, textStatus, errorThrown) ->
+            switch jqXHR.status
+              when 410 # Gone, cycle transaction
+                updateTransaction null, -> rePoll()
+              when 502 # Bad gateway; proxy failure
+                rePoll true
+              else # Other errors
+                if textStatus is "timeout"
+                  rePoll()
+                else
+                  console.log "Error (#{jqXHR.status}): #{textStatus} - #{errorThrown}"
+                  rePoll true
+          dataType: "json"
+          timeout: timeout
 
     # Get config and grab initial set of nodes
     @getData "/api/config", (data) =>
       # Store config
       @config = data
 
-      @getData "/roush/updates", (data) =>
-        @updateTransaction data
-        # Start long-poller
-        @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (data, cb) =>
-          pnodes = []
-          resolver = (stack) =>
-            id = stack.pop()
-            unless id? # End of ID list
-              setTimeout @updateNodes(nodes: pnodes, @wsTemp, @wsKeys), 1000
-              cb() if cb?
-            else
-              @getData "/roush/nodes/#{id}", (node) =>
-                pnodes.push node.node
-                resolver stack
-          resolver data.nodes
+      # Start long-poller
+      @poll "/roush/nodes/updates/#{@sKey}/#{@txID}?poll", (nodes, cb) =>
+        pnodes = []
+        resolver = (stack) =>
+          id = stack.pop()
+          unless id? # End of ID list
+            @updateNodes nodes: pnodes, @wsTemp, @wsKeys
+            cb() if cb?
+          else
+            @getData "/roush/nodes/#{id}", (node) =>
+              pnodes.push node.node
+              resolver stack
+        resolver nodes
 
-        # Load initial data, and poll every config.interval ms
-        @getNodes "/roush/nodes/", @wsTemp, @wsKeys
+      # Load initial data
+      @getNodes "/roush/nodes/", @wsTemp, @wsKeys
 
     @siteActive = ntrapy.selector (data) =>
       null # TODO:
