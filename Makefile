@@ -2,7 +2,7 @@ HR="=========================================="
 SHELL=bash
 export PYTHON=python2
 
-all: | build publish
+all: | build deploy
 
 dev: | devbuild devpub
 
@@ -68,7 +68,7 @@ devpub: | clean_pub
 	@echo ${HR}
 	-cp -rn ${PWD}/source/ public
 
-build: | clean
+build:
 	@echo ${HR}
 	@echo "Syncing NPM build deps"
 	@echo ${HR}
@@ -78,35 +78,23 @@ build: | clean
 	@echo ${HR}
 	npm update
 
-publish: | clean_pub
+deploy: | clean_pub
 	@echo ${HR}
-	@echo "Preparing to publish"
+	@echo "Preparing to deploy"
 	@echo ${HR}
 	mkdir -p public/{js,css,img}
 	@echo ${HR}
-	@echo "Processing coffeescripts"
+	@echo "Deploying Coffeescripts"
 	@echo ${HR}
 	node_modules/coffee-script/bin/coffee -co public/js source/coffee
 	@echo ${HR}
-	@echo "Publishing nTrapy components"
+	@echo "Deploying Jade templates"
+	@echo ${HR}
+	node_modules/jade/bin/jade -o '{title: "OpenCenter"}' views/index.jade --out public
+	@echo ${HR}
+	@echo "Deploying nTrapy components"
 	@echo ${HR}
 	-cp -fr ${PWD}/source/* public
-
-tarball: | publish
-	@echo ${HR}
-	@echo "Building deployment tarball"
-	@echo ${HR}
-	# -rm -f public.tgz
-	# mkdir -p tmp/public
-	# -ln -sf ../../public/js tmp/public
-	# -ln -sf ../../public/css tmp/public
-	# -ln -sf ../../public/img tmp/public
-	# node_modules/jade/bin/jade -Do "{title: 'OpenCenter'}" views/index.jade --out tmp/public/index.html
-	node_modules/jade/bin/jade -Do "{title: 'OpenCenter'}" views/index.jade --out public/index.html
-	# coffee -co tmp/public/js source/coffee
-	coffee -co public/js source/coffee
-	# tar -hczvf public.tgz -C tmp public
-	# -rm -rf tmp
 
 cert:
 	-rm -f *.pem
