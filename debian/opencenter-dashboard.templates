@@ -1,9 +1,7 @@
 Template: opencenter/server_ip
 Type: string
-Default: 127.0.0.1
 Description: Enter IP for communicating with the Roush endpoint.
 
 Template: opencenter/server_port
 Type: string
-Default: 8080
 Description: Enter port for communicating with the Roush endpoint.
