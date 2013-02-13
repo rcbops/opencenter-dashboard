@@ -1,4 +1,4 @@
-Source: ntrapy
+Source: opencenter
 Section: net
 Priority: optional
 Maintainer: Ron Pedde <ron@pedde.com>
@@ -9,9 +9,9 @@ Standards-Version: 3.9.1
 Homepage: https://github.com/rcbops/ntrapy
 XCBS-RCB-Component: rcb-utils
 
-Package: ntrapy-dashboard
+Package: opencenter-dashboard
 Architecture: all
 Depends: ${misc:Depends},
  apache2
 Provides: ${web:Provides}
-Description: nTrapy Dashboard
+Description: OpenCenter Dashboard

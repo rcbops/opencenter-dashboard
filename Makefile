@@ -106,6 +106,11 @@ deploy: | clean_pub pkg_build
 	@echo "Deploying nTrapy components"
 	@echo ${HR}
 	-cp -fr source/* public
+	@echo ${HR}
+	@echo "Scaffolding config file"
+	-mkdir public/api
+	-cp config.json.sample public/api/config
+	@echo ${HR}
 
 cert:
 	-rm -f *.pem
