@@ -78,7 +78,18 @@ build:
 	@echo ${HR}
 	npm update
 
-deploy: | clean_pub build
+pkg_build:
+	@echo ${HR}
+	@echo "Installing NPM build deps"
+	@echo ${HR}
+	HOME=${PWD} npm install jade
+	@echo ${HR}
+	@echo "Syncing NPM runtime deps"
+	@echo ${HR}
+	npm update
+
+
+deploy: | clean_pub pkg_build
 	@echo ${HR}
 	@echo "Preparing to deploy"
 	@echo ${HR}
@@ -86,7 +97,7 @@ deploy: | clean_pub build
 	@echo ${HR}
 	@echo "Deploying Coffeescripts"
 	@echo ${HR}
-	node_modules/coffee-script/bin/coffee -co public/js source/coffee
+	coffee -co public/js source/coffee
 	@echo ${HR}
 	@echo "Deploying Jade templates"
 	@echo ${HR}
