@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+
 NODE_ENV="${NODE_ENV:-production}"
+
 pkill -f "node-dev"
 pkill -f "coffee"
 pkill -f "jade"
