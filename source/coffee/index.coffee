@@ -41,6 +41,7 @@ $ ->
       for node in data.nodes
         nid = node.id
         if keyed[nid]? # Updating existing node?
+          if node.task_id? then node.status = "alert" else node.status = "unknown"
           pid = keyed[nid].facts?.parent_id # Grab current parent
           if pid? and pid isnt node.facts?.parent_id # If new parent is different
             delete keyed[pid].children[nid] # Remove node from old parent's children
