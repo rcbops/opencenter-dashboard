@@ -54,6 +54,8 @@ $ ->
       # Step through IDs
       for id of keyed
         node = keyed[id]
+        if node.task_id? # Executing a task
+          node.status = "busy_state"
         pid = node.facts?.parent_id
         if pid? # Has parent ID?
           pnode = keyed?[pid]
