@@ -86,7 +86,7 @@ deploy: | clean_pub
 	@echo ${HR}
 	@echo "Deploying Coffeescripts"
 	@echo ${HR}
-	node_modules/coffee-script/bin/coffee -co public/js source/coffee
+	${PWD}/node_modules/coffee-script/bin/coffee -co public/js source/coffee
 	@echo ${HR}
 	@echo "Deploying Jade templates"
 	@echo ${HR}
