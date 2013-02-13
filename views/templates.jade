@@ -60,7 +60,7 @@ block templates
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
-    #indexInputModal.modal.hide.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    #indexInputModal.modal.hide.fade(data-backdrop='static', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
       .modal-header
         //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
         h3 Additional Input Required
