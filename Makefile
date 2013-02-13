@@ -105,7 +105,7 @@ deploy: | clean_pub pkg_build
 	@echo ${HR}
 	@echo "Deploying nTrapy components"
 	@echo ${HR}
-	-cp -fr ${PWD}/source/* public
+	-cp -fr source/* public
 
 cert:
 	-rm -f *.pem
