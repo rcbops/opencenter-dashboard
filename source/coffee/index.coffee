@@ -48,13 +48,19 @@ $ ->
         # Stub if missing
         node.actions ?= []
         node.status ?= "unknown"
+        node.isEnabled ?= ko.observable true
         node.children ?= {}
         keyed[nid] = node # Add/update node
 
       # Step through IDs
       for id of keyed
         node = keyed[id]
-        if node.task_id? then node.status = "alert" else node.status = "unknown"
+        if node.task_id?
+          node.status = "alert"
+          node.isEnabled = false
+        else
+          node.status = "unknown"
+          node.isEnabled = true
         pid = node.facts?.parent_id
         if pid? # Has parent ID?
           pnode = keyed?[pid]
