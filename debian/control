@@ -3,6 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Ron Pedde <ron@pedde.com>
 Build-Depends: debhelper (>= 7.0.50~),
+ debconf,
  coffeescript,
  npm
 Standards-Version: 3.9.1

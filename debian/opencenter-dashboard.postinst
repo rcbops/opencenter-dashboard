@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+# Source debconf library.
+. /usr/share/debconf/confmodule
+
+# need to validate is ip
+db_get opencenter/server_ip
+SERVER_IP=$RET
+
+db_get opencenter/server_port
+SERVER_PORT=$RET
+
+sed -i 's/127.0.0.1:8080/$SERVER_IP:$SERVER_PORT/' /etc/apache2/sites-available/opencenter-dashboard.conf
+sed -i 's/127.0.0.1:8080/$SERVER_IP:$SERVER_PORT/' /usr/share/opencenter-dashboard/api/config
+
+if [ -x /etc/init.d/apache2 ]; then
+    invoce-rc.d apache2 reload
+fi
