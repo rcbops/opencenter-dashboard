@@ -1,9 +1,0 @@
-{
-  "allowedKeys": ["allowedKeys", "timeout", "throttle"],
-  "roush_url": "http://dev1.propter.net:8080",
-  "timeout": {
-    "short": 700,
-    "long": 30000
-  },
-  "throttle": 500
-}
