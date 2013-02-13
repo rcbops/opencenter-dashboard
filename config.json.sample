@@ -1,6 +1,6 @@
 {
   "allowedKeys": ["allowedKeys", "timeout", "throttle"],
-  "roush_url": "http://localhost:8080",
+  "roush_url": "http://127.0.0.1:8080",
   "timeout": {
     "short": 2000,
     "long": 30000
