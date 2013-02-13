@@ -78,7 +78,7 @@ build:
 	@echo ${HR}
 	npm update
 
-deploy: | clean_pub
+deploy: | clean_pub build
 	@echo ${HR}
 	@echo "Preparing to deploy"
 	@echo ${HR}
@@ -86,11 +86,11 @@ deploy: | clean_pub
 	@echo ${HR}
 	@echo "Deploying Coffeescripts"
 	@echo ${HR}
-	${PWD}/node_modules/coffee-script/bin/coffee -co public/js source/coffee
+	node_modules/coffee-script/bin/coffee -co public/js source/coffee
 	@echo ${HR}
 	@echo "Deploying Jade templates"
 	@echo ${HR}
-	${PWD}/node_modules/jade/bin/jade -o '{title: "OpenCenter"}' views/index.jade --out public
+	node_modules/jade/bin/jade -o '{title: "OpenCenter"}' views/index.jade --out public
 	@echo ${HR}
 	@echo "Deploying nTrapy components"
 	@echo ${HR}
