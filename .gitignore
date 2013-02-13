@@ -2,6 +2,7 @@
 *.pem
 *.db
 
+.npm
 node_modules
 components
 public
