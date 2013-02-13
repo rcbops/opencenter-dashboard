@@ -33,6 +33,8 @@ ntrapy.statusButton = (status) ->
       return "warning_state"
     when "error"
       return "error_state"
+    when "unknown"
+      return "disabled_state"
 
 ntrapy.post = (url, data, success, error, statusCode) ->
   $.ajax
