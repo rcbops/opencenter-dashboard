@@ -483,7 +483,7 @@ input:not([type]), input[type="text"], textarea, input[type="password"], .inputC
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  padding: 1px 4px 2px;
+  padding: 0px 4px;
   border: 1px solid #999;
   height: 25px;
 }
@@ -578,25 +578,45 @@ textarea {
   margin: 10px -15px -35px -15px;
 }
 
-/* Warnings */
+/* Form Validation */
 .warning-text-paragraph {
   background-image: url('../img/icons/check_status_WARNING.png');
   background-repeat: no-repeat;
   padding-left: 20px;
   background-position: 0 3px;
 }
-label.error {
-  position: absolute;
-  top: 8px;
-  left: 396px;
+.control-group.success label.error {
+  background-image: url('../img/icons/check_fixed.png');
+}
+.control-group label {
+    display: inline-block !important;
+}
+.control-group label.error {
+  position: relative;
+  top: 4px;
   width: 15px;
   height: 15px;
+  margin-left: 5px;
+  margin-bottom: 0px;
   overflow: hidden;
   text-indent: hidden;
   white-space: nowrap;
   text-indent: 200%;
   background-image: url('../img/icons/alert_red.png');
   background-repeat: no-repeat;
+}
+.control-group.success .control-label {
+  color: inherit;
+}
+.control-group.success input {
+  border-color: #999;
+  color: inherit;
+}
+.control-group.error .control-label {
+  color: inherit;
+}
+.control-group.success input {
+  color: inherit;
 }
 
 /* Zero State */
