@@ -90,7 +90,7 @@ deploy: | clean_pub
 	@echo ${HR}
 	@echo "Deploying Jade templates"
 	@echo ${HR}
-	node_modules/jade/bin/jade -o '{title: "OpenCenter"}' views/index.jade --out public
+	${PWD}/node_modules/jade/bin/jade -o '{title: "OpenCenter"}' views/index.jade --out public
 	@echo ${HR}
 	@echo "Deploying nTrapy components"
 	@echo ${HR}
