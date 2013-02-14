@@ -2,7 +2,7 @@ HR="=========================================="
 SHELL=bash
 export PYTHON=python2
 
-all: | build deploy
+all: | build publish
 
 dev: | devbuild devpub
 
@@ -72,24 +72,13 @@ build:
 	@echo ${HR}
 	@echo "Syncing NPM build deps"
 	@echo ${HR}
-	npm install coffee-script
+	npm install coffee-script jade
 	@echo ${HR}
 	@echo "Syncing NPM runtime deps"
 	@echo ${HR}
 	npm update
 
-pkg_build:
-	@echo ${HR}
-	@echo "Installing NPM build deps"
-	@echo ${HR}
-	HOME=${PWD} npm install jade
-	@echo ${HR}
-	@echo "Syncing NPM runtime deps"
-	@echo ${HR}
-	npm update
-
-
-deploy: | clean_pub pkg_build
+publish: | clean_pub
 	@echo ${HR}
 	@echo "Preparing to deploy"
 	@echo ${HR}
@@ -97,7 +86,7 @@ deploy: | clean_pub pkg_build
 	@echo ${HR}
 	@echo "Deploying Coffeescripts"
 	@echo ${HR}
-	coffee -co public/js source/coffee
+	node_modules/coffee-script/bin/coffee -co public/js source/coffee
 	@echo ${HR}
 	@echo "Deploying Jade templates"
 	@echo ${HR}
@@ -108,9 +97,12 @@ deploy: | clean_pub pkg_build
 	-cp -fr source/* public
 	@echo ${HR}
 	@echo "Scaffolding config file"
+	@echo ${HR}
 	-mkdir public/api
 	-cp config.json.sample public/api/config
-	@echo ${HR}
+
+deploy:
+	HOME=${PWD} $(MAKE)
 
 cert:
 	-rm -f *.pem
@@ -130,5 +122,4 @@ clean_node:
 	-rm -rf node_modules
 
 clean_pub:
-	-pkill -f "coffee -wco public/js source/coffee"
 	-rm -rf public
