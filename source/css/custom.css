@@ -118,7 +118,7 @@ Header
 #logo-wrapper {
   position: relative;
 }
-.navbar .brand {
+.brand {
   position: absolute;
   top: -20px;
   display: block;
@@ -127,7 +127,7 @@ Header
   margin: 0px;
   text-shadow: none;
 }
-.navbar .brand span{
+.brand span{
   background: transparent url('../img/logo-rackspace.png') no-repeat;
   background-position: center center;
   width: 190px;
@@ -205,7 +205,83 @@ Header
 #links li:first-child {
   margin-left: 210px;
 }
-
+/****************
+Login Form
+****************/
+#indexLoginModal {
+  width: 656px;
+  margin-left: -328px;
+}
+#indexLoginModal .modal-body {
+  padding: 0px;
+}
+#rackspace-logo-container {
+  background: transparent url('../img/logo-rackspace-large.png') no-repeat;
+  background-position: center center;
+  width: 192px;
+  height: 57px;
+  display: inline-block;
+  float: left;
+  margin-top: 85px;
+  padding: 40px 49px;  
+}
+#login-form {
+  margin: 28px 0;
+  padding: 30px 37px;;
+  border-left: 1px solid #DDD;
+  font-size: 13px;
+  float: left;
+}
+#login-form span.welcome-message {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  display: block;
+}
+#login-form form {
+  margin-bottom: 0px;
+}
+#login-form label {
+  font-size: 12px;
+}
+#login-form .form-actions {
+  padding: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: transparent;
+  border-top: none;
+}
+#login-form .login-button {
+  cursor: pointer;
+  margin: 0;
+  line-height: 20px;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+  font-size: 13px;
+  text-align: center;
+  padding: 1px 10px 2px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+  background-color: #a60004;
+  border-color: #a60004;
+  color: #fff;
+  background: #d81436;
+  background: -moz-linear-gradient(top,#d81436 0,#a60004 100%);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#d81436),color-stop(100%,#a60004));
+  background: -webkit-linear-gradient(top,#d81436 0,#a60004 100%);
+  background: -o-linear-gradient(top,#d81436 0,#a60004 100%);
+  background: -ms-linear-gradient(top,#d81436 0,#a60004 100%);
+  background: linear-gradient(top,#d81436 0,#a60004 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d81436',endColorstr='#a60004',GradientType=0);
+  margin-top: 10px;
+}
+#login-form .cancel {
+  margin-top: 8px;
+  margin-left: 5px;
+}
 /****************
 Content
 ****************/
