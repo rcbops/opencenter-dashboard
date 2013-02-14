@@ -69,7 +69,6 @@ devpub: | clean_pub
 	-cp -rn ${PWD}/source/ public
 
 build:
-	@echo "Home is" ${HOME}
 	@echo ${HR}
 	@echo "Syncing NPM build deps"
 	@echo ${HR}
