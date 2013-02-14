@@ -891,6 +891,9 @@ Footer
 }
 /* Media Queries */
 @media (max-width: 979px) {
+  .navbar .brand {
+    margin: 0 0 0 -10px;
+  }
 }
 @media (max-width: 767px) {
   .container-fluid {
