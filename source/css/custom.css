@@ -222,7 +222,7 @@ Login Form
   height: 57px;
   display: inline-block;
   float: left;
-  margin-top: 85px;
+  margin-top: 80px;
   padding: 40px 49px;  
 }
 #login-form {
@@ -276,10 +276,14 @@ Login Form
   background: -ms-linear-gradient(top,#d81436 0,#a60004 100%);
   background: linear-gradient(top,#d81436 0,#a60004 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d81436',endColorstr='#a60004',GradientType=0);
-  margin-top: 10px;
 }
-#login-form .cancel {
-  margin-top: 8px;
+#login-form .form-throb {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url('../img/icons/loading-grey-white.gif');
+  display: inline-block;
+  height: 10px;
+  width: 13px;
   margin-left: 5px;
 }
 /****************
