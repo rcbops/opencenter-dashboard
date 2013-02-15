@@ -92,6 +92,9 @@ ntrapy.getPopoverPlacement = (tip, element) ->
   right = isWithinBounds elementRight
   (if above then "top" else (if below then "bottom" else (if left then "left" else (if right then "right" else "right"))))
 
+# Keep track of AJAX success/failure
+ntrapy.siteEnabled = ko.observable true
+
 # AJAX wrapper which auto-retries on error
 ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
   req = -> $.ajax
@@ -99,8 +102,10 @@ ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
     url: url
     data: data
     success: (data) ->
+      ntrapy.siteEnabled true
       success data if success?
     error: (jqXHR, textStatus, errorThrown) =>
+      ntrapy.siteEnabled false
       retry = error jqXHR, textStatus, errorThrown if error?
       setTimeout req, 1000 if retry isnt false # Retry after 1000msec
     statusCode: statusCode

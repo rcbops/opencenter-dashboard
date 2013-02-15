@@ -22,14 +22,21 @@ $ ->
     @wsItems = ko.computed =>
       @wsTemp()
 
-    # Enable coalesced node changes (x msec settling period)
-    @wsItems.extend throttle: config?.coalesce ? 500
+    # Debounce node changes (x msec settling period)
+    @wsItems.extend throttle: config?.coalesce ? 1000
 
     # Execution plans
     @wsPlans = ko.observableArray()
 
     # Flat node list, keyed by id
     @wsKeys = {}
+
+    # Update on request success/failure
+    @siteEnabled = ko.computed ->
+      ntrapy.siteEnabled()
+
+    # Debounce site disabled overlay
+    @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
 
     # Get config and grab initial set of nodes
     ntrapy.getData "/api/config", (data) =>
