@@ -516,7 +516,7 @@ ul.backend-list li {
 }
 
 /* Tags */
-.item {
+.tags .item {
   display: inline-block;
   border: 1px #ccc solid;
   padding: 4px 8px;

@@ -218,7 +218,7 @@ $ ->
         #TODO: Figure out why this fires twice: console.log "title"
         """
         #{data()?.name?() ? "Details"}
-        <ul class="backend-list">
+        <ul class="backend-list tags">
           #{('<li><div class="item">' + backend + '</div></li>' for backend in data().facts.backends()).join('')}
         </ul>
         """
