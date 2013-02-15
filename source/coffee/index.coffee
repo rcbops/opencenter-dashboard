@@ -132,16 +132,30 @@ $ ->
           console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
     # Multi-step form controls; here for manipulating form controls based on form's page
+    # TO DO: This function should probably be called every time the modal is fired
     (->
-      $form = $("form")
+      $form = $("form#createForm")
       $multiStepForm = $form.find(".carousel")
+      $formBody = $form.find(".modal-body")
       $formControls = $form.find(".modal-footer")
-
       if $multiStepForm.length and $formControls.length
+        slideCount = $multiStepForm.find('.carousel-inner .item').length
+        str = ""
+        count = 0
+        percentWidth = 100 / slideCount
+
+        while count < slideCount
+          str += "<div id=\"progress-bar-" + (count + 1) + "\" class=\"progress-bar\" style=\"width:" + percentWidth + "%;\"></div>"
+          count++
+        $progressMeter = $('<div id="progress-meter">' + str + '</div>').prependTo($formBody)
+
         $formControls.find(".back").attr "disabled", true
         $formControls.find(".submit").hide()
         $multiStepForm.on "slid", "", ->
           $this = $(this)
+          $progressMeter.find(".progress-bar").removeClass "filled"
+          $activeProgressBars = $progressMeter.find('.progress-bar').slice 0, parseInt $(".carousel-inner .item.active").index() + 1, 10
+          $activeProgressBars.addClass "filled"
           $formControls.find("button").show().removeAttr "disabled"
           if $this.find(".carousel-inner .item:first").hasClass("active")
             $formControls.find(".back").attr "disabled", true

@@ -868,6 +868,31 @@ textarea {
   color: inherit;
 }
 
+/* Progress Meter */
+#progress-meter {
+  border: 1px solid #cccccc;
+  padding: 1px;
+  margin: 10px;
+  line-height: 0px;
+}
+#progress-meter .progress-bar {
+  background-color: #d5e4f2;
+  display: inline-block;
+  border-left: 1px solid #fff;
+  margin-right: -1px;
+  height: 10px;
+}
+#progress-meter .progress-bar.filled {
+  background-color: #2f81d1;
+}
+#progress-meter .progress-bar:first-child {
+  border-left: none;
+  background-color: #2f81d1;
+}
+#progress-meter .progress-bar:last-child {
+  margin-left: 0px;
+  border-left: 1px solid #fff;
+}
 /* Zero State */
 .empty_overlay_widget {
   width: 100%;
