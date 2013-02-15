@@ -136,10 +136,6 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
 
   root = {} # We might not find a root; make sure it's empty each call
 
-  parseChildren = (node) ->
-    node.agents = (v for k,v of node?.children when "agent" in v.facts.backends)
-    node.containers = (v for k,v of node?.children when "container" in v.facts.backends)
-
   # Index node list by ID, merging/updating if keyed was provided
   for node in data.nodes
     nid = node.id
@@ -153,6 +149,8 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
     node.status ?= "unknown"
     node.isEnabled ?= ko.observable true
     node.children ?= {}
+    node.facts ?= {}
+    node.facts.backends ?= []
     keyed[nid] = node # Add/update node
 
   # Step through IDs
@@ -176,9 +174,11 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
     else # Invalid root node!
       delete keyed[id] # Pew Pew!
 
-  # And run a chillin' parseage
+  # Generate dynamic arrays
   for id of keyed
-    parseChildren keyed[id]
+    node = keyed[id]
+    node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
+    node.containers = (v for k,v of node.children when "container" in v.facts.backends)
 
   pin keyed if pin? # Update pin with keyed
   root # Return root for mapping
