@@ -241,25 +241,33 @@ $ ->
     html: true
     delay: 0
     trigger: "hover"
-    animation: true
+    animation: false
     placement: ntrapy.getPopoverPlacement
+    container: 'body'
 
   ko.bindingHandlers.popper =
     init: (el, data) ->
       opts = popoverOptions
       opts["title"] = ->
         #TODO: Figure out why this fires twice: console.log "title"
-        data()?.name?() ? "Details"
+        """
+        #{data()?.name?() ? "Details"}
+        <ul class="backend-list">
+          #{('<li><div class="item">' + backend + '</div></li>' for backend in data().facts.backends()).join('')}
+        </ul>
+        """
       opts["content"] = ->
         """
-        <ul>
-        <li><strong>ID:</strong> #{data().id()}</li>
-        <li><strong>Status:</strong> #{data().status()}</li>
-        <li><strong>Adventure:</strong> #{data().adventure_id() ? 'idle'}</li>
-        <li><strong>Task:</strong> #{data().task_id() ? 'idle'}</li>
-        <li><strong>Backends:</strong><ul>
-        #{('<li>' + backend + '</li>' for backend in data().facts.backends()).join('')}
-        </ul></li>
+        <dl class="node-data">
+          <dt>ID</dt>
+          <dd>#{data().id()}</dd>
+          <dt>Status</dt>
+          <dd>#{data().status()}</dd>
+          <dt>Adventure</dt>
+          <dd>#{data().adventure_id() ? 'idle'}</dd>
+          <dt>Task</dt>
+          <dd>#{data().task_id() ? 'idle'}</dd>
+        </dl>
         """
       $(el).popover opts
 

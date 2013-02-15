@@ -330,6 +330,71 @@ Content
 .node-name:active {
 
 }
+/* Popover */
+.node-data {
+  padding: 0px;
+  margin: 0px;
+}
+.popover-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+.node-data dd,
+.node-data dt {
+  padding: 0px;
+  display: inline-block;
+  vertical-align: top;
+  font-size: 13px;
+  line-height: 25px;
+}
+.node-data dt {
+  width: 80px;
+  font-weight: normal;
+  color: #999;
+  text-align: right;
+}
+.node-data dd {
+  width: 110px;
+  color: #333;
+}
+.node-data dd.full {
+  clear: both;
+  width: 100%;
+  margin: 0px;
+}
+ul.backend-list {
+  padding: 0px;
+  margin: 5px 0px 0px 0px;
+  list-style-type: none;
+}
+ul.backend-list li {
+  padding: 0px;
+  margin: 0px;
+  display: inline-block;
+}
+
+/* Tags */
+.item {
+  display: inline-block;
+  border: 1px #ccc solid;
+  padding: 4px 8px;
+  margin-right: 2px;
+  font-size: 11px;
+  line-height: 11px;
+  font-weight: normal;
+  color: #333;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background: #fff;
+  background: -moz-linear-gradient(top,#fff 75%,#d8d8d8 150%);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(75%,#fff),color-stop(150%,#d8d8d8));
+  background: -webkit-linear-gradient(top,#fff 75%,#d8d8d8 150%);
+  background: -o-linear-gradient(top,#fff 75%,#d8d8d8 150%);
+  background: -ms-linear-gradient(top,#fff 75%,#d8d8d8 150%);
+  background: linear-gradient(top,#fff 75%,#d8d8d8 150%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#d8d8d8',GradientType=0);
+}
 /* Containers */
 .roush-container {
   margin-bottom: 10px;
