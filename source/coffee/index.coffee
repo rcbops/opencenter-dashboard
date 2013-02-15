@@ -23,7 +23,7 @@ $ ->
       @wsTemp()
 
     # Debounce node changes (x msec settling period)
-    @wsItems.extend throttle: config?.coalesce ? 1000
+    @wsItems.extend throttle: @config?.throttle ? 1000
 
     # Execution plans
     @wsPlans = ko.observableArray()
@@ -132,6 +132,7 @@ $ ->
 
     # Sortable afterMove hook; here for scoping updateNodes args
     ko.bindingHandlers.sortable.afterMove = (options) =>
+      options.item.dragDisabled true # Disable subsequent drags immediately
       parent = options.sourceParentNode.attributes["data-id"].value
       ntrapy.post "/roush/facts/",
         JSON.stringify
@@ -182,7 +183,7 @@ $ ->
 
   ko.bindingHandlers.sortable.options =
     handle: ".btn"
-    cancel: ""
+    cancel: ".dragDisable"
     opacity: 0.35
     tolerance: "pointer"
     start: (event, ui) ->

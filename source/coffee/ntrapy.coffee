@@ -151,22 +151,16 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
 
     # Stub if missing
     node.actions ?= []
-    node.status ?= "unknown"
-    node.isEnabled ?= ko.observable true
+    node.status ?= "disabled_state"
+    node.dragDisabled ?= false
     node.children ?= {}
     node.facts ?= {}
     node.facts.backends ?= []
     keyed[nid] = node # Add/update node
 
-  # Step through IDs
+  # Build child arrays
   for id of keyed
     node = keyed[id]
-    if node.task_id?
-      node.status = "alert"
-      node.isEnabled = false
-    else
-      node.status = "unknown"
-      node.isEnabled = true
     pid = node.facts?.parent_id
     if pid? # Has parent ID?
       pnode = keyed?[pid]
@@ -179,9 +173,15 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
     else # Invalid root node!
       delete keyed[id] # Pew Pew!
 
-  # Generate dynamic arrays
+  # Fill other properties
   for id of keyed
     node = keyed[id]
+    if node.task_id?
+      node.status = "warning_state"
+      node.dragDisabled = true
+    else
+      node.status = "disabled_state"
+      node.dragDisabled = false
     node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
     node.containers = (v for k,v of node.children when "container" in v.facts.backends)
 
