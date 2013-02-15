@@ -105,8 +105,8 @@ ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
       ntrapy.siteEnabled true
       success data if success?
     error: (jqXHR, textStatus, errorThrown) =>
-      ntrapy.siteEnabled false
       retry = error jqXHR, textStatus, errorThrown if error?
+      ntrapy.siteEnabled false if retry isnt false # Don't disable on repolls and such
       setTimeout req, 1000 if retry isnt false # Retry after 1000msec
     statusCode: statusCode
     dataType: "json"
