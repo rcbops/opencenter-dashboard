@@ -39,6 +39,22 @@ p {
 .container-fluid {
   margin: 0 auto;
 }
+/* Modal */
+.modal-body {
+  max-height: none;
+  padding: 0;
+}
+.modal-body fieldset {
+  padding: 15px;
+}
+.form-horizontal .form-actions {
+  margin: 0px;
+  padding: 10px 20px;
+}
+/* Carousel */
+.carousel {
+  margin: 0px;
+}
 /***************
 No Connection Modal
 ***************/
@@ -665,6 +681,9 @@ input:not([type]), input[type="text"], textarea, input[type="password"], .inputC
 textarea {
   height: auto;
 }
+.form-horizontal {
+  margin-bottom: 0px;
+}
 .form-horizontal .controls {
   margin-left: 170px;
   margin-bottom: 15px;
@@ -679,9 +698,57 @@ textarea {
 }
 
 /* Buttons */
+.btn {
+  margin-right: 10px;
+}
+.standard-button,
+.btn-secondary {
+  cursor: pointer;
+  line-height: 20px;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+  font-size: 13px;
+  text-align: center;
+  padding: 1px 10px 2px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  text-shadow: 0 1px 1px #fff;
+  background-color: #c5c5c5;
+  border-color: #999;
+  color: #333;
+  background: #fff;
+  background: -moz-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#c5c5c5));
+  background: -webkit-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: -o-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: -ms-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: linear-gradient(top,#fff 0,#c5c5c5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#c5c5c5',GradientType=0);
+}
+.standard-button:not([disabled]):hover,
+.btn-secondary:not([disabled]):hover {
+  background: #fff;
+  background: -moz-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#d7d7d7));
+  background: -webkit-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: -o-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: -ms-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: linear-gradient(top,#fff 0,#d7d7d7 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#d7d7d7',GradientType=0);
+  text-decoration: none;
+}
+.standard-button:not([disabled]):active,
+.btn-secondary:not([disabled]):active {
+  background-image: none;
+  background-color: #f3f3f3;
+  box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4);
+  -moz-box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4);
+  -webkit-box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4);
+}
 .btn-primary {
   cursor: pointer;
-  margin: 0;
   line-height: 20px;
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
   font-size: 13px;
@@ -749,8 +816,10 @@ textarea {
   text-align: left;
 }
 .form-horizontal .form-actions {
-  padding: 10px 20px;
-  margin: 10px -15px -35px -15px;
+  background-color: #fff;
+}
+.modal-footer {
+  background-color: #fff;
 }
 
 /* Form Validation */
