@@ -151,7 +151,8 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
 
     # Stub if missing
     node.actions ?= []
-    node.status ?= "disabled_state"
+    node.statusClass ?= "disabled_state"
+    node.statusText ?= "Unknown"
     node.dragDisabled ?= false
     node.children ?= {}
     node.facts ?= {}
@@ -177,16 +178,31 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
   for id of keyed
     node = keyed[id]
     if node.task_id?
-      node.status = "warning_state"
-      node.dragDisabled = true
+      ntrapy.setBusy node
     else
-      node.status = "disabled_state"
-      node.dragDisabled = false
+      ntrapy.setGood node
+    console.log "Node #{id}: ", Math.abs(+node?.attrs?.last_checkin - +ntrapy?.txID)
+
     node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
     node.containers = (v for k,v of node.children when "container" in v.facts.backends)
 
   pin keyed if pin? # Update pin with keyed
   root # Return root for mapping
+
+ntrapy.setBusy = (node) ->
+  node.statusClass = "warning_state"
+  node.statusText = "Busy"
+  node.dragDisabled = true
+
+ntrapy.setGood = (node) ->
+  node.statusClass = "ok_state"
+  node.statusText = "Good"
+  node.dragDisabled = false
+
+ntrapy.setError = (node) ->
+  node.statusClass = "error_state"
+  node.statusText = "Error"
+  node.dragDisabled = false
 
 # Process nodes and map to pin
 ntrapy.updateNodes = (data, pin, keys) ->
@@ -201,9 +217,9 @@ ntrapy.getNodes = (url, pin, keys) ->
 ntrapy.pollNodes = (cb, timeout) =>
   repoll = (trans) ->
     if trans? # Have transaction data?
-      sKey = trans.session_key
-      txID = trans.txid
-      poll "/roush/nodes/updates/#{sKey}/#{txID}?poll" # Build URL
+      ntrapy.sKey = trans.session_key
+      ntrapy.txID = trans.txid
+      poll "/roush/nodes/updates/#{ntrapy.sKey}/#{ntrapy.txID}?poll" # Build URL
     else # Get you some
       ntrapy.getData "/roush/updates", (pass) ->
         repoll pass?.transaction # Push it back through
