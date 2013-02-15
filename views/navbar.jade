@@ -5,6 +5,7 @@ block navbar
         a(href="#") Some Support Link
         a(href="#") Some Support Link
         a(href="#", data-bind="visible: ntrapy.authCheck, click: ntrapy.authLogout, text: ntrapy.authUser() + ' (Logout)'")
+        a(href="#indexInputModalMultiStep", role="button", data-toggle="modal")= "multi-step modal"
     .navbar-inner
       .container-fluid
         #logo-wrapper
