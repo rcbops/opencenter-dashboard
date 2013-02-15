@@ -22,11 +22,11 @@ block templates
             div.create_one_now_section
               div.create_one_message
                 div
-                  p.create_one_message_top You don't have Roush Agent nodes yet.
+                  p.create_one_message_top You don\'t have Roush Agent nodes yet.
                 div
                   p.create_one_message_middle Install some now.
                 div
-                  p.create_one_message_description The Roush agent allows your nodes to show up in this control panel. Learn more about 
+                  p.create_one_message_description The Roush agent allows your nodes to show up in this control panel. Learn more about
                     a.external(href="#") Roush Agent.
 
     script(type='text/html', id='indexItemTemplate')
@@ -46,7 +46,7 @@ block templates
         .container-body
           .drop-target(data-bind='sortable: agents, attr: {"data-id": id}')
             .btn-group.node
-              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: ntrapy.statusButton(status())')
+              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: status')
               button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
@@ -55,7 +55,7 @@ block templates
                 // ko foreach: actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
                 // /ko
-              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data')
+              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dragDisabled}')
             .clear-right
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')

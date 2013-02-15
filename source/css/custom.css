@@ -330,6 +330,9 @@ Content
 .node-name:active {
 
 }
+.btn-node.dragDisable {
+  cursor: progress;
+}
 /* Popover */
 .node-data {
   padding: 0px;
@@ -565,7 +568,7 @@ textarea {
   -webkit-border-radius: 3px;
   border-width: 1px;
   border-style: solid;
-  border-color: #333;  
+  border-color: #333;
   color: #fff;
   text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
   background: #666;
