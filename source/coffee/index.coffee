@@ -131,6 +131,28 @@ $ ->
           ntrapy.hideModal "#indexInputModal"
           console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
+    # Multi-step form controls; here for manipulating form controls based on form's page
+    (->
+      $form = $("form")
+      $multiStepForm = $form.find(".carousel")
+      $formControls = $form.find(".modal-footer")
+
+      if $multiStepForm.length and $formControls.length
+        $formControls.find(".back").attr "disabled", true
+        $formControls.find(".submit").hide()
+        $multiStepForm.on "slid", "", ->
+          $this = $(this)
+          $formControls.find("button").show().removeAttr "disabled"
+          if $this.find(".carousel-inner .item:first").hasClass("active")
+            $formControls.find(".back").attr "disabled", true
+            $formControls.find(".submit").hide()
+          else if $this.find(".carousel-inner .item:last").hasClass("active")
+            $formControls.find(".next").hide()
+            $formControls.find(".submit").show()
+          else
+            $formControls.find(".submit").hide()
+    )()
+
     # Sortable afterMove hook; here for scoping updateNodes args
     ko.bindingHandlers.sortable.afterMove = (options) =>
       ntrapy.setBusy options.item # Set busy immediately on drop
