@@ -23,7 +23,7 @@ $ ->
       @wsTemp()
 
     # Debounce node changes (x msec settling period)
-    @wsItems.extend throttle: config?.throttle ? 1000
+    @wsItems.extend throttle: @config?.throttle ? 1000
 
     # Execution plans
     @wsPlans = ko.observableArray()
