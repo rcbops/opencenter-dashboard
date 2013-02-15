@@ -172,7 +172,7 @@ $ ->
           <dt>ID</dt>
           <dd>#{data().id()}</dd>
           <dt>Status</dt>
-          <dd>#{data().status()}</dd>
+          <dd>#{data().statusText()}</dd>
           <dt>Adventure</dt>
           <dd>#{data().adventure_id() ? 'idle'}</dd>
           <dt>Task</dt>

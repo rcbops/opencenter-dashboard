@@ -46,7 +46,7 @@ block templates
         .container-body
           .drop-target(data-bind='sortable: agents, attr: {"data-id": id}')
             .btn-group.node
-              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: status')
+              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: statusClass')
               button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: dragDisabled}', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
