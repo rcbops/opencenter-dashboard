@@ -36,25 +36,14 @@ ntrapy.statusButton = (status) ->
     when "unknown"
       return "disabled_state"
 
-ntrapy.post = (url, data, success, error, statusCode) ->
-  $.ajax
-    type: "POST"
-    url: url
-    data: data
-    success: success
-    error: error
-    statusCode: statusCode
-    dataType: "json"
-    contentType: "application/json; charset=utf-8"
-
 ntrapy.selector = (cb, def) ->
-  @selected = ko.observable def ? {} unless @selected?
+  selected = ko.observable def ? {} unless selected?
   cb def if cb? and def?
   ko.computed
-    read: =>
-      @selected()
-    write: (data) =>
-      @selected data
+    read: ->
+      selected()
+    write: (data) ->
+      selected data
       cb data if cb?
 
 # Object -> Array mapper
@@ -102,3 +91,128 @@ ntrapy.getPopoverPlacement = (tip, element) ->
   left = isWithinBounds elementLeft
   right = isWithinBounds elementRight
   (if above then "top" else (if below then "bottom" else (if left then "left" else (if right then "right" else "right"))))
+
+# AJAX wrapper which auto-retries on error
+ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
+  req = -> $.ajax
+    type: type
+    url: url
+    data: data
+    success: (data) ->
+      success data if success?
+    error: (jqXHR, textStatus, errorThrown) =>
+      retry = error jqXHR, textStatus, errorThrown if error?
+      setTimeout req, 1000 if retry isnt false # Retry after 1000msec
+    statusCode: statusCode
+    dataType: "json"
+    contentType: "application/json; charset=utf-8"
+    timeout: timeout
+  req()
+
+# Request wrappers
+ntrapy.get = (url, success, error, statusCode) ->
+  ntrapy.ajax "GET", url, null, success, error, statusCode
+
+ntrapy.post = (url, data, success, error, statusCode) ->
+  ntrapy.ajax "POST", url, data, success, error, statusCode
+
+# Basic JS/JSON grabber
+ntrapy.getData = (url, cb) ->
+  ntrapy.get url, (data) ->
+    cb data if cb?
+
+# Use the mapping plugin on a JS object, optional mapping mapping (yo dawg), wrap for array
+ntrapy.mapData = (data, pin, map={}, wrap=true) ->
+  data = [data] if wrap?
+  ko.mapping.fromJS data, map, pin
+
+# Get and map data, f'reals
+ntrapy.getMappedData = (url, pin, map={}, wrap=true) ->
+  ntrapy.getData url, (data) -> ntrapy.mapData(data, pin, map, wrap)
+
+# Parse node array into a flat, keyed boject, injecting children for traversal
+ntrapy.parseNodes = (data, pin, keyed={}) ->
+  unless data?.nodes? then {} # Bail if data is unexpected
+
+  root = {} # We might not find a root; make sure it's empty each call
+
+  parseChildren = (node) ->
+    node.agents = (v for k,v of node?.children when "agent" in v.facts.backends)
+    node.containers = (v for k,v of node?.children when "container" in v.facts.backends)
+
+  # Index node list by ID, merging/updating if keyed was provided
+  for node in data.nodes
+    nid = node.id
+    if keyed[nid]? # Updating existing node?
+      pid = keyed[nid].facts?.parent_id # Grab current parent
+      if pid? and pid isnt node.facts?.parent_id # If new parent is different
+        delete keyed[pid].children[nid] # Remove node from old parent's children
+
+    # Stub if missing
+    node.actions ?= []
+    node.status ?= "unknown"
+    node.isEnabled ?= ko.observable true
+    node.children ?= {}
+    keyed[nid] = node # Add/update node
+
+  # Step through IDs
+  for id of keyed
+    node = keyed[id]
+    if node.task_id?
+      node.status = "alert"
+      node.isEnabled = false
+    else
+      node.status = "unknown"
+      node.isEnabled = true
+    pid = node.facts?.parent_id
+    if pid? # Has parent ID?
+      pnode = keyed?[pid]
+      if pnode? # Parent exists?
+        pnode.children[id] = node # Add to parent's children
+      else # We're an orphan (broken data or from previous merge)
+        delete keyed[id] # No mercy for orphans!
+    else if node.name is "workspace" # Mebbe root node?
+      root = node # Point at it
+    else # Invalid root node!
+      delete keyed[id] # Pew Pew!
+
+  # And run a chillin' parseage
+  for id of keyed
+    parseChildren keyed[id]
+
+  pin keyed if pin? # Update pin with keyed
+  root # Return root for mapping
+
+# Process nodes and map to pin
+ntrapy.updateNodes = (data, pin, keys) ->
+  ntrapy.mapData ntrapy.parseNodes(data, pin, keys), pin
+
+# Get and process nodes from url
+ntrapy.getNodes = (url, pin, keys) ->
+  ntrapy.getData url, (data) ->
+    ntrapy.updateNodes data, pin, keys
+
+# Poll for node changes and do the right things on changes
+ntrapy.pollNodes = (cb, timeout) =>
+  repoll = (trans) ->
+    if trans? # Have transaction data?
+      sKey = trans.session_key
+      txID = trans.txid
+      poll "/roush/nodes/updates/#{sKey}/#{txID}?poll" # Build URL
+    else # Get you some
+      ntrapy.getData "/roush/updates", (pass) ->
+        repoll pass?.transaction # Push it back through
+
+  poll = (url) ->
+    ntrapy.get url
+    , (data) -> # Success
+        cb data?.nodes if cb?
+        repoll data?.transaction
+    , (jqXHR, textStatus, errorThrown) -> # Error; can retry after this cb
+        switch jqXHR.status
+          when 410 # Gone
+            repoll() # Cycle transaction
+            false # Don't retry since we updated the URL
+    , timeout
+
+  repoll() # DO EET
