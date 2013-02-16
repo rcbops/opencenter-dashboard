@@ -22,9 +22,6 @@ $ ->
     @wsItems = ko.computed =>
       @wsTemp()
 
-    # Debounce node changes (x msec settling period)
-    @wsItems.extend throttle: @config?.throttle ? 1000
-
     # Execution plans
     @wsPlans = ko.observableArray()
 
@@ -35,13 +32,16 @@ $ ->
     @siteEnabled = ko.computed ->
       ntrapy.siteEnabled()
 
-    # Debounce site disabled overlay
-    @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
-
     # Get config and grab initial set of nodes
     ntrapy.getData "/api/config", (data) =>
       # Store config
       @config = data
+
+      # Debounce node changes (x msec settling period)
+      @wsItems.extend throttle: @config?.throttle ? 1000
+
+      # Debounce site disabled overlay
+      @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
 
       # Start long-poller
       ntrapy.pollNodes (nodes, cb) => # Recursive node grabber
@@ -52,11 +52,9 @@ $ ->
             ntrapy.updateNodes nodes: pnodes, @wsTemp, @wsKeys
             cb() if cb?
           else
-            ntrapy.get "/roush/nodes/#{id}"
-            , (node) -> # Success
-                pnodes.push node.node
-                resolver stack
-            , -> false # Failure; don't retry
+            ntrapy.getData "/roush/nodes/#{id}", (node) ->
+              pnodes.push node.node
+              resolver stack
         resolver nodes
       , @config?.timeout?.long ? 30000
 
@@ -132,7 +130,7 @@ $ ->
 
     # Sortable afterMove hook; here for scoping updateNodes args
     ko.bindingHandlers.sortable.afterMove = (options) =>
-      options.item.dragDisabled true # Disable subsequent drags immediately
+      ntrapy.setBusy options.item # Set busy immediately on drop
       parent = options.sourceParentNode.attributes["data-id"].value
       ntrapy.post "/roush/facts/",
         JSON.stringify

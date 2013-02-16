@@ -97,21 +97,26 @@ ntrapy.siteEnabled = ko.observable true
 
 # AJAX wrapper which auto-retries on error
 ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
-  req = -> $.ajax
-    type: type
-    url: url
-    data: data
-    success: (data) ->
-      ntrapy.siteEnabled true
-      success data if success?
-    error: (jqXHR, textStatus, errorThrown) =>
-      retry = error jqXHR, textStatus, errorThrown if error?
-      ntrapy.siteEnabled false if retry isnt false # Don't disable on repolls and such
-      setTimeout req, 1000 if retry isnt false # Retry after 1000msec
-    statusCode: statusCode
-    dataType: "json"
-    contentType: "application/json; charset=utf-8"
-    timeout: timeout
+  req = ->
+    $.ajax
+      type: type
+      url: url
+      data: data
+      success: (data) ->
+        ntrapy.siteEnabled true
+        req.backoff = 250 # Reset on success
+        success data if success?
+      error: (jqXHR, textStatus, errorThrown) ->
+        retry = error jqXHR, textStatus, errorThrown if error?
+        if retry is true and type is "GET"
+          ntrapy.siteEnabled false # Don't disable on repolls and such
+          setTimeout req, req.backoff # Retry with incremental backoff
+          req.backoff *= 2 if req.backoff < 32000 # Do eet
+      statusCode: statusCode
+      dataType: "json"
+      contentType: "application/json; charset=utf-8"
+      timeout: timeout
+  req.backoff = 250 # Start at 0.25 sec
   req()
 
 # Request wrappers
@@ -125,6 +130,7 @@ ntrapy.post = (url, data, success, error, statusCode) ->
 ntrapy.getData = (url, cb) ->
   ntrapy.get url, (data) ->
     cb data if cb?
+  , -> true # Retry
 
 # Use the mapping plugin on a JS object, optional mapping mapping (yo dawg), wrap for array
 ntrapy.mapData = (data, pin, map={}, wrap=true) ->
@@ -133,16 +139,16 @@ ntrapy.mapData = (data, pin, map={}, wrap=true) ->
 
 # Get and map data, f'reals
 ntrapy.getMappedData = (url, pin, map={}, wrap=true) ->
-  ntrapy.getData url, (data) -> ntrapy.mapData(data, pin, map, wrap)
+  ntrapy.get url, (data) ->
+    ntrapy.mapData data, pin, map, wrap
+  , -> true # Retry
 
 # Parse node array into a flat, keyed boject, injecting children for traversal
-ntrapy.parseNodes = (data, pin, keyed={}) ->
-  unless data?.nodes? then {} # Bail if data is unexpected
-
+ntrapy.parseNodes = (data, keyed={}) ->
   root = {} # We might not find a root; make sure it's empty each call
 
   # Index node list by ID, merging/updating if keyed was provided
-  for node in data.nodes
+  for node in data?.nodes ? []
     nid = node.id
     if keyed[nid]? # Updating existing node?
       pid = keyed[nid].facts?.parent_id # Grab current parent
@@ -151,9 +157,9 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
 
     # Stub if missing
     node.actions ?= []
-    node.statusClass ?= "disabled_state"
-    node.statusText ?= "Unknown"
-    node.dragDisabled ?= false
+    node.statusClass ?= ko.observable "disabled_state"
+    node.statusText ?= ko.observable "Unknown"
+    node.dragDisabled ?= ko.observable false
     node.children ?= {}
     node.facts ?= {}
     node.facts.backends ?= []
@@ -181,37 +187,40 @@ ntrapy.parseNodes = (data, pin, keyed={}) ->
       ntrapy.setBusy node
     else
       ntrapy.setGood node
-    console.log "Node #{id}: ", Math.abs(+node?.attrs?.last_checkin - +ntrapy?.txID)
-
     node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
     node.containers = (v for k,v of node.children when "container" in v.facts.backends)
 
-  pin keyed if pin? # Update pin with keyed
   root # Return root for mapping
 
+ntrapy.setError = (node) ->
+  node.statusClass "error_state"
+  node.statusText "Error"
+  node.dragDisabled false
+
+ntrapy.setFailed = (node) ->
+  node.statusClass "processing_state"
+  node.statusText "Failure"
+  node.dragDisabled false
+
 ntrapy.setBusy = (node) ->
-  node.statusClass = "warning_state"
-  node.statusText = "Busy"
-  node.dragDisabled = true
+  node.statusClass "warning_state"
+  node.statusText "Busy"
+  node.dragDisabled true
 
 ntrapy.setGood = (node) ->
-  node.statusClass = "ok_state"
-  node.statusText = "Good"
-  node.dragDisabled = false
-
-ntrapy.setError = (node) ->
-  node.statusClass = "error_state"
-  node.statusText = "Error"
-  node.dragDisabled = false
+  node.statusClass "ok_state"
+  node.statusText "Good"
+  node.dragDisabled false
 
 # Process nodes and map to pin
 ntrapy.updateNodes = (data, pin, keys) ->
-  ntrapy.mapData ntrapy.parseNodes(data, pin, keys), pin
+  ntrapy.mapData ntrapy.parseNodes(data, keys), pin
 
 # Get and process nodes from url
 ntrapy.getNodes = (url, pin, keys) ->
-  ntrapy.getData url, (data) ->
+  ntrapy.get url, (data) ->
     ntrapy.updateNodes data, pin, keys
+  , -> true # Retry
 
 # Poll for node changes and do the right things on changes
 ntrapy.pollNodes = (cb, timeout) =>
@@ -233,7 +242,8 @@ ntrapy.pollNodes = (cb, timeout) =>
         switch jqXHR.status
           when 410 # Gone
             repoll() # Cycle transaction
-            false # Don't retry since we updated the URL
+          else
+            true # Retry otherwise
     , timeout
 
   repoll() # DO EET
