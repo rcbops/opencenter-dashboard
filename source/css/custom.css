@@ -770,9 +770,9 @@ textarea {
   position: relative;
   top: 4px;
   width: 15px;
-  height: 15px;
+  height: 27px;
   margin-left: 5px;
-  margin-bottom: 0px;
+  vertical-align: middle;
   overflow: hidden;
   text-indent: hidden;
   white-space: nowrap;

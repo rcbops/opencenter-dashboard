@@ -9,9 +9,9 @@ request = require "request"
 config = require "./config.json"
 
 # Watch and copy CSS until we're using a watchful CSS compiler
-fs.watch "source/css", {}, (event, fileName) ->
-  if event is "change" and fileName?
-    fs.createReadStream("source/css/#{fileName}").pipe fs.createWriteStream "public/css/#{fileName}"
+fs.watch "source/css/custom.css", {}, (event) ->
+  if event is "change"
+    fs.createReadStream("source/css/custom.css").pipe fs.createWriteStream "public/css/custom.css"
 
 # App
 app = express()
