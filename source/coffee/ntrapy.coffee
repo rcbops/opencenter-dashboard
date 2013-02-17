@@ -103,15 +103,17 @@ ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
       url: url
       data: data
       success: (data) ->
-        ntrapy.siteEnabled true
+        ntrapy.siteEnabled true # Enable site
+        $("#indexNoConnectionModal").modal "hide" # Hide immediately
         req.backoff = 250 # Reset on success
         success data if success?
       error: (jqXHR, textStatus, errorThrown) ->
         retry = error jqXHR, textStatus, errorThrown if error?
-        if retry is true and type is "GET"
-          ntrapy.siteEnabled false # Don't disable on repolls and such
+        if retry is true and type is "GET" # Opted in and not a POST
           setTimeout req, req.backoff # Retry with incremental backoff
-          req.backoff *= 2 if req.backoff < 32000 # Do eet
+          unless jqXHR.status is 0 # Didn't timeout
+            ntrapy.siteEnabled false # Don't disable on repolls and such
+            req.backoff *= 2 if req.backoff < 32000 # Do eet
       statusCode: statusCode
       dataType: "json"
       contentType: "application/json; charset=utf-8"
