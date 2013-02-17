@@ -40,6 +40,50 @@ p {
   margin: 0 auto;
 }
 /***************
+No Connection Modal
+***************/
+#indexNoConnectionModal {
+  width: 656px;
+  margin-left: -328px;
+}
+#indexNoConnectionModal .modal-body {
+  padding: 0px;
+}
+.warning-section {
+  padding: 22px;
+}
+#no-connection-img {
+  float: right;
+  background: url('../img/no-connection.png') no-repeat center;
+  width: 279px;
+  height: 217px;
+}
+.text-section {
+  margin-right: 30px;
+  width: 380px;
+}
+h1.warning-header {
+  line-height: 18px;
+  font-weight: bold;
+  font-size: 30px;
+  color: #333;
+  margin-top: .8em;
+  margin-bottom: .5em;
+}
+p.warning-text {
+  padding-bottom: 10px;
+  font-weight: normal;
+  font-size: 15px;
+  color: #999;
+  line-height: 1.2em;
+}
+p.status-text {
+  background: url('../img/icons/loading_spinner.gif') no-repeat 0px 0px;
+  padding-left: 25px;
+  color: #999;
+}
+
+/***************
 Header
 ***************/
 #links, #top-links {
