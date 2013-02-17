@@ -95,29 +95,55 @@ ntrapy.getPopoverPlacement = (tip, element) ->
 # Keep track of AJAX success/failure
 ntrapy.siteEnabled = ko.observable true
 
+# Blank auth header by default
+ntrapy.authHeader = {}
+
+# Guard to spin requests while logging in
+ntrapy.loggingIn = false
+
+# Fill in auth header with user/pass
+ntrapy.makeBasicAuth = (user, pass) ->
+  token = "#{user}:#{pass}"
+  ntrapy.authHeader = Authorization: "Basic #{btoa token}"
+
+ntrapy.showModal = (id) ->
+  $(id).modal("show").on "shown", ->
+    $(id).find("input").first().focus()
+
+ntrapy.hideModal = (id) ->
+  $(id).modal "hide"
+
 # AJAX wrapper which auto-retries on error
 ntrapy.ajax = (type, url, data, success, error, timeout, statusCode) ->
   req = ->
-    $.ajax
-      type: type
-      url: url
-      data: data
-      success: (data) ->
-        ntrapy.siteEnabled true # Enable site
-        $("#indexNoConnectionModal").modal "hide" # Hide immediately
-        req.backoff = 250 # Reset on success
-        success data if success?
-      error: (jqXHR, textStatus, errorThrown) ->
-        retry = error jqXHR, textStatus, errorThrown if error?
-        if retry is true and type is "GET" # Opted in and not a POST
-          setTimeout req, req.backoff # Retry with incremental backoff
-          unless jqXHR.status is 0 # Didn't timeout
-            ntrapy.siteEnabled false # Don't disable on repolls and such
-            req.backoff *= 2 if req.backoff < 32000 # Do eet
-      statusCode: statusCode
-      dataType: "json"
-      contentType: "application/json; charset=utf-8"
-      timeout: timeout
+    if ntrapy.loggingIn # If logging in
+      setTimeout req, 1000 # Spin request
+    else
+      $.ajax
+        type: type
+        url: url
+        data: data
+        headers: ntrapy.authHeader # Add basic auth
+        success: (data) ->
+          ntrapy.siteEnabled true # Enable site
+          ntrapy.hideModal "#indexNoConnectionModal" # Hide immediately
+          req.backoff = 250 # Reset on success
+          success data if success?
+        error: (jqXHR, textStatus, errorThrown) ->
+          retry = error jqXHR, textStatus, errorThrown if error?
+          if jqXHR.status is 401 # Unauthorized!
+            ntrapy.loggingIn = true # Block other requests
+            ntrapy.showModal "#indexLoginModal" # Gimmeh logins
+            setTimeout req, 1000 # Requeue this one
+          else if retry is true and type is "GET" # Opted in and not a POST
+            setTimeout req, req.backoff # Retry with incremental backoff
+            unless jqXHR.status is 0 # Didn't timeout
+              ntrapy.siteEnabled false # Don't disable on repolls and such
+              req.backoff *= 2 if req.backoff < 32000 # Do eet
+        statusCode: statusCode
+        dataType: "json"
+        contentType: "application/json; charset=utf-8"
+        timeout: timeout
   req.backoff = 250 # Start at 0.25 sec
   req()
 

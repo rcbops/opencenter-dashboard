@@ -22,11 +22,11 @@ block templates
             div.create_one_now_section
               div.create_one_message
                 div
-                  p.create_one_message_top You don\'t have Roush Agent nodes yet.
+                  p.create_one_message_top= "You don't have Roush Agent nodes yet."
                 div
-                  p.create_one_message_middle Install some now.
+                  p.create_one_message_middle= "Install some now."
                 div
-                  p.create_one_message_description The Roush agent allows your nodes to show up in this control panel. Learn more about
+                  p.create_one_message_description= "The Roush agent allows your nodes to show up in this control panel. Learn more about"
                     a.external(href="#") Roush Agent.
 
     script(type='text/html', id='indexItemTemplate')
@@ -60,7 +60,7 @@ block templates
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
-    #indexInputModal.modal.hide.fade(data-backdrop='static', tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+    #indexInputModal.modal.hide.fade(data-backdrop='static', tabindex='-1', role='dialog', aria-labelledby='indexInputModal', aria-hidden='true')
       .modal-header
         //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
         h3 Additional Input Required
@@ -81,11 +81,32 @@ block templates
       //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
       //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
 
-    #indexNoConnectionModal.modal.hide.fade(data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
-          .modal-body
-            div.warning-section
-              div#no-connection-img
-              div.text-section
-                h1.warning-header= "Disconnected"
-                p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
-                p.status-text= "We're trying to reconnect now..."
+    #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
+      .modal-body
+        div.warning-section
+          div#no-connection-img
+          div.text-section
+            h1.warning-header= "Disconnected"
+            p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
+            p.status-text= "We're trying to reconnect now..."
+
+    #indexLoginModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexLoginModal', aria-hidden='true')
+      .modal-body
+        div.login-container.row-fluid
+          div#rackspace-logo-container
+          div#login-form
+            form#loginForm
+              span.welcome-message= "Welcome to the OpenCenter Control Panel!"
+              .alert.alert-error.hide= "Invalid username and/or password"
+              .control-group
+                  label.control-label(for='username') Username
+                  .controls
+                    input(type='text', name='username', required='true')
+              .control-group
+                  label.control-label(for='password') Password
+                  .controls
+                    input(type='password', name='password', required='true')
+              #login-status
+                .form-actions
+                  button.login-button(type='submit') Login
+                  span.form-throb.hide
