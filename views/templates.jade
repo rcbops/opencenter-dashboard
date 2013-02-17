@@ -22,11 +22,11 @@ block templates
             div.create_one_now_section
               div.create_one_message
                 div
-                  p.create_one_message_top You don\'t have Roush Agent nodes yet.
+                  p.create_one_message_top= "You don't have Roush Agent nodes yet."
                 div
-                  p.create_one_message_middle Install some now.
+                  p.create_one_message_middle= "Install some now."
                 div
-                  p.create_one_message_description The Roush agent allows your nodes to show up in this control panel. Learn more about
+                  p.create_one_message_description= "The Roush agent allows your nodes to show up in this control panel. Learn more about"
                     a.external(href="#") Roush Agent.
 
     script(type='text/html', id='indexItemTemplate')
@@ -97,6 +97,7 @@ block templates
           div#login-form
             form#loginForm
               span.welcome-message= "Welcome to the OpenCenter Control Panel!"
+              .alert.alert-error.hide= "Invalid username and/or password"
               .control-group
                   label.control-label(for='username') Username
                   .controls
@@ -104,8 +105,8 @@ block templates
               .control-group
                   label.control-label(for='password') Password
                   .controls
-                    input(type='text', name='password', required='true')
+                    input(type='password', name='password', required='true')
               #login-status
                 .form-actions
                   button.login-button(type='submit') Login
-                  span.form-throb(style='display: none')
+                  span.form-throb.hide

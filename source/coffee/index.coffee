@@ -31,9 +31,9 @@ $ ->
     # Update on request success/failure
     @siteEnabled = ko.computed ->
       unless ntrapy.siteEnabled()
-        $("#indexNoConnectionModal").modal "show"
+        ntrapy.showModal "#indexNoConnectionModal"
       else
-        $("#indexNoConnectionModal").modal "hide"
+        ntrapy.hideModal "#indexNoConnectionModal"
 
     # Get config and grab initial set of nodes
     ntrapy.getData "/api/config", (data) =>
@@ -103,7 +103,7 @@ $ ->
           when 409 # Need more data
             @wsPlans JSON.parse jqXHR.responseText
             @wsPlans().node = object.id()
-            $("#indexInputModal").modal "show"
+            ntrapy.showModal "#indexInputModal"
           else
             console.log "Error (#{jqXHR.status}): errorThrown"
 
@@ -126,9 +126,9 @@ $ ->
             node: @wsPlans().node
             plan: @wsPlans().plan
         , (data) ->
-          $("#indexInputModal").modal "hide"
+          ntrapy.hideModal "#indexInputModal"
         , (jqXHR, textStatus, errorThrown) ->
-          $("#indexInputModal").modal "hide"
+          ntrapy.hideModal "#indexInputModal"
           console.log "Error (#{jqXHR.status}): errorThrown"
 
     # Sortable afterMove hook; here for scoping updateNodes args
@@ -156,11 +156,11 @@ $ ->
     success: (element) ->
       $(element).closest('.control-group').removeClass('error').addClass('success')
     submitHandler: (form) ->
-      group = $(form).find('.control-group')
+      form = $(form)
+      group = form.find('.control-group')
       user = group.first().find('input')
       pass = group.next().find('input')
-      throb = $(form).find('.form-throb')
-      modal = $("#indexLoginModal")
+      throb = form.find('.form-throb')
       ntrapy.makeBasicAuth user.val(), pass.val()
       throb.show()
       $.ajax # Test the auth
@@ -169,13 +169,14 @@ $ ->
         success: ->
           ntrapy.loggingIn = false # Done logging in
           throb.hide()
-          modal.modal "hide"
+          form.find('.alert').hide()
+          ntrapy.hideModal "#indexLoginModal"
         error: ->
           throb.hide()
-          $(form).validate().resetForm()
-          #user.val ""
-          #pass.val ""
-          #group.find('.controls span').remove()
+          group.find('input').val ""
+          group.removeClass ['error', 'success']
+          group.find('.controls label').remove()
+          form.find('.alert').show()
           user.focus()
 
   popoverOptions =

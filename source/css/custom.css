@@ -223,7 +223,7 @@ Login Form
   display: inline-block;
   float: left;
   margin-top: 80px;
-  padding: 40px 49px;  
+  padding: 40px 49px;
 }
 #login-form {
   margin: 28px 0;
@@ -281,7 +281,6 @@ Login Form
   background-repeat: no-repeat;
   background-position: center center;
   background-image: url('../img/icons/loading-grey-white.gif');
-  display: inline-block;
   height: 10px;
   width: 13px;
   margin-left: 5px;
