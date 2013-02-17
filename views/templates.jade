@@ -81,7 +81,7 @@ block templates
       //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
       //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
 
-    #indexNoConnectionModal.modal.hide.fade(data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
+    #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
       .modal-body
         div.warning-section
           div#no-connection-img
@@ -90,23 +90,22 @@ block templates
             p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
             p.status-text= "We're trying to reconnect now..."
 
-    #indexLoginModal.modal.hide.fade(data-backdrop='static', role='dialog', aria-labelledby='indexLoginModal', aria-hidden='true')
+    #indexLoginModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexLoginModal', aria-hidden='true')
       .modal-body
         div.login-container.row-fluid
           div#rackspace-logo-container
           div#login-form
             form#loginForm
               span.welcome-message= "Welcome to the OpenCenter Control Panel!"
-              fieldset
-                .control-group
-                    label.control-label Username
-                    .controls
-                      input(type='text', css: {required: value.required}')
-                .control-group
-                    label.control-label Password
-                    .controls
-                      input(type='text', css: {required: value.required}')
-                #login-status
-                  .form-actions
-                    button.login-button(type='submit') Login
-                    span.form-throb(style='display:none;')')')
+              .control-group
+                  label.control-label(for='username') Username
+                  .controls
+                    input(type='text', name='username', required='true')
+              .control-group
+                  label.control-label(for='password') Password
+                  .controls
+                    input(type='text', name='password', required='true')
+              #login-status
+                .form-actions
+                  button.login-button(type='submit') Login
+                  span.form-throb(style='display: none')

@@ -107,7 +107,7 @@ $ ->
           else
             console.log "Error (#{jqXHR.status}): errorThrown"
 
-    # Form validator; here for scoping plan args
+    # Input form validator; here for scoping plan args
     $('#inputForm').validate
       focusCleanup: true
       highlight: (element) ->
@@ -147,6 +147,36 @@ $ ->
         ntrapy.updateNodes null, @wsTemp, @wsKeys # Remap from keys on fails
 
     @ # Return ourself
+
+  # Login form validator
+  $('#loginForm').validate
+    #focusCleanup: true
+    highlight: (element) ->
+      $(element).closest('.control-group').removeClass('success').addClass('error')
+    success: (element) ->
+      $(element).closest('.control-group').removeClass('error').addClass('success')
+    submitHandler: (form) ->
+      group = $(form).find('.control-group')
+      user = group.first().find('input')
+      pass = group.next().find('input')
+      throb = $(form).find('.form-throb')
+      modal = $("#indexLoginModal")
+      ntrapy.makeBasicAuth user.val(), pass.val()
+      throb.show()
+      $.ajax # Test the auth
+        url: "/roush/"
+        headers: ntrapy.authHeader
+        success: ->
+          ntrapy.loggingIn = false # Done logging in
+          throb.hide()
+          modal.modal "hide"
+        error: ->
+          throb.hide()
+          $(form).validate().resetForm()
+          #user.val ""
+          #pass.val ""
+          #group.find('.controls span').remove()
+          user.focus()
 
   popoverOptions =
     html: true
