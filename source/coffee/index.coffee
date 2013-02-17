@@ -30,7 +30,10 @@ $ ->
 
     # Update on request success/failure
     @siteEnabled = ko.computed ->
-      ntrapy.siteEnabled()
+      unless ntrapy.siteEnabled()
+        $("#indexNoConnectionModal").modal "show"
+      else
+        $("#indexNoConnectionModal").modal "hide"
 
     # Get config and grab initial set of nodes
     ntrapy.getData "/api/config", (data) =>
@@ -41,7 +44,7 @@ $ ->
       @wsItems.extend throttle: @config?.throttle ? 1000
 
       # Debounce site disabled overlay
-      @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
+      @siteEnabled.extend throttle: @config?.timeout?.short ? 1000
 
       # Start long-poller
       ntrapy.pollNodes (nodes, cb) => # Recursive node grabber

@@ -80,3 +80,12 @@ block templates
       // .modal-footer
       //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
       //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
+
+    #indexNoConnectionModal.modal.hide.fade(data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
+          .modal-body
+            div.warning-section
+              div#no-connection-img
+              div.text-section
+                h1.warning-header= "Disconnected"
+                p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
+                p.status-text= "We're trying to reconnect now..."
