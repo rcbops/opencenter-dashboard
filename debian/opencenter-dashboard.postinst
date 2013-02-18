@@ -14,5 +14,10 @@ sed -i "s/127.0.0.1:8080/$SERVER_IP:$SERVER_PORT/" /etc/apache2/sites-available/
 sed -i "s/127.0.0.1:8080/$SERVER_IP:$SERVER_PORT/" /usr/share/opencenter-dashboard/api/config
 
 if [ -x /etc/init.d/apache2 ]; then
-    invoke-rc.d apache2 reload
+    a2enmod proxy
+    a2enmod proxy_http
+    a2enmod rewrite
+    a2dissite default
+    a2ensite opencenter-dashboard
+    invoke-rc.d apache2 restart
 fi
