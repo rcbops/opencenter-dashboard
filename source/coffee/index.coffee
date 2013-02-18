@@ -161,6 +161,11 @@ $ ->
       user = group.first().find('input')
       pass = group.next().find('input')
       throb = form.find('.form-throb')
+      resetForm = ->
+        throb.hide()
+        group.find('input').val ""
+        group.removeClass ['error', 'success']
+        group.find('.controls label').remove()
       ntrapy.makeBasicAuth user.val(), pass.val()
       throb.show()
       $.ajax # Test the auth
@@ -168,14 +173,11 @@ $ ->
         headers: ntrapy.authHeader
         success: ->
           ntrapy.loggingIn = false # Done logging in
-          throb.hide()
+          resetForm()
           form.find('.alert').hide()
           ntrapy.hideModal "#indexLoginModal"
         error: ->
-          throb.hide()
-          group.find('input').val ""
-          group.removeClass ['error', 'success']
-          group.find('.controls label').remove()
+          resetForm()
           form.find('.alert').show()
           user.focus()
 

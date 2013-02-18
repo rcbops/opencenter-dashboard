@@ -2,9 +2,9 @@ block navbar
   #banner.navbar.navbar-fixed-top
     ul#top-links.container-fluid
       li#user-menu.menu
-        a(href="#")= "Some Support Link"
-        a(href="#")= "Some Support Link"
-        a(href="#")= "Hello Username"
+        a(href="#") Some Support Link
+        a(href="#") Some Support Link
+        a(href="#", data-bind="visible: ntrapy.authCheck, click: ntrapy.authLogout, text: ntrapy.authUser() + ' (Logout)'")
     .navbar-inner
       .container-fluid
         #logo-wrapper

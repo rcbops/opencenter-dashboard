@@ -95,21 +95,28 @@ ntrapy.getPopoverPlacement = (tip, element) ->
 # Keep track of AJAX success/failure
 ntrapy.siteEnabled = ko.observable true
 
-# Blank auth header by default
+# Fill in auth header with user/pass
+ntrapy.makeBasicAuth = (user, pass) ->
+  ntrapy.authUser user
+  token = "#{user}:#{pass}"
+  ntrapy.authHeader = Authorization: "Basic #{btoa token}"
+
+# Auth bits
 ntrapy.authHeader = {}
+ntrapy.authUser = ko.observable ""
+ntrapy.authCheck = ko.computed ->
+  if ntrapy.authUser() isnt "" then true else false
+ntrapy.authLogout = ->
+  ntrapy.authHeader = {}
+  ntrapy.authUser ""
 
 # Guard to spin requests while logging in
 ntrapy.loggingIn = false
 
-# Fill in auth header with user/pass
-ntrapy.makeBasicAuth = (user, pass) ->
-  token = "#{user}:#{pass}"
-  ntrapy.authHeader = Authorization: "Basic #{btoa token}"
-
+# Modal helpers
 ntrapy.showModal = (id) ->
   $(id).modal("show").on "shown", ->
     $(id).find("input").first().focus()
-
 ntrapy.hideModal = (id) ->
   $(id).modal "hide"
 
