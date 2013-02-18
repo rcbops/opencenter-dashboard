@@ -107,8 +107,14 @@ ntrapy.authUser = ko.observable ""
 ntrapy.authCheck = ko.computed ->
   if ntrapy.authUser() isnt "" then true else false
 ntrapy.authLogout = ->
+  # Clear out all the things
+  model = ntrapy.indexModel
   ntrapy.authHeader = {}
   ntrapy.authUser ""
+  model.wsKeys = {}
+  model.wsTemp []
+  # Try grabbing new nodes; will trigger login form if needed
+  ntrapy.getNodes "/roush/nodes/", model.wsTemp, model.wsKeys
 
 # Guard to spin requests while logging in
 ntrapy.loggingIn = false

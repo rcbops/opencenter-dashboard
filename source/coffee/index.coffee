@@ -228,4 +228,5 @@ $ ->
       null
       # TODO: Do something on sort stop?
 
-  ko.applyBindings new IndexModel()
+  ntrapy.indexModel = new IndexModel()
+  ko.applyBindings ntrapy.indexModel
