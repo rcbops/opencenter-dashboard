@@ -1,2 +1,2 @@
 public/* usr/share/opencenter-dashboard/
-debian/opencenter-dashboard.conf etc/apache2/sites-available/opencenter-dashboard
+debian/opencenter-dashboard.conf etc/apache2/sites-available
