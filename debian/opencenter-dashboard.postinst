@@ -18,6 +18,6 @@ if [ -x /etc/init.d/apache2 ]; then
     a2enmod proxy_http
     a2enmod rewrite
     a2dissite default
-    a2ensite opencenter-dashboard
+    a2ensite opencenter-dashboard.conf
     invoke-rc.d apache2 restart
 fi
