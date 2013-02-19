@@ -119,6 +119,47 @@ ntrapy.authLogout = ->
 # Guard to spin requests while logging in
 ntrapy.loggingIn = false
 
+ntrapy.drawStepProgress = ->
+  $form = $("form#inputForm")
+  $multiStepForm = $form.find(".carousel")
+  $formBody = $form.find(".modal-body")
+  $formControls = $form.find(".modal-footer")
+  console.log "drawStepProgress"
+  if $multiStepForm.length and $formControls.length
+    options =
+      placement: "right"
+
+    $(".tooltip-toggle").tooltip options
+    slideCount = $multiStepForm.find('.carousel-inner .item').length
+    str = ""
+    count = 0
+    percentWidth = 100 / slideCount
+
+    while count < slideCount
+      str += "<div id=\"progress-bar-" + (count + 1) + "\" class=\"progress-bar\" style=\"width:" + percentWidth + "%;\"></div>"
+      count++
+
+    $progressMeter = $("#progress-meter")
+    $progressMeter.remove()  if $progressMeter.length
+    $progressMeter = $('<div id="progress-meter">' + str + '</div>').prependTo($formBody)
+
+    $formControls.find(".back").attr "disabled", true
+    $formControls.find(".submit").hide()
+    $multiStepForm.on "slid", "", ->
+      $this = $(this)
+      $progressMeter.find(".progress-bar").removeClass "filled"
+      $activeProgressBars = $progressMeter.find('.progress-bar').slice 0, parseInt $(".carousel-inner .item.active").index() + 1, 10
+      $activeProgressBars.addClass "filled"
+      $formControls.find("button").show().removeAttr "disabled"
+      if $this.find(".carousel-inner .item:first").hasClass("active")
+        $formControls.find(".back").attr "disabled", true
+        $formControls.find(".submit").hide()
+      else if $this.find(".carousel-inner .item:last").hasClass("active")
+        $formControls.find(".next").hide()
+        $formControls.find(".submit").show()
+      else
+        $formControls.find(".submit").hide()
+
 # Modal helpers
 ntrapy.showModal = (id) ->
   $(id).modal("show").on "shown", ->

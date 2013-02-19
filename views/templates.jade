@@ -61,25 +61,27 @@ block templates
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
     #indexInputModal.modal.hide.fade(data-backdrop='static', tabindex='-1', role='dialog', aria-labelledby='indexInputModal', aria-hidden='true')
-      .modal-header
-        //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-        h3 Additional Input Required
-      .modal-body
-        form#inputForm.form-horizontal
-          fieldset
-            // ko foreach: getPlans
-            .control-group
-              label.control-label(data-bind='text: key, attr: {for: key}')
-              .controls
-                input(type='text', data-bind='attr: {id: key, name: key}, css: {required: value.required}')
-                // span.help-inline(data-bind='text: value.friendly')
-            // /ko
-            .form-actions
-              button.btn.btn-small.btn-primary(type='submit') Submit
-              button.cancel.btn-link(type='reset', data-dismiss='modal') Cancel
-      // .modal-footer
-      //   button.btn.btn-small(data-dismiss='modal', aria-hidden='true') Cancel
-      //   button.btn.btn-small.btn-primary(type='submit', data-dismiss='modal', data-bind='click: submitInput') Submit
+      form#inputForm.form-horizontal.error-under-input
+        .modal-header
+          //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+          h3 Additional Input Required
+        .modal-body
+            div#multiStepForm.carousel.slide(data-interval="false")
+              div.carousel-inner
+                // ko foreach: getPlans
+                div.item(data-bind='css: {active: !$index()%2}')
+                  fieldset
+                    .control-group
+                      label.control-label(data-bind='text: key, attr: {for: key}')
+                      .controls
+                        input(type='text', data-toggle='tooltip', data-placement='right', data-bind='attr: {id: key, name: key, title: key + " is required", placeholder: value.default}, css: {required: value.required}')
+                        span.tooltip-toggle(data-toggle='tooltip', data-bind='attr: {"title": value.friendly}')
+                // /ko
+        .modal-footer
+          button.btn.btn-small.btn-secondary.back(data-slide="prev", href='#multiStepForm')= "< Back"
+          button.btn.btn-small.btn-primary.next(data-slide="next", href='#multiStepForm')= "Next Step >"
+          button.btn.btn-small.btn-primary.submit= "Submit"
+          button.cancel.btn-link(type='reset', data-dismiss='modal') Cancel
 
     #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
       .modal-body
@@ -95,7 +97,7 @@ block templates
         div.login-container.row-fluid
           div#rackspace-logo-container
           div#login-form
-            form#loginForm
+            form#loginForm.error-icon-only
               span.welcome-message= "Welcome to the OpenCenter Control Panel!"
               .alert.alert-error.hide= "Invalid username and/or password"
               .control-group
