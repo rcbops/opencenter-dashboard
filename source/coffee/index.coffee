@@ -86,7 +86,14 @@ $ ->
         return null
 
       ret = []
-      ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      #ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      for n in @wsPlans()?.plan
+        step = {}
+        step.name = ''
+        step.args = ntrapy.toArray n?.args
+        if step.args.length
+          ret.push (step)
+      console.log ret
       ret
 
     @getActions = (node) =>
@@ -133,7 +140,6 @@ $ ->
 
     # Multi-step form controls; here for manipulating form controls based on form's page
     $("#indexInputModal").on "shown", (e) ->
-      console.log "show modal indexInputModal"
       ntrapy.drawStepProgress()
 
     # Sortable afterMove hook; here for scoping updateNodes args
