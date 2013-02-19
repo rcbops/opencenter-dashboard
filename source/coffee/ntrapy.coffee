@@ -126,25 +126,35 @@ ntrapy.drawStepProgress = ->
   $formControls = $form.find(".modal-footer")
   console.log "drawStepProgress"
   if $multiStepForm.length and $formControls.length
-    options =
+    $back = $formControls.find(".back")
+    $next = $formControls.find(".next")
+    $submit = $formControls.find(".submit")
+    slideCount = $multiStepForm.find('.carousel-inner .item').length
+
+    tooltipOptions =
       placement: "right"
 
-    $(".tooltip-toggle").tooltip options
-    slideCount = $multiStepForm.find('.carousel-inner .item').length
-    str = ""
-    count = 0
-    percentWidth = 100 / slideCount
+    $(".tooltip-toggle").tooltip tooltipOptions
 
-    while count < slideCount
-      str += "<div id=\"progress-bar-" + (count + 1) + "\" class=\"progress-bar\" style=\"width:" + percentWidth + "%;\"></div>"
-      count++
+    if slideCount is 1
+      $back.hide()
+      $next.hide()
+      $submit.show()
+    else
+      str = ""
+      count = 0
+      percentWidth = 100 / slideCount
 
-    $progressMeter = $("#progress-meter")
-    $progressMeter.remove()  if $progressMeter.length
-    $progressMeter = $('<div id="progress-meter">' + str + '</div>').prependTo($formBody)
+      while count < slideCount
+        str += "<div id=\"progress-bar-" + (count + 1) + "\" class=\"progress-bar\" style=\"width:" + percentWidth + "%;\"></div>"
+        count++
 
-    $formControls.find(".back").attr "disabled", true
-    $formControls.find(".submit").hide()
+      $progressMeter = $("#progress-meter")
+      $progressMeter.remove()  if $progressMeter.length
+      $progressMeter = $('<div id="progress-meter">' + str + '</div>').prependTo($formBody)
+      $back.attr "disabled", true
+      $submit.hide()
+
     $multiStepForm.on "slid", "", ->
       $this = $(this)
       $progressMeter.find(".progress-bar").removeClass "filled"
@@ -152,13 +162,13 @@ ntrapy.drawStepProgress = ->
       $activeProgressBars.addClass "filled"
       $formControls.find("button").show().removeAttr "disabled"
       if $this.find(".carousel-inner .item:first").hasClass("active")
-        $formControls.find(".back").attr "disabled", true
-        $formControls.find(".submit").hide()
+        $back.attr "disabled", true
+        $submit.hide()
       else if $this.find(".carousel-inner .item:last").hasClass("active")
-        $formControls.find(".next").hide()
-        $formControls.find(".submit").show()
+        $next.hide()
+        $submit.show()
       else
-        $formControls.find(".submit").hide()
+        $submit.hide()
 
 # Modal helpers
 ntrapy.showModal = (id) ->
