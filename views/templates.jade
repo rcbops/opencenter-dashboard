@@ -71,11 +71,13 @@ block templates
                 // ko foreach: getPlans
                 div.item(data-bind='css: {active: !$index()%2}')
                   fieldset
-                    .control-group
-                      label.control-label(data-bind='text: key, attr: {for: key}')
-                      .controls
-                        input(type='text', data-toggle='tooltip', data-placement='right', data-bind='attr: {id: key, name: key, title: key + " is required", placeholder: value.default}, css: {required: value.required}')
-                        span.tooltip-toggle(data-toggle='tooltip', data-bind='attr: {"title": value.friendly}')
+                  // ko foreach: args
+                  .control-group
+                    label.control-label(data-bind='text: key, attr: {for: key}')
+                    .controls
+                      input(type='text', data-toggle='tooltip', data-placement='right', data-bind='attr: {id: key, name: key, title: key + " is required", placeholder: value.default}, css: {required: value.required}')
+                      span.tooltip-toggle(data-toggle='tooltip', data-bind='attr: {"title": value.friendly}')
+                  // /ko
                 // /ko
         .modal-footer
           button.btn.btn-small.btn-secondary.back(data-slide="prev", href='#multiStepForm')= "< Back"
