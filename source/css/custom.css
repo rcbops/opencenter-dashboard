@@ -260,7 +260,8 @@ Login Form
   margin-bottom: 20px;
   display: block;
 }
-#login-form form {
+#login-form form,
+#login-form input {
   margin-bottom: 0px;
 }
 #login-form label {
@@ -583,7 +584,7 @@ ul.backend-list li {
   background-color: #00a96d !important;
 }
 .warning_state, .warning_state_wait_for_action {
-  background-image:url('../img/progress-dark-yellow-status.gif') !important;
+  background-image: url('../img/progress-dark-yellow-status.gif') !important;
   background-repeat: repeat;
 }
 .error_state {
@@ -696,16 +697,27 @@ textarea {
 }
 .form-horizontal .control-label {
   width: 150px;
-  text-align: left;
+  text-align: right;
+  font-size: 13px;
 }
 .form-horizontal .control-group {
   margin-bottom: 0px;
   position: relative;
 }
+.tooltip-toggle,
+.info {
+  background: url('../img/icons/help.png') no-repeat center center;
+  cursor: pointer;
+  display: inline-block;
+  height: 16px;
+  margin-bottom: -3px;
+  margin-left: 10px;
+  width: 16px;
+}
 
 /* Buttons */
 .btn {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 .standard-button,
 .btn-secondary {
@@ -776,7 +788,6 @@ textarea {
   background: linear-gradient(top,#666 0,#333 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666',endColorstr='#333333',GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  margin-right: 10px;
   box-shadow: 0 0 0 0 rgba(0,0,0,0);
   -moz-box-shadow: 0 0 0 0 rgba(0,0,0,0);
   -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,0);
@@ -827,6 +838,9 @@ textarea {
 .modal-footer {
   background-color: #fff;
 }
+.modal-footer .btn + .btn {
+  margin-left: 0;
+}
 
 /* Form Validation */
 .warning-text-paragraph {
@@ -843,17 +857,34 @@ textarea {
 }
 .control-group label.error {
   position: relative;
-  top: 4px;
-  width: 15px;
-  height: 27px;
   margin-left: 5px;
+  margin-bottom: 0px;
   vertical-align: middle;
+  background-image: url('../img/icons/alert_red.png');
+  background-repeat: no-repeat;
+  background-position: 0px center;
+  color: #c40022;
+  font-size: 12px;
+  line-height: 12px;
+  margin-top: 10px;
+  padding-left: 18px;
+}
+.error-icon-only .control-group label.error {
+  width: 15px;
+  height: 15px;
+  margin-left: 5px;
   overflow: hidden;
   text-indent: hidden;
   white-space: nowrap;
   text-indent: 200%;
-  background-image: url('../img/icons/alert_red.png');
-  background-repeat: no-repeat;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 0px;
+}
+.error-under-input .control-group label.error {
+  position: absolute;
+  left: 165px;
+  bottom: -5px;
 }
 .control-group.success .control-label {
   color: inherit;
