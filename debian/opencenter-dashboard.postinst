@@ -21,3 +21,5 @@ if [ -x /etc/init.d/apache2 ]; then
     a2ensite opencenter-dashboard.conf
     invoke-rc.d apache2 restart
 fi
+
+db_stop
