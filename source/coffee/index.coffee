@@ -139,7 +139,7 @@ $ ->
           console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
     # Multi-step form controls; here for manipulating form controls based on form's page
-    $("#indexInputModal").on "shown", (e) ->
+    $("#indexInputModal").on "show", (e) ->
       ntrapy.drawStepProgress()
 
     # Sortable afterMove hook; here for scoping updateNodes args
