@@ -219,5 +219,14 @@ $ ->
           form.find('.alert').show()
           user.focus()
 
+  ko.bindingHandlers.tipper =
+    init: (el, data) ->
+      opts =
+        title: data().description
+        trigger: "hover"
+        container: "#inputForm"
+        animation: false
+      $(el).tooltip opts
+
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel

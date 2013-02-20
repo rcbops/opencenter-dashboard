@@ -701,11 +701,11 @@ textarea {
   margin-bottom: 0px;
 }
 .form-horizontal .controls {
-  margin-left: 170px;
+  margin-left: 270px;
   margin-bottom: 15px;
 }
 .form-horizontal .control-label {
-  width: 150px;
+  width: 250px;
   text-align: right;
   font-size: 13px;
 }
@@ -722,6 +722,9 @@ textarea {
   margin-bottom: -3px;
   margin-left: 10px;
   width: 16px;
+}
+.tooltip-inner {
+  text-align: justify;
 }
 
 /* Buttons */
