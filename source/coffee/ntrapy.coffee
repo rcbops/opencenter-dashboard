@@ -124,17 +124,12 @@ ntrapy.drawStepProgress = ->
   $multiStepForm = $form.find(".carousel")
   $formBody = $form.find(".modal-body")
   $formControls = $form.find(".modal-footer")
-  console.log "drawStepProgress"
+
   if $multiStepForm.length and $formControls.length
     $back = $formControls.find(".back")
     $next = $formControls.find(".next")
     $submit = $formControls.find(".submit")
     slideCount = $multiStepForm.find('.carousel-inner .item').length
-
-    tooltipOptions =
-      placement: "right"
-
-    $(".tooltip-toggle").tooltip tooltipOptions
 
     if slideCount is 1
       $back.hide()
@@ -172,6 +167,8 @@ ntrapy.drawStepProgress = ->
 
 # Modal helpers
 ntrapy.showModal = (id) ->
+  $(".modal").not(id).modal "hide"
+  ntrapy.drawStepProgress() if id is '#indexInputModal'
   $(id).modal("show").on "shown", ->
     $(id).find("input").first().focus()
 ntrapy.hideModal = (id) ->

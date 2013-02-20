@@ -89,11 +89,10 @@ $ ->
       #ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
       for n in @wsPlans()?.plan
         step = {}
-        step.name = ''
+        step.name = '' #TODO: Possibly create a name for each step./ntrapy
         step.args = ntrapy.toArray n?.args
         if step.args.length
           ret.push (step)
-      console.log ret
       ret
 
     @getActions = (node) =>
@@ -139,8 +138,8 @@ $ ->
           console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
     # Multi-step form controls; here for manipulating form controls based on form's page
-    $("#indexInputModal").on "show", (e) ->
-      ntrapy.drawStepProgress()
+    #$("#indexInputModal").on "show", (e) ->
+    #  ntrapy.drawStepProgress()
 
     # Sortable afterMove hook; here for scoping updateNodes args
     ko.bindingHandlers.sortable.afterMove = (options) =>
