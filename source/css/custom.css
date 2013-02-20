@@ -222,6 +222,7 @@ Header
 #links li:first-child {
   margin-left: 210px;
 }
+
 /****************
 Login Form
 ****************/
@@ -303,6 +304,14 @@ Login Form
   width: 13px;
   margin-left: 5px;
 }
+
+/****************
+Input Form
+****************/
+#inputForm label {
+  line-height: 1;
+}
+
 /****************
 Content
 ****************/
@@ -851,35 +860,23 @@ textarea {
     display: inline-block !important;
 }
 .control-group label.error {
+  width: 15px;
+  height: 15px;
+  overflow: hidden;
+  text-indent: hidden;
+  white-space: nowrap;
+  text-indent: 200%;
   position: relative;
+  margin-top: -2px;
   margin-left: 5px;
   margin-bottom: 0px;
+  padding-left: 0px;
   vertical-align: middle;
   background-image: url('../img/icons/alert_red.png');
   background-repeat: no-repeat;
   background-position: 0px center;
   color: #c40022;
   font-size: 12px;
-  line-height: 12px;
-  margin-top: 10px;
-  padding-left: 18px;
-}
-.error-icon-only .control-group label.error {
-  width: 15px;
-  height: 15px;
-  margin-left: 5px;
-  overflow: hidden;
-  text-indent: hidden;
-  white-space: nowrap;
-  text-indent: 200%;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  padding-left: 0px;
-}
-.error-under-input .control-group label.error {
-  position: absolute;
-  left: 165px;
-  bottom: -5px;
 }
 .control-group.success .control-label {
   color: inherit;

@@ -61,7 +61,7 @@ block templates
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
     #indexInputModal.modal.hide.fade(data-backdrop='static', tabindex='-1', role='dialog', aria-labelledby='indexInputModal', aria-hidden='true')
-      form#inputForm.form-horizontal.error-under-input
+      form#inputForm.form-horizontal
         .modal-header
           //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
           h3 Additional Input Required
@@ -75,8 +75,7 @@ block templates
                   .control-group
                     label.control-label(data-bind='text: key, attr: {for: key}')
                     .controls
-                      input(type='text', data-toggle='tooltip', data-placement='right', data-bind='attr: {id: key, name: key, title: key + " is required", placeholder: value.default}, css: {required: value.required}')
-                      span.tooltip-toggle(data-toggle='tooltip', data-bind='attr: {"title": value.friendly}')
+                      input(type='text', data-bind='attr: {id: key, name: key, title: key + " is required", placeholder: value.default}, css: {required: value.required}')
                   // /ko
                 // /ko
         .modal-footer
@@ -84,15 +83,6 @@ block templates
           button.btn.btn-small.btn-primary.next(data-slide="next", href='#multiStepForm')= "Next Step >"
           button.btn.btn-small.btn-primary.submit= "Submit"
           button.cancel.btn-link(type='reset', data-dismiss='modal') Cancel
-
-    #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
-      .modal-body
-        div.warning-section
-          div#no-connection-img
-          div.text-section
-            h1.warning-header= "Disconnected"
-            p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
-            p.status-text= "We're trying to reconnect now..."
 
     #indexLoginModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexLoginModal', aria-hidden='true')
       .modal-body
