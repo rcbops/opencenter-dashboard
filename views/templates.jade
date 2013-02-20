@@ -60,24 +60,33 @@ block templates
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
 
+    #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
+      .modal-body
+        div.warning-section
+          div#no-connection-img
+          div.text-section
+            h1.warning-header= "Disconnected"
+            p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
+            p.status-text= "We're trying to reconnect now..."
+
     #indexInputModal.modal.hide.fade(data-backdrop='static', tabindex='-1', role='dialog', aria-labelledby='indexInputModal', aria-hidden='true')
       form#inputForm.form-horizontal
         .modal-header
           //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
           h3 Additional Input Required
         .modal-body
-            div#multiStepForm.carousel.slide(data-interval="false")
-              div.carousel-inner
-                // ko foreach: getPlans
-                div.item(data-bind='css: {active: !$index()%2}')
-                  fieldset
+          div#multiStepForm.carousel.slide(data-interval="false")
+            div.carousel-inner
+              // ko foreach: getPlans
+              div.item(data-bind='css: {active: !$index()%2}')
+                fieldset
                   // ko foreach: args
                   .control-group
-                    label.control-label(data-bind='text: key, attr: {for: key}')
+                    label.control-label(data-bind='text: value.friendly, attr: {for: key}')
                     .controls
-                      input(type='text', data-bind='attr: {id: key, name: key, title: key + " is required", placeholder: value.default}, css: {required: value.required}')
+                      input(type='text', data-bind='tipper: value, attr: {id: key, name: key, value: value.default}, css: {required: value.required}')
                   // /ko
-                // /ko
+              // /ko
         .modal-footer
           button.btn.btn-small.btn-secondary.back(data-slide="prev", href='#multiStepForm')= "< Back"
           button.btn.btn-small.btn-primary.next(data-slide="next", href='#multiStepForm')= "Next Step >"
