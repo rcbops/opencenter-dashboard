@@ -245,7 +245,7 @@ ntrapy.parseNodes = (data, keyed={}) ->
         ntrapy.killPopovers() # We're moving so kill popovers
         keyed[nid].hovered = false # And cancel hovers
         if node.task_id?
-          console.log "Pending: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
+          #console.log "Pending: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
           node.facts.parent_id = keyed[nid].facts.parent_id # Ignore parent changes until tasks complete
         else
           console.log "Deleting: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
@@ -267,7 +267,7 @@ ntrapy.parseNodes = (data, keyed={}) ->
     node = keyed[id]
     pid = node.facts?.parent_id
     if pid? # Has parent ID?
-      console.log "Node: #{id}, Parent: #{pid}"
+      #console.log "Node: #{id}, Parent: #{pid}"
       pnode = keyed?[pid]
       if pnode? # Parent exists?
         pnode.children[id] = node # Add to parent's children
@@ -379,9 +379,9 @@ ntrapy.updatePopover = (el, obj, show=false) ->
     opts["title"] =
       #TODO: Figure out why this fires twice: console.log "title"
       """
-      #{obj.name ? "Details"}
-      <ul class="backend-list">
-        #{('<li><div class="item">' + backend + '</div></li>' for backend in obj.facts.backends).join('')}
+      #{obj.name? ? "Details"}
+      <ul class="backend-list tags">
+          #{('<li><div class="item">' + backend + '</div></li>' for backend in obj.facts.backends).join('')}
       </ul>
       """
     opts["content"] =
