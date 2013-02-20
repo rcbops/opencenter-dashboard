@@ -379,7 +379,7 @@ ntrapy.updatePopover = (el, obj, show=false) ->
     opts["title"] =
       #TODO: Figure out why this fires twice: console.log "title"
       """
-      #{obj.name? ? "Details"}
+      #{obj.name ? "Details"}
       <ul class="backend-list tags">
           #{('<li><div class="item">' + backend + '</div></li>' for backend in obj.facts.backends).join('')}
       </ul>
