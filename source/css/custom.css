@@ -4,7 +4,7 @@ General
 body {
   background: #ddd;
   /* Space navbar */
-  padding-top: 104px;
+  padding-top: 120px;
   padding-right: 10px;
   padding-bottom: 40px;
   padding-left: 10px;
@@ -93,14 +93,16 @@ Header
   text-align: right;
   color: #999;
   font-size: 12px;
+  margin-top: 3px;
 }
 #top-links li {
-  line-height: 35px;
+  line-height: 14px;
   margin: 0 0 0 10px;
 }
 #top-links a {
   color: #999;
-  padding: 10px;
+  padding: 11px;
+  display: inline-block;
 }
 #top-links a:hover {
   color: #ccc;
@@ -115,12 +117,19 @@ Header
   -moz-box-shadow: 0 -3px 9px 0 #000;
   -webkit-box-shadow: 0 -3px 9px 0 #000;
 }
+.navbar-fixed-top .navbar-inner,
+.navbar-static-top .navbar-inner {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: 0px;
+}
 #logo-wrapper {
   position: relative;
 }
 .brand {
   position: absolute;
-  top: -20px;
+  top: -29px;
   display: block;
   float: none;
   padding: 0px;
