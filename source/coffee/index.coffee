@@ -243,7 +243,7 @@ $ ->
       opts =
         title: data().description
         trigger: "hover"
-        container: "#inputForm"
+        container: "#indexInputModal"
         animation: false
       $(el).tooltip opts
 
