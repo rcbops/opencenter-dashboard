@@ -122,7 +122,7 @@ $ ->
         $(element).closest('.control-group').removeClass('error').addClass('success')
       submitHandler: (form) =>
         $(form).find('.control-group').each (index, element) =>
-          key = $(element).find('label').first().text()
+          key = $(element).find('label').first().attr('for')
           val = $(element).find('input').val()
           for plan in @wsPlans().plan
             if plan?.args?[key]?
