@@ -12,6 +12,11 @@ body {
   font-size: 13px;
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
   color: #333;
+  /* Don't allow texte selection */
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
 }
 a {
   color: #1d71bf;

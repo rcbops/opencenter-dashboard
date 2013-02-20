@@ -55,7 +55,7 @@ block templates
                 // ko foreach: actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
                 // /ko
-              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dragDisabled}')
+              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dragDisabled}, attr: {"data-id": id}')
             .clear-right
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')

@@ -194,7 +194,14 @@ ntrapy.parseNodes = (data, keyed={}) ->
     if keyed[nid]? # Updating existing node?
       pid = keyed[nid].facts?.parent_id # Grab current parent
       if pid? and pid isnt node.facts?.parent_id # If new parent is different
-        delete keyed[pid].children[nid] # Remove node from old parent's children
+        ntrapy.killPopovers() # We're moving so kill popovers
+        keyed[nid].hovered = false # And cancel hovers
+        if node.task_id?
+          console.log "Pending: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
+          node.facts.parent_id = keyed[nid].facts.parent_id # Ignore parent changes until tasks complete
+        else
+          console.log "Deleting: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
+          delete keyed[pid].children[nid] # Remove node from old parent's children
 
     # Stub if missing
     node.actions ?= []
@@ -204,6 +211,7 @@ ntrapy.parseNodes = (data, keyed={}) ->
     node.children ?= {}
     node.facts ?= {}
     node.facts.backends ?= []
+    node.hovered ?= keyed[nid]?.hovered ? false
     keyed[nid] = node # Add/update node
 
   # Build child arrays
@@ -211,6 +219,7 @@ ntrapy.parseNodes = (data, keyed={}) ->
     node = keyed[id]
     pid = node.facts?.parent_id
     if pid? # Has parent ID?
+      console.log "Node: #{id}, Parent: #{pid}"
       pnode = keyed?[pid]
       if pnode? # Parent exists?
         pnode.children[id] = node # Add to parent's children
@@ -221,13 +230,28 @@ ntrapy.parseNodes = (data, keyed={}) ->
     else # Invalid root node!
       delete keyed[id] # Pew Pew!
 
+  # Node staleness checker
+  stale = (node) ->
+    if node?.attrs?.last_checkin? # Have we checked in at all?
+      if Math.abs(+node.attrs.last_checkin - +ntrapy.txID) > 90 then true # Hasn't checked in for 3 cycles
+      else false
+    else false
+
   # Fill other properties
   for id of keyed
     node = keyed[id]
-    if node.task_id?
+    if node?.attrs?.last_task is "failed"
+      ntrapy.setError node
+    else if stale node or node?.attrs?.last_task is "rollback"
+      ntrapy.setWarning node
+    else if node.task_id?
       ntrapy.setBusy node
     else
       ntrapy.setGood node
+
+    if node.hovered
+      ntrapy.updatePopover $("[data-bind~='popper'],[data-id='#{id}']"), node, true # Update matching popover
+
     node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
     node.containers = (v for k,v of node.children when "container" in v.facts.backends)
 
@@ -238,9 +262,9 @@ ntrapy.setError = (node) ->
   node.statusText "Error"
   node.dragDisabled false
 
-ntrapy.setFailed = (node) ->
+ntrapy.setWarning = (node) ->
   node.statusClass "processing_state"
-  node.statusText "Failure"
+  node.statusText "Warning"
   node.dragDisabled false
 
 ntrapy.setBusy = (node) ->
@@ -288,3 +312,56 @@ ntrapy.pollNodes = (cb, timeout) =>
     , timeout
 
   repoll() # DO EET
+
+ntrapy.popoverOptions =
+  html: true
+  delay: 0
+  trigger: "manual"
+  animation: false
+  placement: ntrapy.getPopoverPlacement
+  container: 'body'
+
+ntrapy.killPopovers = ->
+  $("[data-bind~='popper']").popover "hide"
+  $(".popover").remove()
+
+ntrapy.updatePopover = (el, obj, show=false) ->
+  opts = ntrapy.popoverOptions
+  doIt = (task) ->
+    opts["title"] =
+      #TODO: Figure out why this fires twice: console.log "title"
+      """
+      #{obj.name ? "Details"}
+      <ul class="backend-list">
+        #{('<li><div class="item">' + backend + '</div></li>' for backend in obj.facts.backends).join('')}
+      </ul>
+      """
+    opts["content"] =
+      """
+      <dl class="node-data">
+        <dt>ID</dt>
+        <dd>#{obj.id}</dd>
+        <dt>Status</dt>
+        <dd>#{obj.statusText()}</dd>
+        <dt>Adventure</dt>
+        <dd>#{obj.adventure_id ? 'idle'}</dd>
+        <dt>Task</dt>
+        <dd>#{task ? 'idle'}</dd>
+        <dt>Last Task</dt>
+        <dd>#{obj?.attrs?.last_task ? 'unknown'}</dd>
+      </dl>
+      """
+    #console.log "Task: ", task
+    #console.log "Status: ", obj.statusText()
+    $(el).popover opts
+    if show
+      #console.log "Reshowing"
+      ntrapy.killPopovers()
+      $(el).popover "show"
+
+  if obj?.task_id?
+    ntrapy.get "/roush/tasks/#{obj.task_id}"
+    , (data) -> doIt data?.task?.action
+    , -> doIt()
+  else
+    doIt()
