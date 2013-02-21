@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "./ntrapy.js",
   "dependencies": {
-    "bootstrap": "2.2.2",
+    "bootstrap": "2.3.0",
     "jquery": "1.9.1",
     "jquery-ui": "1.10.0",
     "jquery.validation": "1.11.0",
