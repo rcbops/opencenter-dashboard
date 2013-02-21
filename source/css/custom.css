@@ -12,6 +12,11 @@ body {
   font-size: 13px;
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
   color: #333;
+  /* Don't allow texte selection */
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
 }
 a {
   color: #1d71bf;
@@ -39,6 +44,23 @@ p {
 .container-fluid {
   margin: 0 auto;
 }
+/* Modal */
+.modal-body {
+  max-height: none;
+  padding: 0;
+}
+.modal-body fieldset {
+  padding: 15px;
+}
+.form-horizontal .form-actions {
+  margin: 0px;
+  padding: 10px 20px;
+}
+/* Carousel */
+.carousel {
+  margin: 0px;
+}
+
 /***************
 No Connection Modal
 ***************/
@@ -214,6 +236,7 @@ Header
 #links li:first-child {
   margin-left: 210px;
 }
+
 /****************
 Login Form
 ****************/
@@ -247,7 +270,8 @@ Login Form
   margin-bottom: 20px;
   display: block;
 }
-#login-form form {
+#login-form form,
+#login-form input {
   margin-bottom: 0px;
 }
 #login-form label {
@@ -294,6 +318,14 @@ Login Form
   width: 13px;
   margin-left: 5px;
 }
+
+/****************
+Input Form
+****************/
+#inputForm label {
+  line-height: 1;
+}
+
 /****************
 Content
 ****************/
@@ -509,7 +541,7 @@ ul.backend-list li {
 }
 
 /* Tags */
-.item {
+.tags .item {
   display: inline-block;
   border: 1px #ccc solid;
   padding: 4px 8px;
@@ -570,7 +602,7 @@ ul.backend-list li {
   background-color: #00a96d !important;
 }
 .warning_state, .warning_state_wait_for_action {
-  background-image:url('../img/progress-dark-yellow-status.gif') !important;
+  background-image: url('../img/progress-dark-yellow-status.gif') !important;
   background-repeat: repeat;
 }
 .error_state {
@@ -674,23 +706,88 @@ input:not([type]), input[type="text"], textarea, input[type="password"], .inputC
 textarea {
   height: auto;
 }
+.form-horizontal {
+  margin-bottom: 0px;
+}
 .form-horizontal .controls {
-  margin-left: 170px;
+  margin-left: 270px;
   margin-bottom: 15px;
 }
 .form-horizontal .control-label {
-  width: 150px;
-  text-align: left;
+  width: 250px;
+  text-align: right;
+  font-size: 13px;
 }
 .form-horizontal .control-group {
   margin-bottom: 0px;
   position: relative;
 }
+.tooltip-toggle,
+.info {
+  background: url('../img/icons/help.png') no-repeat center center;
+  cursor: pointer;
+  display: inline-block;
+  height: 16px;
+  margin-bottom: -3px;
+  margin-left: 10px;
+  width: 16px;
+}
+.tooltip-inner {
+  text-align: justify;
+}
 
 /* Buttons */
+.btn {
+  margin-right: 5px;
+}
+.standard-button,
+.btn-secondary {
+  cursor: pointer;
+  line-height: 20px;
+  font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+  font-size: 13px;
+  text-align: center;
+  padding: 1px 10px 2px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  text-shadow: 0 1px 1px #fff;
+  background-color: #c5c5c5;
+  border-color: #999;
+  color: #333;
+  background: #fff;
+  background: -moz-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#c5c5c5));
+  background: -webkit-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: -o-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: -ms-linear-gradient(top,#fff 0,#c5c5c5 100%);
+  background: linear-gradient(top,#fff 0,#c5c5c5 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#c5c5c5',GradientType=0);
+}
+.standard-button:not([disabled]):hover,
+.btn-secondary:not([disabled]):hover {
+  background: #fff;
+  background: -moz-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#fff),color-stop(100%,#d7d7d7));
+  background: -webkit-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: -o-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: -ms-linear-gradient(top,#fff 0,#d7d7d7 100%);
+  background: linear-gradient(top,#fff 0,#d7d7d7 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#d7d7d7',GradientType=0);
+  text-decoration: none;
+}
+.standard-button:not([disabled]):active,
+.btn-secondary:not([disabled]):active {
+  background-image: none;
+  background-color: #f3f3f3;
+  box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4);
+  -moz-box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4);
+  -webkit-box-shadow: inset 0 0 4px 0 rgba(0,0,0,0.4);
+}
 .btn-primary {
   cursor: pointer;
-  margin: 0;
   line-height: 20px;
   font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
   font-size: 13px;
@@ -712,7 +809,6 @@ textarea {
   background: linear-gradient(top,#666 0,#333 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666',endColorstr='#333333',GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-  margin-right: 10px;
   box-shadow: 0 0 0 0 rgba(0,0,0,0);
   -moz-box-shadow: 0 0 0 0 rgba(0,0,0,0);
   -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,0);
@@ -758,8 +854,13 @@ textarea {
   text-align: left;
 }
 .form-horizontal .form-actions {
-  padding: 10px 20px;
-  margin: 10px -15px -35px -15px;
+  background-color: #fff;
+}
+.modal-footer {
+  background-color: #fff;
+}
+.modal-footer .btn + .btn {
+  margin-left: 0;
 }
 
 /* Form Validation */
@@ -776,18 +877,23 @@ textarea {
     display: inline-block !important;
 }
 .control-group label.error {
-  position: relative;
-  top: 4px;
   width: 15px;
-  height: 27px;
-  margin-left: 5px;
-  vertical-align: middle;
+  height: 15px;
   overflow: hidden;
   text-indent: hidden;
   white-space: nowrap;
   text-indent: 200%;
+  position: relative;
+  margin-top: -2px;
+  margin-left: 5px;
+  margin-bottom: 0px;
+  padding-left: 0px;
+  vertical-align: middle;
   background-image: url('../img/icons/alert_red.png');
   background-repeat: no-repeat;
+  background-position: 0px center;
+  color: #c40022;
+  font-size: 12px;
 }
 .control-group.success .control-label {
   color: inherit;
@@ -803,6 +909,31 @@ textarea {
   color: inherit;
 }
 
+/* Progress Meter */
+#progress-meter {
+  border: 1px solid #cccccc;
+  padding: 1px;
+  margin: 10px;
+  line-height: 0px;
+}
+#progress-meter .progress-bar {
+  background-color: #d5e4f2;
+  display: inline-block;
+  border-left: 1px solid #fff;
+  margin-right: -1px;
+  height: 10px;
+}
+#progress-meter .progress-bar.filled {
+  background-color: #2f81d1;
+}
+#progress-meter .progress-bar:first-child {
+  border-left: none;
+  background-color: #2f81d1;
+}
+#progress-meter .progress-bar:last-child {
+  margin-left: 0px;
+  border-left: 1px solid #fff;
+}
 /* Zero State */
 .empty_overlay_widget {
   width: 100%;

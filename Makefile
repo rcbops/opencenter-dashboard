@@ -22,7 +22,7 @@ devbuild:
 	@echo ${HR}
 	@echo "Building Bootstrap"
 	@echo ${HR}
-	cd components/bootstrap; $(MAKE) bootstrap
+	cd components/bootstrap; npm install; $(MAKE) bootstrap
 	@echo ${HR}
 	@echo "Building jQuery"
 	@echo ${HR}

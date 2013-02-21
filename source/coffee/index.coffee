@@ -86,7 +86,13 @@ $ ->
         return null
 
       ret = []
-      ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      #ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      for n in @wsPlans()?.plan
+        step = {}
+        step.name = '' #TODO: Possibly create a name for each step./ntrapy
+        step.args = ntrapy.toArray n?.args
+        if step.args.length
+          ret.push (step)
       ret
 
     @getActions = (node) =>
@@ -105,7 +111,7 @@ $ ->
             @wsPlans().node = object.id()
             ntrapy.showModal "#indexInputModal"
           else
-            console.log "Error (#{jqXHR.status}): errorThrown"
+            console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
     # Input form validator; here for scoping plan args
     $('#inputForm').validate
@@ -116,7 +122,7 @@ $ ->
         $(element).closest('.control-group').removeClass('error').addClass('success')
       submitHandler: (form) =>
         $(form).find('.control-group').each (index, element) =>
-          key = $(element).find('label').first().text()
+          key = $(element).find('label').first().attr('for')
           val = $(element).find('input').val()
           for plan in @wsPlans().plan
             if plan?.args?[key]?
@@ -129,7 +135,11 @@ $ ->
           ntrapy.hideModal "#indexInputModal"
         , (jqXHR, textStatus, errorThrown) ->
           ntrapy.hideModal "#indexInputModal"
-          console.log "Error (#{jqXHR.status}): errorThrown"
+          console.log "Error (#{jqXHR.status}): #{errorThrown}"
+
+    # Multi-step form controls; here for manipulating form controls based on form's page
+    #$("#indexInputModal").on "show", (e) ->
+    #  ntrapy.drawStepProgress()
 
     # Sortable afterMove hook; here for scoping updateNodes args
     ko.bindingHandlers.sortable.afterMove = (options) =>
@@ -142,11 +152,39 @@ $ ->
           node_id: options.item.id()
       , (data) ->
         null # TODO: Do something with success?
-      , (jqXHR) =>
-        console.log "Error: ", jqXHR
+      , (jqXHR, textStatus, errorThrown) =>
+        console.log "Error: (#{jqXHR.status}): #{errorThrown}"
         ntrapy.updateNodes null, @wsTemp, @wsKeys # Remap from keys on fails
 
+    # In case we don't get an update for a while, make sure we at least periodically update node statuses
+    setInterval(ntrapy.updateNodes, 90000, null, @wsTemp, @wsKeys)
+
     @ # Return ourself
+
+  ko.bindingHandlers.popper =
+    init: (el, data) ->
+      $(el).hover (event) ->
+        id = data().id()
+        obj = ntrapy.indexModel.wsKeys[id]
+        ntrapy.killPopovers()
+        if event.type is "mouseenter"
+          obj.hovered = true
+          ntrapy.updatePopover this, obj, true
+        else
+          obj.hovered = false
+          ntrapy.killPopovers()
+
+  ko.bindingHandlers.sortable.options =
+    handle: ".btn"
+    cancel: ".dragDisable"
+    opacity: 0.35
+    tolerance: "pointer"
+    start: (event, ui) ->
+      $("[data-bind~='popper']").popover "disable"
+      ntrapy.killPopovers()
+    stop: (event, ui) ->
+      null
+      # TODO: Do something on sort stop?
 
   # Login form validator
   $('#loginForm').validate
@@ -181,52 +219,14 @@ $ ->
           form.find('.alert').show()
           user.focus()
 
-  popoverOptions =
-    html: true
-    delay: 0
-    trigger: "hover"
-    animation: false
-    placement: ntrapy.getPopoverPlacement
-    container: 'body'
-
-  ko.bindingHandlers.popper =
+  ko.bindingHandlers.tipper =
     init: (el, data) ->
-      opts = popoverOptions
-      opts["title"] = ->
-        #TODO: Figure out why this fires twice: console.log "title"
-        """
-        #{data()?.name?() ? "Details"}
-        <ul class="backend-list">
-          #{('<li><div class="item">' + backend + '</div></li>' for backend in data().facts.backends()).join('')}
-        </ul>
-        """
-      opts["content"] = ->
-        """
-        <dl class="node-data">
-          <dt>ID</dt>
-          <dd>#{data().id()}</dd>
-          <dt>Status</dt>
-          <dd>#{data().statusText()}</dd>
-          <dt>Adventure</dt>
-          <dd>#{data().adventure_id() ? 'idle'}</dd>
-          <dt>Task</dt>
-          <dd>#{data().task_id() ? 'idle'}</dd>
-        </dl>
-        """
-      $(el).popover opts
-
-  ko.bindingHandlers.sortable.options =
-    handle: ".btn"
-    cancel: ".dragDisable"
-    opacity: 0.35
-    tolerance: "pointer"
-    start: (event, ui) ->
-      $(ui.item).find('button[data-bind*="popper"]')
-        .popover("disable")
-        .popover "hide"
-    stop: (event, ui) ->
-      null
-      # TODO: Do something on sort stop?
+      opts =
+        title: data().description
+        trigger: "hover"
+        container: "#indexInputModal"
+        animation: false
+      $(el).tooltip opts
 
   ntrapy.indexModel = new IndexModel()
   ko.applyBindings ntrapy.indexModel
