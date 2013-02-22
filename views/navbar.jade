@@ -4,7 +4,7 @@ block navbar
       li#user-menu.menu
         a(href="#") Some Support Link
         a(href="#") Some Support Link
-        a(href="#", data-bind="visible: ntrapy.authCheck, click: ntrapy.authLogout, text: ntrapy.authUser() + ' (Logout)'")
+        a(href="#", data-bind="visible: dashboard.authCheck, click: dashboard.authLogout, text: dashboard.authUser() + ' (Logout)'")
     .navbar-inner
       .container-fluid
         #logo-wrapper

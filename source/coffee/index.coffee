@@ -1,5 +1,5 @@
 # Grab namespace
-ntrapy = exports?.ntrapy ? @ntrapy
+dashboard = exports?.dashboard ? @dashboard
 
 $ ->
   IndexModel = ->
@@ -30,13 +30,13 @@ $ ->
 
     # Update on request success/failure
     @siteEnabled = ko.computed ->
-      unless ntrapy.siteEnabled()
-        ntrapy.showModal "#indexNoConnectionModal"
+      unless dashboard.siteEnabled()
+        dashboard.showModal "#indexNoConnectionModal"
       else
-        ntrapy.hideModal "#indexNoConnectionModal"
+        dashboard.hideModal "#indexNoConnectionModal"
 
     # Get config and grab initial set of nodes
-    ntrapy.getData "/api/config", (data) =>
+    dashboard.getData "/api/config", (data) =>
       # Store config
       @config = data
 
@@ -47,28 +47,28 @@ $ ->
       @siteEnabled.extend throttle: @config?.timeout?.short ? 1000
 
       # Start long-poller
-      ntrapy.pollNodes (nodes, cb) => # Recursive node grabber
+      dashboard.pollNodes (nodes, cb) => # Recursive node grabber
         pnodes = []
         resolver = (stack) =>
           id = stack.pop()
           unless id? # End of ID list
-            ntrapy.updateNodes nodes: pnodes, @wsTemp, @wsKeys
+            dashboard.updateNodes nodes: pnodes, @wsTemp, @wsKeys
             cb() if cb?
           else
-            ntrapy.getData "/roush/nodes/#{id}", (node) ->
+            dashboard.getData "/octr/nodes/#{id}", (node) ->
               pnodes.push node.node
               resolver stack
         resolver nodes
       , @config?.timeout?.long ? 30000
 
       # Load initial data
-      ntrapy.getNodes "/roush/nodes/", @wsTemp, @wsKeys
+      dashboard.getNodes "/octr/nodes/", @wsTemp, @wsKeys
 
-    @siteActive = ntrapy.selector (data) =>
+    @siteActive = dashboard.selector (data) =>
       null # TODO: Do something useful with multiple tabs
       #switch data.name
       #  when "Workspace"
-      #    @getMappedData "/roush/nodes/1/tree", @wsTemp, mapping
+      #    @getMappedData "/octr/nodes/1/tree", @wsTemp, mapping
     , @siteNav()[0] # Set to first by default
 
     # Template accessor that avoids data-loading race
@@ -86,21 +86,21 @@ $ ->
         return null
 
       ret = []
-      #ret.push (ntrapy.toArray n?.args)... for n in @wsPlans()?.plan
+      #ret.push (dashboard.toArray n?.args)... for n in @wsPlans()?.plan
       for n in @wsPlans()?.plan
         step = {}
-        step.name = '' #TODO: Possibly create a name for each step./ntrapy
-        step.args = ntrapy.toArray n?.args
+        step.name = '' #TODO: Possibly create a name for each step./dashboard
+        step.args = dashboard.toArray n?.args
         if step.args.length
           ret.push (step)
       ret
 
     @getActions = (node) =>
-      ntrapy.getData "/roush/nodes/#{node.id()}/adventures", (data) ->
+      dashboard.getData "/octr/nodes/#{node.id()}/adventures", (data) ->
         node.actions (n for n in data?.adventures)
 
     @doAction = (object, action) =>
-      ntrapy.post "/roush/adventures/#{action.id}/execute",
+      dashboard.post "/octr/adventures/#{action.id}/execute",
         JSON.stringify node: object.id()
       , (data) -> # success handler
         null #TODO: Use success for something
@@ -109,7 +109,7 @@ $ ->
           when 409 # Need more data
             @wsPlans JSON.parse jqXHR.responseText
             @wsPlans().node = object.id()
-            ntrapy.showModal "#indexInputModal"
+            dashboard.showModal "#indexInputModal"
           else
             console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
@@ -127,25 +127,25 @@ $ ->
           for plan in @wsPlans().plan
             if plan?.args?[key]?
               plan.args[key].value = val
-        ntrapy.post "/roush/plan/",
+        dashboard.post "/octr/plan/",
           JSON.stringify
             node: @wsPlans().node
             plan: @wsPlans().plan
         , (data) ->
-          ntrapy.hideModal "#indexInputModal"
+          dashboard.hideModal "#indexInputModal"
         , (jqXHR, textStatus, errorThrown) ->
-          ntrapy.hideModal "#indexInputModal"
+          dashboard.hideModal "#indexInputModal"
           console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
     # Multi-step form controls; here for manipulating form controls based on form's page
     #$("#indexInputModal").on "show", (e) ->
-    #  ntrapy.drawStepProgress()
+    #  dashboard.drawStepProgress()
 
     # Sortable afterMove hook; here for scoping updateNodes args
     ko.bindingHandlers.sortable.afterMove = (options) =>
-      ntrapy.setBusy options.item # Set busy immediately on drop
+      dashboard.setBusy options.item # Set busy immediately on drop
       parent = options.sourceParentNode.attributes["data-id"].value
-      ntrapy.post "/roush/facts/",
+      dashboard.post "/octr/facts/",
         JSON.stringify
           key: "parent_id"
           value: parent
@@ -154,10 +154,10 @@ $ ->
         null # TODO: Do something with success?
       , (jqXHR, textStatus, errorThrown) =>
         console.log "Error: (#{jqXHR.status}): #{errorThrown}"
-        ntrapy.updateNodes null, @wsTemp, @wsKeys # Remap from keys on fails
+        dashboard.updateNodes null, @wsTemp, @wsKeys # Remap from keys on fails
 
     # In case we don't get an update for a while, make sure we at least periodically update node statuses
-    setInterval(ntrapy.updateNodes, 90000, null, @wsTemp, @wsKeys)
+    setInterval(dashboard.updateNodes, 90000, null, @wsTemp, @wsKeys)
 
     @ # Return ourself
 
@@ -165,14 +165,14 @@ $ ->
     init: (el, data) ->
       $(el).hover (event) ->
         id = data().id()
-        obj = ntrapy.indexModel.wsKeys[id]
-        ntrapy.killPopovers()
+        obj = dashboard.indexModel.wsKeys[id]
+        dashboard.killPopovers()
         if event.type is "mouseenter"
           obj.hovered = true
-          ntrapy.updatePopover this, obj, true
+          dashboard.updatePopover this, obj, true
         else
           obj.hovered = false
-          ntrapy.killPopovers()
+          dashboard.killPopovers()
 
   ko.bindingHandlers.sortable.options =
     handle: ".btn"
@@ -181,7 +181,7 @@ $ ->
     tolerance: "pointer"
     start: (event, ui) ->
       $("[data-bind~='popper']").popover "disable"
-      ntrapy.killPopovers()
+      dashboard.killPopovers()
     stop: (event, ui) ->
       null
       # TODO: Do something on sort stop?
@@ -204,16 +204,16 @@ $ ->
         group.find('input').val ""
         group.removeClass ['error', 'success']
         group.find('.controls label').remove()
-      ntrapy.makeBasicAuth user.val(), pass.val()
+      dashboard.makeBasicAuth user.val(), pass.val()
       throb.show()
       $.ajax # Test the auth
-        url: "/roush/"
-        headers: ntrapy.authHeader
+        url: "/octr/"
+        headers: dashboard.authHeader
         success: ->
-          ntrapy.loggingIn = false # Done logging in
+          dashboard.loggingIn = false # Done logging in
           resetForm()
           form.find('.alert').hide()
-          ntrapy.hideModal "#indexLoginModal"
+          dashboard.hideModal "#indexLoginModal"
         error: ->
           resetForm()
           form.find('.alert').show()
@@ -228,5 +228,5 @@ $ ->
         animation: false
       $(el).tooltip opts
 
-  ntrapy.indexModel = new IndexModel()
-  ko.applyBindings ntrapy.indexModel
+  dashboard.indexModel = new IndexModel()
+  ko.applyBindings dashboard.indexModel

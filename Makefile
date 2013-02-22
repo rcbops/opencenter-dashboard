@@ -64,7 +64,7 @@ devpub: | clean_pub
 	-cp -f ${PWD}/components/jquery-ui/ui/minified/jquery-ui.custom.min.js public/js/jquery-ui.min.js
 	-cp -f ${PWD}/components/jquery.validation/jquery-validate.min.js public/js
 	@echo ${HR}
-	@echo "Publishing nTrapy components"
+	@echo "Publishing Dashboard components"
 	@echo ${HR}
 	-cp -rn ${PWD}/source/ public
 
@@ -90,9 +90,9 @@ publish: | clean_pub
 	@echo ${HR}
 	@echo "Deploying Jade templates"
 	@echo ${HR}
-	node_modules/jade/bin/jade -o '{title: "OpenCenter"}' views/index.jade --out public
+	node_modules/jade/bin/jade views/index.jade --out public
 	@echo ${HR}
-	@echo "Deploying nTrapy components"
+	@echo "Deploying Dashboard components"
 	@echo ${HR}
 	-cp -fr source/* public
 	@echo ${HR}
@@ -113,7 +113,6 @@ cert:
 
 clean: clean_com clean_node clean_pub
 	-rm -f *.log
-	-rm -f *.db*
 
 clean_com:
 	-rm -rf components

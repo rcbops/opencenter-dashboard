@@ -1,8 +1,8 @@
-nTrapy (née OpenCenter)
+OpenCenter Dashboard
 ===
 
-nTrapy is the winniest awesomesauce there ever did was -- now with more
-hipsterstack!
+The OpenCenter Dashboard is the winniest awesomesauce there ever did was -- now
+with more hipsterstack!
 
 Installation
 ---
@@ -27,28 +27,35 @@ Be sure that "which node" and "which npm" both show
 /your/home/.nvm/version/bin/binary or similar, and not /usr/bin or some other
 random path you may have another node/npm installed at, before proceeding.
 
-Lastly, inside the cloned nTrapy directory, run make.
+Lastly, inside the cloned dashboard directory, run make.
 
     make
 
-No seriously, just run make. Assuming you have some standard build tools like
-gcc, just "make" should suffice.
+This will install and prepare the minimum dependencies to run the
+dashboard using the Node.js backend. Alternatively, you can install
+the full development stack.
+
+    make dev
+
+This will allow you to interact with Bower and the full tooling of Node deps.
 
 Configuration
 ---
 
-Be sure and copy the included config.js.sample file to a file named config.js,
-then tweak as desired. The most important value is currently the URL of a roush
-endpoint.
+Be sure and copy the included config.json.sample file to a file named
+config.json, then tweak as desired. The most important value is
+currently the URL of an OpenCenter endpoint.
 
 Usage
 ---
 
-To start up the development server and start interacting with the dashboard,
-from within the nTrapy directory, there's a shell wrapper to spawn and manage
-bits using the "coffee" compiler and "forever" process manager.
+To start up the development server and start interacting with the
+dashboard, from within the dashboard directory, there's a shell
+wrapper to spawn and manage bits using the "coffee" script compiler,
+"jade" template compiler and "node-dev" for managing the primary
+process.
 
-    ./ntrapy
+    ./dashboard
 
 Note that this wrapper can be re-run idempotently multiple times and will do a
 pretty good job of not putting you in a position of terribleness.
@@ -61,17 +68,18 @@ SSL
 ---
 
 If you have a hankering to get some securities up in your biznatch, the included
-Makefile has a "cert" target, which will automate the process of creating a
+makefile has a "cert" target, which will automate the process of creating a
 self-signed cert to your liking, which the server will automatically make use of
 if present.
 
 Deployment
 ---
 
-The makefile also includes a "deploy" target which will precompile the
-coffeescript and jade templates into a tarball named "public.tgz", containing a
-"public" directory with all resources unlinked and ready for injection into your
-favorite neanderthal server of yore, such as the Apaches or the (e)Ngin(e)-of-X.
+The makefile also includes a "deploy" target which will do the needful
+in a way that's fakeroot and package friendly, with all the
+appropriate resources in ./public, ready for injection into your
+favorite neanderthal server of yore, such as the Apaches or the
+(e)Ngin(e)-of-X.
 
 Use caution with rapid deployments, as exposed body parts may experience sudden
 bursts of awesomeness.
