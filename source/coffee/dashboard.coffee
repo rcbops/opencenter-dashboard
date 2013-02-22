@@ -273,7 +273,7 @@ dashboard.parseNodes = (data, keyed={}) ->
         pnode.children[id] = node # Add to parent's children
       else # We're an orphan (broken data or from previous merge)
         delete keyed[id] # No mercy for orphans!
-    else if node.name is "workspace" # Mebbe root node?
+    else if id is "1" # Mebbe root node?
       root = node # Point at it
     else # Invalid root node!
       delete keyed[id] # Pew Pew!
@@ -359,6 +359,7 @@ dashboard.pollNodes = (cb, timeout) =>
         switch jqXHR.status
           when 410 # Gone
             repoll() # Cycle transaction
+            dashboard.getNodes "/octr/nodes/", dashboard.indexModel.wsTemp, dashboard.indexModel.wsKeys
           else
             true # Retry otherwise
     , timeout
