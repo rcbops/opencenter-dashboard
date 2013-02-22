@@ -1,9 +1,9 @@
 {
-  "name": "nTrapy",
-  "version": "0.0.1",
+  "name": "OpenCenter-Dashboard",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node-dev ntrapy.coffee"
+    "start": "node-dev dashboard.coffee"
   },
   "dependencies": {
     "node-dev": "*",
