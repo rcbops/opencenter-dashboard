@@ -575,7 +575,6 @@ ul.backend-list li {
   color: #333;
 }
 .container-name {
-  text-transform: capitalize;
   font-weight: bold;
   color: #333;
   line-height: 40px;
@@ -652,7 +651,6 @@ ul.backend-list li {
   font-size: 13px;
   color: #1d71bf;
   white-space: nowrap;
-  text-transform: capitalize;
 }
 .dropdown-menu li > a:hover,
 .dropdown-menu li > a:focus,
