@@ -300,6 +300,10 @@ dashboard.parseNodes = (data, keyed={}) ->
     if node.hovered
       dashboard.updatePopover $("[data-bind~='popper'],[data-id='#{id}']"), node, true # Update matching popover
 
+    # If we have a non-empty display name, set the name to it
+    if node?.attrs?.display_name? and !!node.attrs.display_name
+      node.name = node.attrs.display_name
+
     node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
     node.containers = (v for k,v of node.children when "container" in v.facts.backends)
 
