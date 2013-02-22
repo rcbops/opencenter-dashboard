@@ -80,17 +80,21 @@ $ ->
       name: "indexItemTemplate"
       foreach: @wsItems
 
-    # Plan flattener. TODO: Stop flattening plans into a single object to handle multi-step plans intelligently
+    # Plan flattener
     @getPlans = ko.computed =>
       if not @wsPlans()?.plan?.length
         return null
 
       ret = []
       #ret.push (dashboard.toArray n?.args)... for n in @wsPlans()?.plan
-      for n in @wsPlans()?.plan
+      for plan in @wsPlans()?.plan
         step = {}
-        step.name = '' #TODO: Possibly create a name for each step./dashboard
-        step.args = dashboard.toArray n?.args
+        step.name = '' #TODO: Possibly create a name for each step.
+        step.args = dashboard.toArray plan?.args
+        # Fixup missing/empty friendly names
+        for arg,index in step.args
+          unless arg.value?.friendly? and !!arg.value.friendly
+            step.args[index].value.friendly = step.args[index].key
         if step.args.length
           ret.push (step)
       ret
