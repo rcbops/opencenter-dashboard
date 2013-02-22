@@ -1,6 +1,6 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
 Name: OpenCenter
-Source: https://github.com/rcbops/ntrapy
+Source: https://github.com/rcbops/opencenter-dashboard
 Files: *
 Copyright: 2012 Rackspace US, Inc.
 License: Apache-2

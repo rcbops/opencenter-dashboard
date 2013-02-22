@@ -3,7 +3,7 @@ block templates
     #root.container-fluid(data-bind='template: getIndexTemplate')
 
     script(type='text/html', id='zeroStateTemplate')
-      .well.well-small.pull-left.roush-container
+      .well.well-small.pull-left.opencenter-container
         header.container-header
           .pull-left.btn-group
             button.btn.btn-mini.dropdown-toggle.disabled(data-bind="click: $root.getActions", data-toggle='dropdown')
@@ -22,15 +22,15 @@ block templates
             div.create_one_now_section
               div.create_one_message
                 div
-                  p.create_one_message_top= "You don't have Roush Agent nodes yet."
+                  p.create_one_message_top= "You don't have OpenCenter Agent nodes yet."
                 div
                   p.create_one_message_middle= "Install some now."
                 div
-                  p.create_one_message_description= "The Roush agent allows your nodes to show up in this control panel. Learn more about"
-                    a.external(href="#") Roush Agent.
+                  p.create_one_message_description= "The OpenCenter agent allows your nodes to show up in this control panel. Learn more about"
+                    a.external(href="#") OpenCenter Agent.
 
     script(type='text/html', id='indexItemTemplate')
-      .well.well-small.pull-left.roush-container
+      .well.well-small.pull-left.opencenter-container
         header.container-header
           .pull-left.btn-group
             button.btn.btn-mini.dropdown-toggle(data-bind="click: $root.getActions", data-toggle='dropdown')

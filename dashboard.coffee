@@ -20,8 +20,6 @@ app = express()
 app.configure ->
   app.set "port", process.env.PORT or 3000
   app.set "sport", process.env.SPORT or 3443
-  #app.set "views", __dirname + "/views"
-  #app.set "view engine", "jade"
   app.use express.favicon()
   app.use express.logger "dev"
   app.use express.bodyParser()
@@ -42,32 +40,6 @@ app.configure "development", ->
     dumpExceptions: true
     showStack: true
 
-# TODO: Rewrite sessiony bits for SQLiteStore
-# API
-app.post "/api/login", (req, res) ->
-  #nano = require("nano") "http://localhost:5984"
-  if not req.body.user? or not req.body.pass?
-    res.send 401, "Missing user and/or pass!"
-  else
-    #nano.request
-    #  method: "POST"
-    #  db: "_session"
-    #  form:
-    #    name: req.body.user
-    #    password: req.body.pass
-    #  content_type: "application/x-www-form-urlencoded; charset=utf-8"
-    #, (err, body, headers) ->
-    #  if err
-    #    res.send err.reason
-    #  else
-    #    if headers?["set-cookie"]
-    #      res.cookie headers["set-cookie"]
-    #    res.send "Logged in!"
-
-app.post "/api/logout", (req, res) ->
-  res.clearCookie "AuthSession"
-  res.send "Logged out!"
-
 # Get all allowed keys
 app.get "/api/config", (req, res) ->
   ret = {}
@@ -87,10 +59,10 @@ app.get "/api/config/:key", (req, res) ->
 isEmpty = (obj) ->
   !Object.keys(obj).length > 0
 
-# Roush proxy, woo!
-app.all "/roush/?*", (req, res) ->
+# OpenCenter proxy, woo!
+app.all "/octr/?*", (req, res) ->
   options =
-    url: config.roush_url.replace(/\/$/, "") + req.originalUrl.replace(/\/roush/, "")
+    url: config.opencenter_url.replace(/\/$/, "") + req.originalUrl.replace(/\/octr/, "")
     json: if isEmpty req.body then "" else req.body
     # TODO: Figure out why this is broken: headers: req.headers ? {}
     method: req.method
@@ -106,7 +78,7 @@ app.all "/roush/?*", (req, res) ->
 
 # HTTP server
 http.createServer(app).listen app.get("port"), "::", ->
-  console.log "Express server listening on port #{app.get('port')} in #{app.settings.env} mode"
+  console.log "HTTP Server listening on port #{app.get('port')} in #{app.settings.env} mode"
 
 # TODO: See about stuffing this logic into callbacks on readFile
 try
@@ -117,7 +89,7 @@ try
 
   # HTTPS server
   https.createServer(tlsOptions, app).listen app.get("sport"), "::", ->
-    console.log "Express https server listening on port #{app.get('sport')} in #{app.settings.env} mode"
+    console.log "HTTPS server listening on port #{app.get('sport')} in #{app.settings.env} mode"
 
 catch e
   console.log e

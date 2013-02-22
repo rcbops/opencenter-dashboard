@@ -1,7 +1,7 @@
 {
-  "name": "nTrapy",
-  "version": "0.0.1",
-  "main": "./ntrapy.js",
+  "name": "OpenCenter-Dashboard",
+  "version": "1.0.0",
+  "main": "./dashboard.coffee",
   "dependencies": {
     "bootstrap": "2.3.0",
     "jquery": "1.9.1",
