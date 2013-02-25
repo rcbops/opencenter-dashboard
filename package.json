@@ -6,10 +6,11 @@
     "start": "node-dev dashboard.coffee"
   },
   "dependencies": {
-    "node-dev": "*",
-    "express": "*",
-    "request": "*",
-    "jade": "*",
-    "gzippo": "*"
+    "coffee-script": "1.5.0",
+    "node-dev": "0.2.10",
+    "express": "3.1.0",
+    "request": "2.14.0",
+    "jade": "0.28.1",
+    "gzippo": "0.2.0"
   }
 }
