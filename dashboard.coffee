@@ -11,7 +11,7 @@ config = require "./config.json"
 # Watch and copy CSS until we're using a watchful CSS compiler
 fs.watch "source/css/custom.css", {}, (event) ->
   if event is "change"
-    fs.createReadStream("source/css/custom.css").pipe fs.createWriteStream "public/css/custom.css"
+    fs.createReadStream("source/css/custom.css").pipe fs.createWriteStream("public/css/custom.css")
 
 # App
 app = express()
@@ -21,24 +21,23 @@ app.configure ->
   app.set "port", process.env.PORT or 3000
   app.set "sport", process.env.SPORT or 3443
   app.use express.favicon()
-  app.use express.logger "dev"
+  app.use express.logger("dev")
   app.use express.bodyParser()
   app.use express.methodOverride()
-  app.use express.cookieParser config.secret
   app.use app.router
 
 # Profiles
 app.configure "production", ->
   # Use gzip/1 day cache
-  app.use gzippo.staticGzip path.join __dirname, "public"
+  app.use gzippo.staticGzip(path.join __dirname, "public")
   app.use express.errorHandler()
 
 app.configure "development", ->
   # no compression/no cache
-  app.use express.static path.join __dirname, "public"
-  app.use express.errorHandler
+  app.use express.static(path.join __dirname, "public")
+  app.use express.errorHandler(
     dumpExceptions: true
-    showStack: true
+    showStack: true)
 
 # Get all allowed keys
 app.get "/api/config", (req, res) ->
