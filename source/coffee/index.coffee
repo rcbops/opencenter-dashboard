@@ -232,5 +232,23 @@ $ ->
         animation: false
       $(el).tooltip opts
 
+  # Custom binding provider with error handling
+  ErrorHandlingBindingProvider = ->
+    original = new ko.bindingProvider()
+
+    # Determine if an element has any bindings
+    @nodeHasBindings = original.nodeHasBindings
+
+    # Return the bindings given a node and the bindingContext
+    @getBindings = (node, bindingContext) ->
+      try
+        original.getBindings node, bindingContext
+      catch e
+        console.log "Error in binding: " + e.message, node
+        window.location = "/" # Reload page for now
+    @
+
+  ko.bindingProvider.instance = new ErrorHandlingBindingProvider()
+
   dashboard.indexModel = new IndexModel()
   ko.applyBindings dashboard.indexModel
