@@ -28,6 +28,9 @@ $ ->
     # Flat node list, keyed by id
     @wsKeys = {}
 
+    # Current task list
+    @wsTasks = ko.observableArray()
+
     # Update on request success/failure
     @siteEnabled = ko.computed ->
       unless dashboard.siteEnabled()
@@ -116,6 +119,9 @@ $ ->
             dashboard.showModal "#indexInputModal"
           else
             console.log "Error (#{jqXHR.status}): #{errorThrown}"
+
+    @getTaskCounts = ->
+      []
 
     # Input form validator; here for scoping plan args
     $('#inputForm').validate

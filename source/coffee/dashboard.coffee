@@ -1,3 +1,8 @@
+# Define Array::filter if not using ECMA5
+unless Array::filter
+  Array::filter = (cb) ->
+    el for el in @ when cb el
+
 # Create and store namespace
 dashboard = exports?.dashboard ? @dashboard = {}
 
@@ -383,3 +388,5 @@ dashboard.updatePopover = (el, obj, show=false) ->
     , -> doIt()
   else
     doIt()
+
+#dashboard.parseTasks =
