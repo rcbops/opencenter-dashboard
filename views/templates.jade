@@ -17,17 +17,17 @@ block templates
           .pull-left.container-name: span(data-bind='text: name')
 
         .container-body
-          div.empty_overlay_widget
-            div.create_one_now_arrow
-            div.create_one_now_section
-              div.create_one_message
+          .empty_overlay_widget
+            .create_one_now_arrow
+            .create_one_now_section
+              .create_one_message
                 div
                   p.create_one_message_top= "You don't have OpenCenter Agent nodes yet."
                 div
                   p.create_one_message_middle= "Install some now."
                 div
                   p.create_one_message_description= "The OpenCenter agent allows your nodes to show up in this control panel. Learn more about"
-                    a.external(href="#") OpenCenter Agent.
+                    a.external(href="#")= "OpenCenter Agent."
 
     script(type='text/html', id='indexItemTemplate')
       .well.well-small.pull-left.opencenter-container
@@ -50,7 +50,7 @@ block templates
               button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: !!task_id()}', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
-                li.nav-header Manage
+                li.nav-header= "Manage"
                 li.divider
                 // ko foreach: dash.actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
@@ -61,23 +61,22 @@ block templates
           div(data-bind='template: {name: "indexItemTemplate", foreach: dash.containers}')
     #indexTaskLogPane
       #taskPane
-        div.pane-title= "Tasks"
-        div.pane-notifications
-          div.notifiy.ok_state= "5"
-          div.notifiy.error_state= "10"
-          div.notifiy.disabled_state= "2"
-          div.notifiy.processing_state= "4"
-          div.notifiy.warning_state= "1"
-        div.pane-contents <div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task active'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status warning_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status processing_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status error_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div><div class='task'><div class='task-status ok_state'></div><div class='task-name'>Some new task name</div></div>
+        .pane-title= "Tasks"
+        .pane-notifications(data-bind="foreach: getTaskCounts")
+          .notify(data-bind="css: stateClass, text: count")
+        .pane-contents(data-bind="foreach: wsTasks")
+          .task(data-bind="attr: {'data-id'=id}")
+            .task-status(data-bind="class: stateClass")
+            .task-name(data-bind="text: action")
       #logPane
-        div.pane-title= "Log for #{task}"
-        div.pane-contents Running the grails application locally.<br />[exec] Welcome to Grails 1.3.7 - http://grails.org/<br />[exec] Licensed under Apache Standard License 2.0<br />[exec] Grails home is set to: /Users/chri5089/Rackspace/Java/grails-1.3.7<br />[exec] Base Directory: /Users/chri5089/Rackspace/Checkout/CSS-Popover-2013-01-31/presentation<br />[exec] Resolving dependencies...<br />[exec] Dependencies resolved in 4333ms.<br />[exec] Running script /Users/chri5089/Rackspace/Java/grails-1.3.7/scripts/RunApp.groovy<br />[exec] Environment set to development<br />Running the grails application locally.<br />[exec] Welcome to Grails 1.3.7 - http://grails.org/<br />[exec] Licensed under Apache Standard License 2.0<br />[exec] Grails home is set to: /Users/chri5089/Rackspace/Java/grails-1.3.7<br />[exec] Base Directory: /Users/chri5089/Rackspace/Checkout/CSS-Popover-2013-01-31/presentation<br />[exec] Resolving dependencies...<br />[exec] Dependencies resolved in 4333ms.<br />[exec] Running script /Users/chri5089/Rackspace/Java/grails-1.3.7/scripts/RunApp.groovy<br />[exec] Environment set to development<br />Running the grails application locally.<br />[exec] Welcome to Grails 1.3.7 - http://grails.org/<br />[exec] Licensed under Apache Standard License 2.0<br />[exec] Grails home is set to: /Users/chri5089/Rackspace/Java/grails-1.3.7<br />[exec] Base Directory: /Users/chri5089/Rackspace/Checkout/CSS-Popover-2013-01-31/presentation<br />[exec] Resolving dependencies...<br />[exec] Dependencies resolved in 4333ms.<br />[exec] Running script /Users/chri5089/Rackspace/Java/grails-1.3.7/scripts/RunApp.groovy<br />[exec] Environment set to development
+        .pane-title(data-bind="text: getActiveTask")
+        .pane-contents(data-bind="text: getTaskLog")
 
     #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
       .modal-body
-        div.warning-section
-          div#no-connection-img
-          div.text-section
+        .warning-section
+          #no-connection-img
+          .text-section
             h1.warning-header= "Disconnected"
             p.warning-text= "It looks like we've lost the connection to the OpenCenter server. To continue, please ensure your connection to the OpenCenter server is working properly."
             p.status-text= "We're trying to reconnect now..."
@@ -86,12 +85,12 @@ block templates
       form#inputForm.form-horizontal
         .modal-header
           //button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
-          h3 Additional Input Required
+          h3= "Additional Input Required"
         .modal-body
-          div#multiStepForm.carousel.slide(data-interval="false")
-            div.carousel-inner
+          #multiStepForm.carousel.slide(data-interval="false")
+            .carousel-inner
               // ko foreach: getPlans
-              div.item(data-bind='css: {active: !$index()%2}')
+              .item(data-bind='css: {active: !$index()%2}')
                 fieldset
                   // ko foreach: args
                   .control-group
@@ -108,21 +107,21 @@ block templates
 
     #indexLoginModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexLoginModal', aria-hidden='true')
       .modal-body
-        div.login-container.row-fluid
-          div#rackspace-logo-container
-          div#login-form
+        .login-container.row-fluid
+          #rackspace-logo-container
+          #login-form
             form#loginForm.error-icon-only
               span.welcome-message= "Welcome to the OpenCenter Control Panel!"
               .alert.alert-error.hide= "Invalid username and/or password"
               .control-group
-                  label.control-label(for='username') Username
+                  label.control-label(for='username')= "Username"
                   .controls
                     input(type='text', name='username', required='true')
               .control-group
-                  label.control-label(for='password') Password
+                  label.control-label(for='password')= "Password"
                   .controls
                     input(type='password', name='password', required='true')
               #login-status
                 .form-actions
-                  button.login-button(type='submit') Login
+                  button.login-button(type='submit')= "Login"
                   span.form-throb.hide
