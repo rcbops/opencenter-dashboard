@@ -1,41 +1,6 @@
 # Create and store namespace
 dashboard = exports?.dashboard ? @dashboard = {}
 
-dashboard.statusColor = (status) ->
-  switch status
-    when "unprovisioned"
-      return "#3A87AD"
-    when "good"
-      return "#468847"
-    when "alert"
-      return "#F89406"
-    when "error"
-      return "#B94A48"
-
-dashboard.statusLabel = (status) ->
-  switch status
-    when "unprovisioned"
-      return "label-info"
-    when "good"
-      return "label-success"
-    when "alert"
-      return "label-warning"
-    when "error"
-      return "label-important"
-
-dashboard.statusButton = (status) ->
-  switch status
-    when "unprovisioned"
-      return "processing_state"
-    when "good"
-      return "ok_state"
-    when "alert"
-      return "warning_state"
-    when "error"
-      return "error_state"
-    when "unknown"
-      return "disabled_state"
-
 dashboard.selector = (cb, def) ->
   selected = ko.observable def ? {} unless selected?
   cb def if cb? and def?
@@ -238,28 +203,30 @@ dashboard.parseNodes = (data, keyed={}) ->
 
   # Index node list by ID, merging/updating if keyed was provided
   for node in data?.nodes ? []
+    # Stub if missing
+    node.dash ?= {}
+    node.dash.actions ?= []
+    node.dash.statusClass ?= ko.observable "disabled_state"
+    node.dash.statusText ?= ko.observable "Unknown"
+    node.dash.locked ?= ko.observable false
+    node.dash.children ?= {}
+    node.dash.hovered ?= keyed[nid]?.dash.hovered ? false
+    node.facts ?= {}
+    node.facts.backends ?= []
+
     nid = node.id
     if keyed[nid]? # Updating existing node?
       pid = keyed[nid].facts?.parent_id # Grab current parent
       if pid? and pid isnt node.facts?.parent_id # If new parent is different
         dashboard.killPopovers() # We're moving so kill popovers
-        keyed[nid].hovered = false # And cancel hovers
+        keyed[nid].dash.hovered = false # And cancel hovers
         if node.task_id?
           #console.log "Pending: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
           node.facts.parent_id = keyed[nid].facts.parent_id # Ignore parent changes until tasks complete
         else
-          console.log "Deleting: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
-          delete keyed[pid].children[nid] # Remove node from old parent's children
+          #console.log "Deleting: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
+          delete keyed[pid].dash.children[nid] # Remove node from old parent's children
 
-    # Stub if missing
-    node.actions ?= []
-    node.statusClass ?= ko.observable "disabled_state"
-    node.statusText ?= ko.observable "Unknown"
-    node.dragDisabled ?= ko.observable false
-    node.children ?= {}
-    node.facts ?= {}
-    node.facts.backends ?= []
-    node.hovered ?= keyed[nid]?.hovered ? false
     keyed[nid] = node # Add/update node
 
   # Build child arrays
@@ -270,7 +237,7 @@ dashboard.parseNodes = (data, keyed={}) ->
       #console.log "Node: #{id}, Parent: #{pid}"
       pnode = keyed?[pid]
       if pnode? # Parent exists?
-        pnode.children[id] = node # Add to parent's children
+        pnode.dash.children[id] = node # Add to parent's children
       else # We're an orphan (broken data or from previous merge)
         delete keyed[id] # No mercy for orphans!
     else if id is "1" # Mebbe root node?
@@ -297,37 +264,40 @@ dashboard.parseNodes = (data, keyed={}) ->
     else
       dashboard.setGood node
 
-    if node.hovered
+    if node.dash.hovered
       dashboard.updatePopover $("[data-bind~='popper'],[data-id='#{id}']"), node, true # Update matching popover
 
     # If we have a non-empty display name, set the name to it
     if node?.attrs?.display_name? and !!node.attrs.display_name
       node.name = node.attrs.display_name
 
-    node.agents = (v for k,v of node.children when "agent" in v.facts.backends)
-    node.containers = (v for k,v of node.children when "container" in v.facts.backends)
+    node.dash.agents = (v for k,v of node.dash.children when "agent" in v.facts.backends)
+    node.dash.containers = (v for k,v of node.dash.children when "container" in v.facts.backends)
+
+    if node?.attrs?.locked # Node is locked
+      node.dash.locked true
 
   root # Return root for mapping
 
 dashboard.setError = (node) ->
-  node.statusClass "error_state"
-  node.statusText "Error"
-  node.dragDisabled false
+  node.dash.statusClass "error_state"
+  node.dash.statusText "Error"
+  node.dash.locked false
 
 dashboard.setWarning = (node) ->
-  node.statusClass "processing_state"
-  node.statusText "Warning"
-  node.dragDisabled false
+  node.dash.statusClass "processing_state"
+  node.dash.statusText "Warning"
+  node.dash.locked false
 
 dashboard.setBusy = (node) ->
-  node.statusClass "warning_state"
-  node.statusText "Busy"
-  node.dragDisabled true
+  node.dash.statusClass "warning_state"
+  node.dash.statusText "Busy"
+  node.dash.locked true
 
 dashboard.setGood = (node) ->
-  node.statusClass "ok_state"
-  node.statusText "Good"
-  node.dragDisabled false
+  node.dash.statusClass "ok_state"
+  node.dash.statusText "Good"
+  node.dash.locked false
 
 # Process nodes and map to pin
 dashboard.updateNodes = (data, pin, keys) ->
@@ -395,20 +365,15 @@ dashboard.updatePopover = (el, obj, show=false) ->
         <dt>ID</dt>
         <dd>#{obj.id}</dd>
         <dt>Status</dt>
-        <dd>#{obj.statusText()}</dd>
-        <dt>Adventure</dt>
-        <dd>#{obj.adventure_id ? 'idle'}</dd>
+        <dd>#{obj.dash.statusText()}</dd>
         <dt>Task</dt>
         <dd>#{task ? 'idle'}</dd>
         <dt>Last Task</dt>
         <dd>#{obj?.attrs?.last_task ? 'unknown'}</dd>
       </dl>
       """
-    #console.log "Task: ", task
-    #console.log "Status: ", obj.statusText()
     $(el).popover opts
     if show
-      #console.log "Reshowing"
       dashboard.killPopovers()
       $(el).popover "show"
 

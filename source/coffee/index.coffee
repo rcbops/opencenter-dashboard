@@ -101,7 +101,7 @@ $ ->
 
     @getActions = (node) =>
       dashboard.getData "/octr/nodes/#{node.id()}/adventures", (data) ->
-        node.actions (n for n in data?.adventures)
+        node.dash.actions (n for n in data?.adventures)
 
     @doAction = (object, action) =>
       dashboard.post "/octr/adventures/#{action.id}/execute",
@@ -231,6 +231,13 @@ $ ->
         container: "#indexInputModal"
         animation: false
       $(el).tooltip opts
+
+  ko.bindingHandlers.dropper =
+    update: (el, data) ->
+      if ko.utils.unwrapObservable data()
+        $(el).removeClass("ko_container").removeClass("ui-sortable")
+      else
+        $(el).addClass("ko_container").addClass("ui-sortable")
 
   # Custom binding provider with error handling
   ErrorHandlingBindingProvider = ->
