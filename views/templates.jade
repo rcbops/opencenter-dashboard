@@ -47,7 +47,7 @@ block templates
           .drop-target(data-bind='sortable: dash.agents, attr: {"data-id": id}, dropper: dash.locked')
             .btn-group.node
               button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: dash.statusClass')
-              button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: dash.locked}', data-toggle='dropdown')
+              button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: !!task_id}', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
                 li.nav-header Manage
