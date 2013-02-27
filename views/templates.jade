@@ -11,7 +11,7 @@ block templates
             ul.dropdown-menu
               li.nav-header Manage
               li.divider
-              // ko foreach: actions
+              // ko foreach: dash.actions
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
               // /ko
           .pull-left.container-name: span(data-bind='text: name')
@@ -38,27 +38,27 @@ block templates
             ul.dropdown-menu
               li.nav-header Manage
               li.divider
-              // ko foreach: actions
+              // ko foreach: dash.actions
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
               // /ko
           .pull-left.container-name: span(data-bind='text: name')
 
         .container-body
-          .drop-target(data-bind='sortable: agents, attr: {"data-id": id}')
+          .drop-target(data-bind='sortable: dash.agents, attr: {"data-id": id}, dropper: dash.locked')
             .btn-group.node
-              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: statusClass')
-              button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: dragDisabled}', data-toggle='dropdown')
+              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: dash.statusClass')
+              button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: dash.locked}', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
                 li.nav-header Manage
                 li.divider
-                // ko foreach: actions
+                // ko foreach: dash.actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
                 // /ko
-              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dragDisabled}, attr: {"data-id": id}')
+              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dash.locked}, attr: {"data-id": id}')
             .clear-right
 
-          div(data-bind='template: {name: "indexItemTemplate", foreach: containers}')
+          div(data-bind='template: {name: "indexItemTemplate", foreach: dash.containers}')
 
     #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
       .modal-body

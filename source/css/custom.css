@@ -495,7 +495,7 @@ Content
 
 }
 .btn-node.dragDisable {
-  cursor: progress;
+  cursor: default;
 }
 /* Popover */
 .node-data {
