@@ -46,11 +46,10 @@ $ ->
       $node.siblings().removeClass("active")
       $node.addClass("active")
       id = $node.attr("data-id")
-      console.log "ID: ", id, @keyTasks
       @wsTaskTitle @keyTasks?[id]?.name ? ""
       @wsTaskLog "Retrieving log..."
       $.ajax
-        url: "/octr/tasks/#{id}/logs?poll"
+        url: "/octr/tasks/#{id}/logs"
         success: (data) =>
           @wsTaskLog data ? "Error retrieving log."
         error: (jqXHR, statusText, errorThrown) =>
