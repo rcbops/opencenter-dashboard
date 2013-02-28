@@ -81,10 +81,10 @@ dashboard.authLogout = ->
   model = dashboard.indexModel
   dashboard.authHeader = {}
   dashboard.authUser ""
-  model.wsKeys = {}
-  model.wsTemp []
+  model.keyItems = {}
+  model.tmpItems []
   # Try grabbing new nodes; will trigger login form if needed
-  dashboard.getNodes "/octr/nodes/", model.wsTemp, model.wsKeys
+  dashboard.getNodes "/octr/nodes/", model.tmpItems, model.keyItems
 
 # Guard to spin requests while logging in
 dashboard.loggingIn = false
@@ -179,21 +179,21 @@ dashboard.ajax = (type, url, data, success, error, timeout, statusCode) ->
   req()
 
 # Request wrappers
-dashboard.get = (url, success, error, statusCode) ->
-  dashboard.ajax "GET", url, null, success, error, statusCode
+dashboard.get = (url, success, error, timeout, statusCode) ->
+  dashboard.ajax "GET", url, null, success, error, timeout, statusCode
 
-dashboard.post = (url, data, success, error, statusCode) ->
-  dashboard.ajax "POST", url, data, success, error, statusCode
+dashboard.post = (url, data, success, error, timeout, statusCode) ->
+  dashboard.ajax "POST", url, data, success, error, timeout, statusCode
 
 # Basic JS/JSON grabber
-dashboard.getData = (url, cb) ->
+dashboard.getData = (url, cb, err) ->
   dashboard.get url, (data) ->
     cb data if cb?
-  , -> true # Retry
+  , err ? -> true # Retry
 
 # Use the mapping plugin on a JS object, optional mapping mapping (yo dawg), wrap for array
 dashboard.mapData = (data, pin, map={}, wrap=true) ->
-  data = [data] if wrap?
+  data = [data] if wrap
   ko.mapping.fromJS data, map, pin
 
 # Get and map data, f'reals
@@ -314,8 +314,8 @@ dashboard.getNodes = (url, pin, keys) ->
     dashboard.updateNodes data, pin, keys
   , -> true # Retry
 
-# Poll for node changes and do the right things on changes
-dashboard.pollNodes = (cb, timeout) =>
+# Long-poll for node changes and do the right things on changes
+dashboard.pollNodes = (cb, timeout) ->
   repoll = (trans) ->
     if trans? # Have transaction data?
       dashboard.sKey = trans.session_key
@@ -334,12 +334,64 @@ dashboard.pollNodes = (cb, timeout) =>
         switch jqXHR.status
           when 410 # Gone
             repoll() # Cycle transaction
-            dashboard.getNodes "/octr/nodes/", dashboard.indexModel.wsTemp, dashboard.indexModel.wsKeys
+            dashboard.getNodes "/octr/nodes/", dashboard.indexModel.tmpItems, dashboard.indexModel.keyItems
           else
             true # Retry otherwise
     , timeout
 
   repoll() # DO EET
+
+# Just map the tasks
+dashboard.updateTasks = (data, pin, keys) ->
+  dashboard.mapData dashboard.parseTasks(data, keys), pin, {}, false # Don't wrap
+
+# Get and process tasks from url
+dashboard.getTasks = (url, pin, keys) ->
+  dashboard.get url, (data) ->
+    dashboard.updateTasks data, pin, keys
+  #, -> true # Retry
+
+# Dumb polling for now
+dashboard.pollTasks = (cb, timeout) ->
+  poll = (url) ->
+    dashboard.get url
+    , (data) -> # Success
+      cb data if cb?
+      setTimeout poll, timeout, url
+    , (jqXHR, textStatus, errorThrown) ->
+      #true # Retry on failure
+      false
+    , timeout
+  poll "/octr/tasks/" # Do it
+
+dashboard.parseTasks = (data, keyed) ->
+  ids = []
+  # Parse new tasks
+  for task in data.tasks
+    id = task.id # Grab
+    ids.push id # Store
+    switch task.state
+      when "pending","delivered","running"
+        task.statusClass = "warning_state" # Busy
+      when "timeout"
+        task.statusClass = "processing_state" # Warning
+      when "cancelled"
+        task.statusClass = "error_state" # Error
+      when "done"
+        task.statusClass = "ok_state" # Good
+
+    if task.result.result_code isnt 0 # Non-zero result is bad
+      task.statusClass = "error_state" # Error
+
+    task.name = "##{task.id}: #{task.action} [#{task.state}] (#{task.result.result_code})"
+    keyed[id] = task # Update
+
+  # Prune
+  for k of keyed
+    unless +k in ids # Coerce to int
+      delete keyed[k]
+
+  data.tasks # Return list
 
 dashboard.popoverOptions =
   html: true
@@ -388,5 +440,3 @@ dashboard.updatePopover = (el, obj, show=false) ->
     , -> doIt()
   else
     doIt()
-
-#dashboard.parseTasks =
