@@ -61,16 +61,16 @@ block templates
           div(data-bind='template: {name: "indexItemTemplate", foreach: dash.containers}')
     #indexTaskLogPane
       #taskPane
-        .pane-title= "Tasks"
-        .pane-notifications(data-bind="foreach: getTaskCounts")
-          .notify(data-bind="css: stateClass, text: count")
-        .pane-contents(data-bind="foreach: wsTasks")
-          .task(data-bind="attr: {'data-id'=id}")
-            .task-status(data-bind="class: stateClass")
-            .task-name(data-bind="text: action")
+        .pane-title= 'Tasks'
+        .pane-notifications(data-bind='foreach: getTaskCounts')
+          .notify(data-bind='css: stateClass, text: count')
+        .pane-contents(data-bind='foreach: wsTasks')
+          .task(data-bind='attr: {"data-id": id}, click: $root.selectTask')
+            .task-status(data-bind='css: statusClass')
+            .task-name(data-bind='text: name')
       #logPane
-        .pane-title(data-bind="text: getActiveTask")
-        .pane-contents(data-bind="text: getTaskLog")
+        .pane-title(data-bind='text: getTaskTitle')
+        .pane-contents(data-bind='text: getTaskLog')
 
     #indexNoConnectionModal.modal.hide.fade(data-keyboard='false', data-backdrop='static', role='dialog', aria-labelledby='indexNoConnectionModal', aria-hidden='true')
       .modal-body
