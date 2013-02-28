@@ -12,6 +12,7 @@ Source0:	opencenter-dashboard-%{version}.tgz
 Source1:	opencenter-dashboard.conf
 BuildRequires:	make
 BuildRequires:	openssl
+BuildRequires:	git
 Requires:	httpd
 
 %description
