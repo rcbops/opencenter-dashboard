@@ -119,7 +119,7 @@ $ ->
       # Start dumb poller
       dashboard.pollTasks (tasks) =>
         dashboard.updateTasks tasks, @wsTasks, @keyTasks
-      , 1000 #@config?.timeout?.short ? 5000
+      , @config?.timeout?.short ? 5000
 
       # Load initial data
       dashboard.getNodes "/octr/nodes/", @tmpItems, @keyItems
