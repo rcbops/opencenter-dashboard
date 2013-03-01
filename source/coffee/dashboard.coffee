@@ -65,6 +65,9 @@ dashboard.getPopoverPlacement = (tip, element) ->
 # Keep track of AJAX success/failure
 dashboard.siteEnabled = ko.observable true
 
+# Toggle task/log pane
+dashboard.displayTaskLogPane = ko.observable false
+
 # Fill in auth header with user/pass
 dashboard.makeBasicAuth = (user, pass) ->
   dashboard.authUser user

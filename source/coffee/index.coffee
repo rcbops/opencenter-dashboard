@@ -175,6 +175,12 @@ $ ->
           else
             console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
+    @toggleTaskLogPane = () =>
+      unless ko.utils.unwrapObservable(dashboard.displayTaskLogPane())
+        dashboard.displayTaskLogPane true
+      else
+        dashboard.displayTaskLogPane false
+
     # Input form validator; here for scoping plan args
     $('#inputForm').validate
       focusCleanup: true
@@ -280,6 +286,25 @@ $ ->
           resetForm()
           form.find('.alert').show()
           user.focus()
+
+  ko.bindingHandlers.showPane =
+    init: (el, data) ->
+    update: (el, data) ->
+      paneHeight = $(el).height()
+      footerHeight = $("#footer").height()
+      footerNotifications = $('#tasklog-toggle .pane-notifications')
+
+      unless ko.utils.unwrapObservable(data())
+        bottom = -1 * paneHeight
+        fadeOpacity = 1
+      else
+        bottom = footerHeight
+        fadeOpacity = 0
+
+      footerNotifications.fadeTo 300, fadeOpacity
+      $(el).animate
+        bottom: bottom
+      , 300, ->
 
   ko.bindingHandlers.tipper =
     init: (el, data) ->
