@@ -1,3 +1,8 @@
+# Define Array::filter if not using ECMA5
+unless Array::filter
+  Array::filter = (cb) ->
+    el for el in @ when cb el
+
 # Create and store namespace
 dashboard = exports?.dashboard ? @dashboard = {}
 
@@ -76,10 +81,10 @@ dashboard.authLogout = ->
   model = dashboard.indexModel
   dashboard.authHeader = {}
   dashboard.authUser ""
-  model.wsKeys = {}
-  model.wsTemp []
+  model.keyItems = {}
+  model.tmpItems []
   # Try grabbing new nodes; will trigger login form if needed
-  dashboard.getNodes "/octr/nodes/", model.wsTemp, model.wsKeys
+  dashboard.getNodes "/octr/nodes/", model.tmpItems, model.keyItems
 
 # Guard to spin requests while logging in
 dashboard.loggingIn = false
@@ -174,21 +179,21 @@ dashboard.ajax = (type, url, data, success, error, timeout, statusCode) ->
   req()
 
 # Request wrappers
-dashboard.get = (url, success, error, statusCode) ->
-  dashboard.ajax "GET", url, null, success, error, statusCode
+dashboard.get = (url, success, error, timeout, statusCode) ->
+  dashboard.ajax "GET", url, null, success, error, timeout, statusCode
 
-dashboard.post = (url, data, success, error, statusCode) ->
-  dashboard.ajax "POST", url, data, success, error, statusCode
+dashboard.post = (url, data, success, error, timeout, statusCode) ->
+  dashboard.ajax "POST", url, data, success, error, timeout, statusCode
 
 # Basic JS/JSON grabber
-dashboard.getData = (url, cb) ->
+dashboard.getData = (url, cb, err) ->
   dashboard.get url, (data) ->
     cb data if cb?
-  , -> true # Retry
+  , err ? -> true # Retry
 
 # Use the mapping plugin on a JS object, optional mapping mapping (yo dawg), wrap for array
 dashboard.mapData = (data, pin, map={}, wrap=true) ->
-  data = [data] if wrap?
+  data = [data] if wrap
   ko.mapping.fromJS data, map, pin
 
 # Get and map data, f'reals
@@ -221,10 +226,8 @@ dashboard.parseNodes = (data, keyed={}) ->
         dashboard.killPopovers() # We're moving so kill popovers
         keyed[nid].dash.hovered = false # And cancel hovers
         if node.task_id?
-          #console.log "Pending: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
           node.facts.parent_id = keyed[nid].facts.parent_id # Ignore parent changes until tasks complete
         else
-          #console.log "Deleting: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
           delete keyed[pid].dash.children[nid] # Remove node from old parent's children
 
     keyed[nid] = node # Add/update node
@@ -234,7 +237,6 @@ dashboard.parseNodes = (data, keyed={}) ->
     node = keyed[id]
     pid = node.facts?.parent_id
     if pid? # Has parent ID?
-      #console.log "Node: #{id}, Parent: #{pid}"
       pnode = keyed?[pid]
       if pnode? # Parent exists?
         pnode.dash.children[id] = node # Add to parent's children
@@ -309,8 +311,8 @@ dashboard.getNodes = (url, pin, keys) ->
     dashboard.updateNodes data, pin, keys
   , -> true # Retry
 
-# Poll for node changes and do the right things on changes
-dashboard.pollNodes = (cb, timeout) =>
+# Long-poll for node changes and do the right things on changes
+dashboard.pollNodes = (cb, timeout) ->
   repoll = (trans) ->
     if trans? # Have transaction data?
       dashboard.sKey = trans.session_key
@@ -329,12 +331,73 @@ dashboard.pollNodes = (cb, timeout) =>
         switch jqXHR.status
           when 410 # Gone
             repoll() # Cycle transaction
-            dashboard.getNodes "/octr/nodes/", dashboard.indexModel.wsTemp, dashboard.indexModel.wsKeys
+            dashboard.getNodes "/octr/nodes/", dashboard.indexModel.tmpItems, dashboard.indexModel.keyItems
           else
             true # Retry otherwise
     , timeout
 
   repoll() # DO EET
+
+# Just map the tasks
+dashboard.updateTasks = (data, pin, keys) ->
+  dashboard.mapData dashboard.parseTasks(data, keys), pin, {}, false # Don't wrap
+
+# Get and process tasks from url
+dashboard.getTasks = (url, pin, keys) ->
+  dashboard.get url, (data) ->
+    dashboard.updateTasks data, pin, keys
+  #, -> true # Retry
+
+# Dumb polling for now
+dashboard.pollTasks = (cb, timeout) ->
+  poll = (url) ->
+    dashboard.get url
+    , (data) -> # Success
+      cb data if cb?
+      setTimeout poll, timeout, url
+    , (jqXHR, textStatus, errorThrown) ->
+      #true # Retry on failure
+      false
+    , timeout
+  poll "/octr/tasks/" # Do it
+
+dashboard.parseTasks = (data, keyed) ->
+  ids = [] # List of new IDs
+
+  # Parse new tasks
+  tasks = for task in data.tasks
+    id = task.id # Grab
+    ids.push id # Push
+    unless task.action is "logfile.tail" # Don't show log tails
+      task.dash = {} # Stub our config storage
+      switch task.state
+        when "pending","delivered","running"
+          task.dash.statusClass = "warning_state" # Busy
+        when "timeout"
+          task.dash.statusClass = "processing_state" # Warning
+        when "cancelled"
+          task.dash.statusClass = "error_state" # Error
+        when "done"
+          task.dash.statusClass = "ok_state" # Good
+
+      if task.result.result_code isnt 0 # Non-zero result is bad
+        task.dash.statusClass = "error_state" # Error
+
+      if keyed[id]? # Updating existing task?
+        task.dash.active = keyed[id].dash.active # Track selected status
+      else task.dash.active = false
+
+      task.dash.label = "##{task.id}: #{task.action} [#{task.state}] (#{task.result.result_code})"
+
+      keyed[id] = task # Set and return it
+    else continue # Skip it
+
+  # Prune
+  for k of keyed
+    unless +k in ids
+      delete keyed[k]
+
+  tasks # Return list
 
 dashboard.popoverOptions =
   html: true

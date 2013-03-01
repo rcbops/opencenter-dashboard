@@ -7,26 +7,58 @@ $ ->
     @siteNav = ko.observableArray [
       name: "Workspace"
       template: "indexTemplate"
-    #,
-    #  name: "Profile"
-    #  template: "profileTemplate"
-    #,
-    #  name: "Settings"
-    #  template: "settingsTemplate"
     ]
 
     # Temp storage for node mapping
-    @wsTemp = ko.observableArray()
+    @tmpItems = ko.observableArray()
 
     # Computed wrapper for coalescing changes
     @wsItems = ko.computed =>
-      @wsTemp()
+      @tmpItems()
 
     # Execution plans
     @wsPlans = ko.observableArray()
 
     # Flat node list, keyed by id
-    @wsKeys = {}
+    @keyItems = {}
+
+    # Current task list
+    @wsTasks = ko.observableArray()
+
+    # Flat task list, keyed by id
+    @keyTasks = {}
+
+    @getTaskCounts = ko.computed ->
+      []
+
+    @wsTaskTitle = ko.observable("Select a task to view its log")
+
+    @getTaskTitle = ko.computed =>
+      @wsTaskTitle()
+
+    @wsTaskLog = ko.observable("...")
+
+    @getTaskLog = ko.computed =>
+      @wsTaskLog()
+
+    @selectTask = (data, event) =>
+      $node = $(event.target).closest(".task")
+      $node.siblings().removeClass("active")
+      $node.addClass("active")
+      for k,v of @keyTasks
+        @keyTasks[k].dash["active"] = false
+      id = $node.attr("data-id")
+      @keyTasks[id].dash["active"] = true
+      @wsTaskTitle @keyTasks[id].dash.label
+      @wsTaskLog "Retrieving log..."
+      $.ajax
+        url: "/octr/tasks/#{id}/logs"
+        success: (data) =>
+          @wsTaskLog data ? "Error retrieving log."
+        error: (jqXHR, statusText, errorThrown) =>
+          console.log "Error (#{jqXHR.status}): #{errorThrown}"
+          @wsTaskLog "Error retrieving log."
+        timeout: @config.timeout.long ? 30000
 
     # Update on request success/failure
     @siteEnabled = ko.computed ->
@@ -44,7 +76,7 @@ $ ->
       @wsItems.extend throttle: @config?.throttle ? 1000
 
       # Debounce site disabled overlay
-      @siteEnabled.extend throttle: @config?.timeout?.short ? 1000
+      @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
 
       # Start long-poller
       dashboard.pollNodes (nodes, cb) => # Recursive node grabber
@@ -52,7 +84,7 @@ $ ->
         resolver = (stack) =>
           id = stack.pop()
           unless id? # End of ID list
-            dashboard.updateNodes nodes: pnodes, @wsTemp, @wsKeys
+            dashboard.updateNodes nodes: pnodes, @tmpItems, @keyItems
             cb() if cb?
           else
             dashboard.getData "/octr/nodes/#{id}", (node) ->
@@ -61,14 +93,17 @@ $ ->
         resolver nodes
       , @config?.timeout?.long ? 30000
 
+      # Start dumb poller
+      dashboard.pollTasks (tasks) =>
+        dashboard.updateTasks tasks, @wsTasks, @keyTasks
+      , @config?.timeout?.short ? 5000
+
       # Load initial data
-      dashboard.getNodes "/octr/nodes/", @wsTemp, @wsKeys
+      dashboard.getNodes "/octr/nodes/", @tmpItems, @keyItems
+      dashboard.getTasks "/octr/tasks/", @wsTasks, @keyTasks
 
     @siteActive = dashboard.selector (data) =>
       null # TODO: Do something useful with multiple tabs
-      #switch data.name
-      #  when "Workspace"
-      #    @getMappedData "/octr/nodes/1/tree", @wsTemp, mapping
     , @siteNav()[0] # Set to first by default
 
     # Template accessor that avoids data-loading race
@@ -158,10 +193,10 @@ $ ->
         null # TODO: Do something with success?
       , (jqXHR, textStatus, errorThrown) =>
         console.log "Error: (#{jqXHR.status}): #{errorThrown}"
-        dashboard.updateNodes null, @wsTemp, @wsKeys # Remap from keys on fails
+        dashboard.updateNodes null, @tmpItems, @keyItems # Remap from keys on fails
 
     # In case we don't get an update for a while, make sure we at least periodically update node statuses
-    setInterval(dashboard.updateNodes, 90000, null, @wsTemp, @wsKeys)
+    setInterval(dashboard.updateNodes, 90000, null, @tmpItems, @keyItems)
 
     @ # Return ourself
 
@@ -169,7 +204,7 @@ $ ->
     init: (el, data) ->
       $(el).hover (event) ->
         id = data().id()
-        obj = dashboard.indexModel.wsKeys[id]
+        obj = dashboard.indexModel.keyItems[id]
         dashboard.killPopovers()
         if event.type is "mouseenter"
           obj.hovered = true
@@ -252,7 +287,6 @@ $ ->
         original.getBindings node, bindingContext
       catch e
         console.log "Error in binding: " + e.message, node
-        window.location = "/" # Reload page for now
     @
 
   ko.bindingProvider.instance = new ErrorHandlingBindingProvider()

@@ -1026,6 +1026,125 @@ Footer
   margin-left: 5px;
   width: 13px;
 }
+
+/****************
+ Task/Log Pane
+****************/
+#indexTaskLogPane {
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  height: 300px;
+  z-index: 100;
+  -webkit-box-shadow: 0 -1px 10px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 -1px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 -1px 10px rgba(0,0,0,0.1);
+}
+#indexTaskLogPane #taskPane {
+  position: absolute;
+  top: 0px;
+  width: 350px;
+  bottom: 0px;
+  left: 0px;
+  background-color: #fff;
+  border-right: 1px solid #e3e3e3;
+}
+#indexTaskLogPane #logPane {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 350px;
+}
+#indexTaskLogPane .pane-title {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 35px;
+  left: 0px;
+  border-top: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 35px;
+  padding-left: 10px;
+}
+#indexTaskLogPane .pane-notifications {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding-top: 6px;
+  padding-right: 6px;
+}
+#indexTaskLogPane .pane-notifications > div {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: #000;
+  margin-left: 3px;
+  font-size: 12px;
+  font-weight: normal;
+  color: #fff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#indexTaskLogPane .pane-notifications div.error {
+
+}
+#indexTaskLogPane .pane-contents {
+  position: absolute;
+  top: 37px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  padding: 10px;
+  overflow-y: auto;
+}
+#indexTaskLogPane #taskPane .pane-contents {
+  padding: 0px;
+}
+#indexTaskLogPane #logPane .pane-title {
+  color: #fff;
+  background: #000;
+  opacity: .8;
+  border-bottom: none;
+}
+#indexTaskLogPane #logPane .pane-contents {
+  top: 36px;
+  color: #fff;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  background-color: #000;
+  opacity: .8;
+  padding-top: 0px;
+  white-space: pre-wrap;
+}
+#indexTaskLogPane .task {
+  position: relative;
+  padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#indexTaskLogPane .task .task-status {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 8px;
+  border-right: 1px solid #e3e3e3;
+}
+#indexTaskLogPane .task .task-name {
+  font-weight: bold;
+}
+#indexTaskLogPane .task:hover {
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+#indexTaskLogPane .task.active {
+  background-color: #ffedcf;
+}
 /* Media Queries */
 @media (max-width: 979px) {
   .navbar .brand {
