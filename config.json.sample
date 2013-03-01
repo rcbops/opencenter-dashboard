@@ -5,5 +5,9 @@
     "short": 5000,
     "long": 60000
   },
-  "throttle": 500
+  "throttle": {
+    "nodes": 500,
+    "tasks": 2000,
+    "site": 2000
+  }
 }

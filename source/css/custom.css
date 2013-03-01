@@ -601,6 +601,7 @@ ul.backend-list li {
   background-color: #00a96d !important;
 }
 .warning_state, .warning_state_wait_for_action {
+  background-color: #ffac0f !important;
   background-image: url('../img/progress-dark-yellow-status.gif') !important;
   background-repeat: repeat;
 }
@@ -609,9 +610,13 @@ ul.backend-list li {
 }
 .disabled_state, .pending_state {
   background-color: #ccc !important;
+  color: #666 !important;
 }
 .processing_state {
   background-color: #1e6ec1 !important;
+}
+.notify.warning_state {
+  background-image: none !important;
 }
 
 /* Dropdown Action */
@@ -997,12 +1002,12 @@ Footer
 #footer a {
   color: #999;
 }
-#feedback-link {
-  float: right;
-}
 #copyright {
   display: inline-block;
   padding: 15px 0;
+}
+#feedback-link {
+  float: right;
 }
 #feedback-link a {
   background-color: #3165a4;
@@ -1025,6 +1030,175 @@ Footer
   display: inline-block;
   margin-left: 5px;
   width: 13px;
+}
+#tasklog-toggle {
+  float: left;
+  overflow: hidden;
+  margin-right: 15px;
+  margin-left: 15px;
+  position: relative;
+  background-color: #222;
+  margin-top: 6px;
+  height: 27px;
+  cursor: pointer;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#tasklog-toggle .pane-title {
+  background-color: transparent;
+  line-height: 26px;
+  border: none;
+  font-weight: normal;
+  font-size: 12px;
+  height: auto;
+  color: #888;
+}
+#tasklog-toggle:hover .pane-title {
+  color: #FFF;
+}
+#tasklog-toggle .pane-title span.menu-lines {
+  background-image: url('../img/icons/menu-lines.png');
+  background-position: center 4px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  margin-right: 5px;
+  width: 13px;
+  height: 16px;
+  opacity: .2;
+}
+#tasklog-toggle:hover .pane-title span.menu-lines {
+  opacity: .4;
+}
+#tasklog-toggle .pane {
+
+}
+#tasklog-toggle .pane-notifications {
+  position: static;
+  margin-left: 65px;
+  margin-right: 2px;
+}
+#tasklog-toggle .pane-notifications > div {
+  padding: 2px 4px;
+}
+
+/****************
+ Task/Log Pane
+****************/
+#indexTaskLogPane {
+  position: fixed;
+  right: 0px;
+  bottom: -300px;
+  left: 0px;
+  height: 300px;
+  z-index: 40;
+  -webkit-box-shadow: 0 -1px 10px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0 -1px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 -1px 10px rgba(0,0,0,0.1);
+}
+#indexTaskLogPane #taskPane {
+  position: absolute;
+  top: 0px;
+  width: 350px;
+  bottom: 0px;
+  left: 0px;
+  background-color: #fff;
+  border-right: 1px solid #e3e3e3;
+}
+#indexTaskLogPane #logPane {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 350px;
+}
+.pane-title {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 35px;
+  left: 0px;
+  border-top: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
+  background-color: #f5f5f5;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 35px;
+  padding-left: 10px;
+}
+.pane-notifications {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding-top: 6px;
+  padding-right: 6px;
+}
+.pane-notifications > div {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: #000;
+  margin-left: 3px;
+  font-size: 12px;
+  font-weight: normal;
+  color: #fff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.pane-notifications div.error {
+
+}
+#indexTaskLogPane .pane-contents {
+  position: absolute;
+  top: 37px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  padding: 10px;
+  overflow-y: auto;
+}
+#indexTaskLogPane #taskPane .pane-contents {
+  padding: 0px;
+}
+#indexTaskLogPane #logPane .pane-title {
+  color: #fff;
+  background: #000;
+  opacity: .8;
+  border-bottom: none;
+}
+#indexTaskLogPane #logPane .pane-contents {
+  top: 36px;
+  color: #fff;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  background-color: #000;
+  opacity: .8;
+  padding-top: 0px;
+  white-space: pre-wrap;
+}
+#indexTaskLogPane .task {
+  position: relative;
+  padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#indexTaskLogPane .task .task-status {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  width: 8px;
+  border-right: 1px solid #e3e3e3;
+}
+#indexTaskLogPane .task .task-name {
+  font-weight: bold;
+}
+#indexTaskLogPane .task:hover {
+  cursor: pointer;
+  background-color: #f5f5f5;
+}
+#indexTaskLogPane .task.active {
+  background-color: #FFFFCC;
 }
 /* Media Queries */
 @media (max-width: 979px) {
