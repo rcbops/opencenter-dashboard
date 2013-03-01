@@ -96,10 +96,10 @@ $ ->
       @config = data
 
       # Debounce node changes (x msec settling period)
-      @wsItems.extend throttle: @config?.throttle ? 1000
+      @wsItems.extend throttle: @config?.throttle?.nodes ? 500
 
       # Debounce site disabled overlay
-      @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
+      @siteEnabled.extend throttle: @config?.throttle?.site ? 2000
 
       # Start long-poller
       dashboard.pollNodes (nodes, cb) => # Recursive node grabber
@@ -119,7 +119,7 @@ $ ->
       # Start dumb poller
       dashboard.pollTasks (tasks) =>
         dashboard.updateTasks tasks, @wsTasks, @keyTasks
-      , @config?.timeout?.short ? 5000
+      , @config?.throttle?.tasks ? 2000
 
       # Load initial data
       dashboard.getNodes "/octr/nodes/", @tmpItems, @keyItems
