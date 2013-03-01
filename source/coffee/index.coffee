@@ -116,7 +116,8 @@ $ ->
                 resolver stack
             , (jqXHR) =>
                 switch jqXHR.status
-                  when 404 delete @keyItems[id] # Remove node
+                  when 404
+                    delete @keyItems[id] # Remove node
                   else true # Keep trying
         resolver nodes
       , @config?.timeout?.long ? 30000
