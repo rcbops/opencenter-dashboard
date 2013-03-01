@@ -28,8 +28,15 @@ $ ->
     # Flat task list, keyed by id
     @keyTasks = {}
 
-    @getTaskCounts = ko.computed ->
-      []
+    @getTaskCounts = ko.computed =>
+      counts = {}
+      for task in @wsTasks()
+        status = task.dash.statusClass()
+        counts[status] ?= 0
+        counts[status] += 1
+      for k,v of counts
+        statusClass: k
+        count: v
 
     @wsTaskTitle = ko.observable("Select a task to view its log")
 
@@ -48,17 +55,33 @@ $ ->
       for k,v of @keyTasks
         @keyTasks[k].dash["active"] = false
       id = $node.attr("data-id")
-      @keyTasks[id].dash["active"] = true
-      @wsTaskTitle @keyTasks[id].dash.label
+      dash = @keyTasks[id].dash
+      dash["active"] = true
+      @wsTaskTitle dash.label
       @wsTaskLog "Retrieving log..."
-      $.ajax
-        url: "/octr/tasks/#{id}/logs"
-        success: (data) =>
-          @wsTaskLog data ? "Error retrieving log."
-        error: (jqXHR, statusText, errorThrown) =>
-          console.log "Error (#{jqXHR.status}): #{errorThrown}"
-          @wsTaskLog "Error retrieving log."
-        timeout: @config.timeout.long ? 30000
+      # Last 1k of logs
+      #$.ajax
+      #  url: "/octr/tasks/#{id}/logs"
+      #  success: (data) =>
+      #    @wsTaskLog data ? "Error retrieving log."
+      #  error: (jqXHR, statusText, errorThrown) =>
+      #    console.log "Error (#{jqXHR.status}): #{errorThrown}"
+      #    @wsTaskLog "Error retrieving log."
+      #  timeout: @config.timeout.long ? 30000
+      # Log streaming
+      dashboard.getData "/octr/tasks/#{id}/logs?watch", (data) =>
+        if data?.request?
+          dash = @keyTasks[id].dash
+          console.log "XHR: ", dash["xhr"]
+          dash?["xhr"]?.abort?() # Abort any current XHRs
+          dash["xhr"] = xhr = new XMLHttpRequest()
+          xhr.open "GET", "/octr/tasks/#{id}/logs/#{data.request}?watch"
+          xhr.onprogress = =>
+            @wsTaskLog xhr.responseText # Update log observable
+            $contents = $("#logPane .pane-contents")
+            $contents.scrollTop $contents.prop("scrollHeight") # Scroll to bottom
+          xhr.send() # Do it!
+      , -> false
 
     # Update on request success/failure
     @siteEnabled = ko.computed ->
@@ -96,7 +119,7 @@ $ ->
       # Start dumb poller
       dashboard.pollTasks (tasks) =>
         dashboard.updateTasks tasks, @wsTasks, @keyTasks
-      , @config?.timeout?.short ? 5000
+      , 1000 #@config?.timeout?.short ? 5000
 
       # Load initial data
       dashboard.getNodes "/octr/nodes/", @tmpItems, @keyItems

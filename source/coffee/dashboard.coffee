@@ -356,8 +356,7 @@ dashboard.pollTasks = (cb, timeout) ->
       cb data if cb?
       setTimeout poll, timeout, url
     , (jqXHR, textStatus, errorThrown) ->
-      #true # Retry on failure
-      false
+      true # Retry on failure
     , timeout
   poll "/octr/tasks/" # Do it
 
@@ -368,7 +367,7 @@ dashboard.parseTasks = (data, keyed) ->
   tasks = for task in data.tasks
     id = task.id # Grab
     ids.push id # Push
-    unless task.action is "logfile.tail" # Don't show log tails
+    unless task.action in ["logfile.tail", "logfile.watch"]  # Don't show log tasks
       task.dash = {} # Stub our config storage
       switch task.state
         when "pending","delivered","running"
@@ -380,21 +379,21 @@ dashboard.parseTasks = (data, keyed) ->
         when "done"
           task.dash.statusClass = "ok_state" # Good
 
-      if task.result.result_code isnt 0 # Non-zero result is bad
+      if task?.result?.result_code # Non-zero result is bad
         task.dash.statusClass = "error_state" # Error
 
       if keyed[id]? # Updating existing task?
         task.dash.active = keyed[id].dash.active # Track selected status
       else task.dash.active = false
 
-      task.dash.label = "##{task.id}: #{task.action} [#{task.state}] (#{task.result.result_code})"
+      task.dash.label = "#{task.id}: #{task.action} [#{task.state}]"
 
       keyed[id] = task # Set and return it
     else continue # Skip it
 
   # Prune
   for k of keyed
-    unless +k in ids
+    unless +k in ids # Coerce to int, lulz
       delete keyed[k]
 
   tasks # Return list
