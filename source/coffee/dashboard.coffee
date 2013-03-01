@@ -448,3 +448,8 @@ dashboard.updatePopover = (el, obj, show=false) ->
     , -> doIt()
   else
     doIt()
+
+dashboard.convertValueType = (type) ->
+  switch type
+    when "password" then "password"
+    else "text"
