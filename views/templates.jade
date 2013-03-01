@@ -96,7 +96,7 @@ block templates
                   .control-group
                     label.control-label(data-bind='text: value.friendly, attr: {for: key}')
                     .controls
-                      input(type='text', data-bind='tipper: value, attr: {id: key, name: key, placeholder: value.placeholder, value: value.default}, css: {required: value.required}')
+                      input(type='text', data-bind='tipper: value, attr: {id: key, name: key, placeholder: value.placeholder, value: value.default, type: dashboard.convertValueType(value.type)}, css: {required: value.required}')
                   // /ko
               // /ko
         .modal-footer
