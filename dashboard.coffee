@@ -66,7 +66,7 @@ app.all "/octr/?*", (req, res) ->
     # TODO: Figure out why this is broken: headers: req.headers ? {}
     method: req.method
     followAllRedirects: true
-    timeout: unless req.param("poll")? then config.timeout.short else (config.timeout.long + 1000)
+    timeout: if req.param("watch")? then 0 else unless req.param("poll")? then config.timeout.short else (config.timeout.long + 1000)
 
   req.pipe(request options, (err, resp, body) ->
     if err?
