@@ -65,9 +65,9 @@ block templates
         .pane-notifications(data-bind='foreach: getTaskCounts')
           .notify(data-bind='css: stateClass, text: count')
         .pane-contents(data-bind='foreach: wsTasks')
-          .task(data-bind='attr: {"data-id": id}, click: $root.selectTask')
-            .task-status(data-bind='css: statusClass')
-            .task-name(data-bind='text: name')
+          .task(data-bind='attr: {"data-id": id}, click: $root.selectTask, css: {active: dash.active()}')
+            .task-status(data-bind='css: dash.statusClass')
+            .task-name(data-bind='text: dash.label')
       #logPane
         .pane-title(data-bind='text: getTaskTitle')
         .pane-contents(data-bind='text: getTaskLog')
