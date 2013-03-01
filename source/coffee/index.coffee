@@ -26,7 +26,7 @@ $ ->
     @wsTasks = ko.observableArray()
 
     # Flat task list, keyed by id
-    @keyTasks = {test: 1}
+    @keyTasks = {}
 
     @getTaskCounts = ko.computed ->
       []
@@ -36,7 +36,7 @@ $ ->
     @getTaskTitle = ko.computed =>
       @wsTaskTitle()
 
-    @wsTaskLog = ko.observable("Select a task to view its log")
+    @wsTaskLog = ko.observable("...")
 
     @getTaskLog = ko.computed =>
       @wsTaskLog()
@@ -45,17 +45,19 @@ $ ->
       $node = $(event.target).closest(".task")
       $node.siblings().removeClass("active")
       $node.addClass("active")
+      for k,v of @keyTasks
+        @keyTasks[k].dash["active"] = false
       id = $node.attr("data-id")
-      @wsTaskTitle @keyTasks?[id]?.name ? ""
+      @keyTasks[id].dash["active"] = true
+      @wsTaskTitle @keyTasks[id].dash.label
       @wsTaskLog "Retrieving log..."
       $.ajax
         url: "/octr/tasks/#{id}/logs"
         success: (data) =>
           @wsTaskLog data ? "Error retrieving log."
         error: (jqXHR, statusText, errorThrown) =>
-          console.log "Error: ", jqXHR, statusText, errorThrown
+          console.log "Error (#{jqXHR.status}): #{errorThrown}"
           @wsTaskLog "Error retrieving log."
-          false
         timeout: @config.timeout.long ? 30000
 
     # Update on request success/failure
@@ -74,7 +76,7 @@ $ ->
       @wsItems.extend throttle: @config?.throttle ? 1000
 
       # Debounce site disabled overlay
-      @siteEnabled.extend throttle: @config?.timeout?.short ? 1000
+      @siteEnabled.extend throttle: @config?.timeout?.short ? 5000
 
       # Start long-poller
       dashboard.pollNodes (nodes, cb) => # Recursive node grabber
@@ -285,7 +287,6 @@ $ ->
         original.getBindings node, bindingContext
       catch e
         console.log "Error in binding: " + e.message, node
-        #window.location = "/" # Reload page for now
     @
 
   ko.bindingProvider.instance = new ErrorHandlingBindingProvider()

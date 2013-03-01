@@ -226,10 +226,8 @@ dashboard.parseNodes = (data, keyed={}) ->
         dashboard.killPopovers() # We're moving so kill popovers
         keyed[nid].dash.hovered = false # And cancel hovers
         if node.task_id?
-          #console.log "Pending: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
           node.facts.parent_id = keyed[nid].facts.parent_id # Ignore parent changes until tasks complete
         else
-          #console.log "Deleting: #{node.task_id}: #{keyed[nid].facts.parent_id} -> #{node.facts.parent_id}"
           delete keyed[pid].dash.children[nid] # Remove node from old parent's children
 
     keyed[nid] = node # Add/update node
@@ -239,7 +237,6 @@ dashboard.parseNodes = (data, keyed={}) ->
     node = keyed[id]
     pid = node.facts?.parent_id
     if pid? # Has parent ID?
-      #console.log "Node: #{id}, Parent: #{pid}"
       pnode = keyed?[pid]
       if pnode? # Parent exists?
         pnode.dash.children[id] = node # Add to parent's children
@@ -365,33 +362,42 @@ dashboard.pollTasks = (cb, timeout) ->
   poll "/octr/tasks/" # Do it
 
 dashboard.parseTasks = (data, keyed) ->
-  ids = []
+  ids = [] # List of new IDs
+
   # Parse new tasks
-  for task in data.tasks
+  tasks = for task in data.tasks
     id = task.id # Grab
-    ids.push id # Store
-    switch task.state
-      when "pending","delivered","running"
-        task.statusClass = "warning_state" # Busy
-      when "timeout"
-        task.statusClass = "processing_state" # Warning
-      when "cancelled"
-        task.statusClass = "error_state" # Error
-      when "done"
-        task.statusClass = "ok_state" # Good
+    ids.push id # Push
+    unless task.action is "logfile.tail" # Don't show log tails
+      task.dash = {} # Stub our config storage
+      switch task.state
+        when "pending","delivered","running"
+          task.dash.statusClass = "warning_state" # Busy
+        when "timeout"
+          task.dash.statusClass = "processing_state" # Warning
+        when "cancelled"
+          task.dash.statusClass = "error_state" # Error
+        when "done"
+          task.dash.statusClass = "ok_state" # Good
 
-    if task.result.result_code isnt 0 # Non-zero result is bad
-      task.statusClass = "error_state" # Error
+      if task.result.result_code isnt 0 # Non-zero result is bad
+        task.dash.statusClass = "error_state" # Error
 
-    task.name = "##{task.id}: #{task.action} [#{task.state}] (#{task.result.result_code})"
-    keyed[id] = task # Update
+      if keyed[id]? # Updating existing task?
+        task.dash.active = keyed[id].dash.active # Track selected status
+      else task.dash.active = false
+
+      task.dash.label = "##{task.id}: #{task.action} [#{task.state}] (#{task.result.result_code})"
+
+      keyed[id] = task # Set and return it
+    else continue # Skip it
 
   # Prune
   for k of keyed
-    unless +k in ids # Coerce to int
+    unless +k in ids
       delete keyed[k]
 
-  data.tasks # Return list
+  tasks # Return list
 
 dashboard.popoverOptions =
   html: true
