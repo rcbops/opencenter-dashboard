@@ -5,7 +5,7 @@ $ ->
   IndexModel = ->
     # TODO: Map from data source
     @siteNav = ko.observableArray [
-      name: "Workspace"
+      name: "OpenCenter"
       template: "indexTemplate"
     #,
     #  name: "Profile"

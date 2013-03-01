@@ -20,7 +20,7 @@ app = express()
 app.configure ->
   app.set "port", process.env.PORT or 3000
   app.set "sport", process.env.SPORT or 3443
-  app.use express.favicon()
+  app.use express.favicon(path.join __dirname, "source/favicon.ico")
   app.use express.logger("dev")
   app.use express.bodyParser()
   app.use express.methodOverride()
