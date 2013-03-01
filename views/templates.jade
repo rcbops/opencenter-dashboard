@@ -59,7 +59,7 @@ block templates
             .clear-right
 
           div(data-bind='template: {name: "indexItemTemplate", foreach: dash.containers}')
-    #indexTaskLogPane
+    #indexTaskLogPane(data-bind='showPane: dashboard.displayTaskLogPane')
       #taskPane
         .pane-title= 'Tasks'
         .pane-notifications(data-bind='foreach: getTaskCounts')

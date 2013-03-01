@@ -1,15 +1,13 @@
 block footer
   #footer-wrapper
     #tasklog-toggle(data-bind='click: $root.toggleTaskLogPane')
-      div.pane-title
+      .pane-title
         span.menu-lines
         | Tasks
-      div.pane-notifications
-        div.notify.ok_state= "5"
-        div.notify.error_state= "10"
-        div.notify.disabled_state= "2"
-        div.notify.processing_state= "4"
-        div.notify.warning_state= "1"
+      .pane-notifications(data-bind='ifnot: dashboard.displayTaskLogPane')
+        // ko foreach: getTaskCounts
+        .notify(data-bind='css: statusClass, text: count')
+        // /ko
     #footer.container-fluid
       #feedback-link
         a(href='mailto:RPCFeedback@rackspace.com')= 'Send Feedback'

@@ -175,7 +175,7 @@ $ ->
           else
             console.log "Error (#{jqXHR.status}): #{errorThrown}"
 
-    @toggleTaskLogPane = () =>
+    @toggleTaskLogPane = ->
       unless ko.utils.unwrapObservable(dashboard.displayTaskLogPane())
         dashboard.displayTaskLogPane true
       else
@@ -292,7 +292,7 @@ $ ->
     update: (el, data) ->
       paneHeight = $(el).height()
       footerHeight = $("#footer").height()
-      footerNotifications = $('#tasklog-toggle .pane-notifications')
+      #footerNotifications = $('#tasklog-toggle .pane-notifications')
 
       unless ko.utils.unwrapObservable(data())
         bottom = -1 * paneHeight
@@ -301,7 +301,7 @@ $ ->
         bottom = footerHeight
         fadeOpacity = 0
 
-      footerNotifications.fadeTo 300, fadeOpacity
+      #footerNotifications.fadeTo 300, fadeOpacity
       $(el).animate
         bottom: bottom
       , 300, ->
