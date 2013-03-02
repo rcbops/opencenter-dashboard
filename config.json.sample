@@ -2,7 +2,7 @@
   "allowedKeys": ["allowedKeys", "timeout", "throttle"],
   "opencenter_url": "http://127.0.0.1:8080",
   "timeout": {
-    "short": 5000,
+    "short": 15000,
     "long": 60000
   },
   "throttle": {
