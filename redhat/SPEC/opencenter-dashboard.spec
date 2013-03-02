@@ -41,6 +41,9 @@ install -m 600 $RPM_SOURCE_DIR/opencenter-dashboard.conf $RPM_BUILD_ROOT/etc/htt
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+service httpd restart
+
 
 %files
 %defattr(-,root,root,-)
