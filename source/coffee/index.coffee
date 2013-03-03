@@ -9,12 +9,20 @@ $ ->
       template: "indexTemplate"
     ]
 
+    # Track this for UI caching
+    @siteLocked = ko.observable false
+
     # Temp storage for node mapping
     @tmpItems = ko.observableArray()
+    @tmpCache = ko.observableArray()
 
     # Computed wrapper for coalescing changes
     @wsItems = ko.computed =>
-      @tmpItems()
+      if @siteLocked()
+        @tmpCache()
+      else # Otherwise fill cache and return
+        @tmpCache @tmpItems()
+        @tmpItems()
 
     # Execution plans
     @wsPlans = ko.observableArray()
@@ -59,27 +67,25 @@ $ ->
       dash["active"] = true
       @wsTaskTitle dash.label
       @wsTaskLog "Retrieving log..."
-      # Last 1k of logs
-      #$.ajax
-      #  url: "/octr/tasks/#{id}/logs"
-      #  success: (data) =>
-      #    @wsTaskLog data ? "Error retrieving log."
-      #  error: (jqXHR, statusText, errorThrown) =>
-      #    console.log "Error (#{jqXHR.status}): #{errorThrown}"
-      #    @wsTaskLog "Error retrieving log."
-      #  timeout: @config.timeout.long ? 30000
+
+      # Kill any pending watch requests
+      dashboard.killRequests /logs\?watch/i
+
       # Log streaming
       dashboard.getData "/octr/tasks/#{id}/logs?watch", (data) =>
         if data?.request?
-          dash = @keyTasks[id].dash
-          console.log "XHR: ", dash["xhr"]
-          dash?["xhr"]?.abort?() # Abort any current XHRs
-          dash["xhr"] = xhr = new XMLHttpRequest()
-          xhr.open "GET", "/octr/tasks/#{id}/logs/#{data.request}?watch"
+          dashboard.killRequests /logs\//i # Kill any existing log streams
+          url = "/octr/tasks/#{id}/logs/#{data.request}"
+          xhr = new XMLHttpRequest()
+          xhr.open "GET", url
+          xhr.onloadstart = ->
+            dashboard.pendingRequests[url] = xhr # Store
           xhr.onprogress = =>
             @wsTaskLog xhr.responseText # Update log observable
             $contents = $("#logPane .pane-contents")
             $contents.scrollTop $contents.prop("scrollHeight") # Scroll to bottom
+          xhr.onloadend = ->
+            delete dashboard.pendingRequests[url] # Clean up
           xhr.send() # Do it!
       , -> false
 
@@ -256,9 +262,9 @@ $ ->
     start: (event, ui) ->
       $("[data-bind~='popper']").popover "disable"
       dashboard.killPopovers()
+      dashboard.indexModel.siteLocked true
     stop: (event, ui) ->
-      null
-      # TODO: Do something on sort stop?
+      dashboard.indexModel.siteLocked false
 
   # Login form validator
   $('#loginForm').validate
