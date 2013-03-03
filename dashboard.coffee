@@ -1,11 +1,12 @@
 # Globals
 fs = require "fs"
+url = require "url"
 path = require "path"
 http = require "http"
 https = require "https"
 gzippo = require "gzippo"
 express = require "express"
-request = require "request"
+httpProxy = require "http-proxy"
 config = require "./config.json"
 
 # Watch and copy CSS until we're using a watchful CSS compiler
@@ -24,6 +25,7 @@ app.configure ->
   app.use express.logger("dev")
   app.use express.bodyParser()
   app.use express.methodOverride()
+  app.use require("connect-restreamer")()
   app.use app.router
 
 # Profiles
@@ -54,26 +56,14 @@ app.get "/api/config/:key", (req, res) ->
   else
     res.send "Invalid key"
 
-# Because *SOMEBODY* doesn't know how to check for {}
-isEmpty = (obj) ->
-  !Object.keys(obj).length > 0
-
 # OpenCenter proxy, woo!
 app.all "/octr/?*", (req, res) ->
-  options =
-    url: config.opencenter_url.replace(/\/$/, "") + req.originalUrl.replace(/\/octr/, "")
-    json: if isEmpty req.body then "" else req.body
-    # TODO: Figure out why this is broken: headers: req.headers ? {}
-    method: req.method
-    followAllRedirects: true
-    timeout: if req.param("watch")? then 0 else unless req.param("poll")? then config.timeout.short else (config.timeout.long + 1000)
-
-  req.pipe(request options, (err, resp, body) ->
-    if err?
-      res.status 502 # Bad gateway
-      res.send resp if resp? # Send something if we got it
-      res.send err # Send error
-  ).pipe res
+  req.url = req.originalUrl.replace(/\/octr/, "")
+  parsed = url.parse config.opencenter_url
+  proxy = new httpProxy.RoutingProxy()
+  proxy.proxyRequest req, res,
+    host: parsed.hostname
+    port: parsed.port
 
 # HTTP server
 http.createServer(app).listen app.get("port"), "::", ->

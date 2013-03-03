@@ -147,13 +147,22 @@ dashboard.showModal = (id) ->
 dashboard.hideModal = (id) ->
   $(id).modal "hide"
 
+# Track AJAX requests keyed by URL
+dashboard.pendingRequests = {}
+
+# Kill requests by regex matching url
+dashboard.killRequests = (match) ->
+  for k,v of dashboard.pendingRequests
+    if match.test k
+      v.abort()
+
 # AJAX wrapper which auto-retries on error
 dashboard.ajax = (type, url, data, success, error, timeout, statusCode) ->
   req = ->
     if dashboard.loggingIn # If logging in
       setTimeout req, 1000 # Spin request
     else
-      $.ajax
+      dashboard.pendingRequests[url] = $.ajax # Call and store request
         type: type
         url: url
         data: data
@@ -174,6 +183,7 @@ dashboard.ajax = (type, url, data, success, error, timeout, statusCode) ->
             unless jqXHR.status is 0 # Didn't timeout
               dashboard.siteEnabled false # Don't disable on repolls and such
               req.backoff *= 2 if req.backoff < 32000 # Do eet
+        complete: -> delete dashboard.pendingRequests[url] # Clean up our request
         statusCode: statusCode
         dataType: "json"
         contentType: "application/json; charset=utf-8"
@@ -228,10 +238,7 @@ dashboard.parseNodes = (data, keyed={}) ->
       if pid? and pid isnt node.facts?.parent_id # If new parent is different
         dashboard.killPopovers() # We're moving so kill popovers
         keyed[nid].dash.hovered = false # And cancel hovers
-        if node.task_id?
-          node.facts.parent_id = keyed[nid].facts.parent_id # Ignore parent changes until tasks complete
-        else
-          delete keyed[pid].dash.children[nid] # Remove node from old parent's children
+        delete keyed[pid].dash.children[nid] # Remove node from old parent's children
 
     keyed[nid] = node # Add/update node
 
