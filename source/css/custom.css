@@ -148,6 +148,7 @@ Header
 }
 #logo-wrapper {
   position: relative;
+  z-index: 100;
 }
 .brand {
   position: absolute;
@@ -310,7 +311,7 @@ Login Form
   background: linear-gradient(top,#d81436 0,#a60004 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d81436',endColorstr='#a60004',GradientType=0);
 }
-#login-form .form-throb {
+.form-throb {
   background-repeat: no-repeat;
   background-position: center center;
   background-image: url('../img/icons/loading-grey-white.gif');
@@ -621,6 +622,7 @@ ul.backend-list li {
 
 /* Dropdown Action */
 .dropdown-menu {
+  z-index: 100;
   padding: 4px 0;
   margin: -3px 0 0;
   background: #fff;
@@ -647,6 +649,7 @@ ul.backend-list li {
 .dropdown-menu .divider {
   display: none;
 }
+.dropdown-menu li > span,
 .dropdown-menu li > a {
   display: block;
   padding: 3px 7px;
@@ -654,8 +657,13 @@ ul.backend-list li {
   font-weight: normal;
   line-height: 13px;
   font-size: 13px;
-  color: #1d71bf;
   white-space: nowrap;
+}
+.dropdown-menu li > a {
+  color: #1d71bf;
+}
+.dropdown-menu li > span {
+  color: #39492f;
 }
 .dropdown-menu li > a:hover,
 .dropdown-menu li > a:focus,
