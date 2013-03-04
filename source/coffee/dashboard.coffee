@@ -293,7 +293,7 @@ dashboard.parseNodes = (data, keyed={}) ->
     node = keyed[id]
     if node?.attrs?.last_task is "failed"
       dashboard.setError node
-    else if stale node or node?.attrs?.last_task is "rollback"
+    else if stale(node) or node?.attrs?.last_task is "rollback"
       dashboard.setWarning node
     else if node.task_id?
       dashboard.setBusy node
