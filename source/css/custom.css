@@ -162,16 +162,16 @@ Header
   text-shadow: none;
 }
 .brand span{
-  background: transparent url('../img/logo-rackspace.png') no-repeat;
+  background: transparent url('../img/logo-privatecloud.png') no-repeat;
   background-position: center center;
-  width: 190px;
+  width: 220px;
   height: 48px;
   display: block;
   overflow: hidden;
   text-indent: 200%;
   white-space: nowrap;
   padding: 0px;
-  margin: 0px;
+  margin: 10px 0px 0px 0px;
 }
 .brand::before {
   content: '';
@@ -237,7 +237,7 @@ Header
   color: #333;
 }
 #links li:first-child {
-  margin-left: 210px;
+  margin-left: 240px;
 }
 
 /****************
@@ -251,14 +251,15 @@ Login Form
   padding: 0px;
 }
 #rackspace-logo-container {
-  background: transparent url('../img/logo-rackspace-large.png') no-repeat;
+  /*background: transparent url('../img/logo-rackspace-large.png') no-repeat;*/
+  background: transparent url('../img/logo-privatecloud-large.png') no-repeat;
   background-position: center center;
   width: 192px;
   height: 57px;
   display: inline-block;
   float: left;
-  margin-top: 80px;
-  padding: 40px 49px;
+  margin-top: 65px;
+  padding: 50px 49px;
 }
 #login-form {
   margin: 28px 0;
