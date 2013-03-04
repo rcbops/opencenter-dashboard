@@ -87,7 +87,7 @@ $ ->
           xhr.onloadend = ->
             delete dashboard.pendingRequests[url] # Clean up
           xhr.send() # Do it!
-      , -> false
+      , -> true # Retry if fails
 
     # Update on request success/failure
     @siteEnabled = ko.computed ->
