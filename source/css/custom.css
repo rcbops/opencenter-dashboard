@@ -251,7 +251,6 @@ Login Form
   padding: 0px;
 }
 #rackspace-logo-container {
-  /*background: transparent url('../img/logo-rackspace-large.png') no-repeat;*/
   background: transparent url('../img/logo-privatecloud-large.png') no-repeat;
   background-position: center center;
   width: 192px;
