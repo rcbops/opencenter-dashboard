@@ -13,6 +13,7 @@ XCBS-RCB-Component: rcb-utils
 Package: opencenter-dashboard
 Architecture: all
 Depends: ${misc:Depends},
- apache2
+ apache2,
+ ssl-cert
 Provides: ${web:Provides}
 Description: OpenCenter Dashboard
