@@ -382,33 +382,10 @@ Content
 .well + .well { margin-left: 0px; margin-right: 10px; }
 .well:only-of-type { margin-right: 0px; }
 .well:last-of-type { margin-right: 0px; }
-/*
-.btn-group { margin-right: 5px; }
-/*
-.btn-group + .btn-group {
-  margin-left: 0px;
-  margin-right: 5px;
-}
-*/
 .btn-group:only-of-type, .btn-group:last-of-type {
   margin-right: 0px;
   padding-right: 0px;
 }
-/* Tweak container cogs */
-/*
-.btn-group.pull-right {
-  margin-left: 20px;
-  margin-right: 0px;
-}
-.pull-right.btn-group > button {
-  margin-left: 30px;
-  margin-top: 0px;
-}
-*/
-/* Make some room above nodes */
-/*
-.btn-group button { margin-top: 10px; }
-*/
 
 /* Keep drop target area open */
 .drop-target {
@@ -524,26 +501,6 @@ ul.backend-list li {
   position: relative;
   min-width: 150px;
 }
-/*
-.opencenter-container::after {
-  content: " ";
-  background: rgba(255, 255, 255, 0);
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0, #fff 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, #fff));
-  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0, #fff 100%);
-  background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0, #fff 100%);
-  background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 0, #fff 100%);
-  background: linear-gradient(top, rgba(255, 255, 255, 0) 0, #fff 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='rgba(221,  221,  221,  0)', endColorstr='#ffffff', GradientType=0);
-  height: 20px;
-  display: block;
-  position: absolute;
-  bottom: 0;
-  right: 20px;
-  left: 0;
-  border-bottom-width: 1px;
-}
-*/
 .container-header {
   height: 40px;
   background-color: #f7f7f7;
@@ -559,9 +516,6 @@ ul.backend-list li {
 .container-body {
   padding: 10px;
   position: relative;
-/*  max-height: 50px;
-  overflow-y: scroll;
-*/
 }
 
 /* Status */
