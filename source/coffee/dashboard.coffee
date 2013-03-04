@@ -400,13 +400,26 @@ dashboard.parseTasks = (data, keyed) ->
 
       task.dash.label = "#{task.id}: #{task.action} [#{task.state}]"
 
+      if task.dash.active # If a task is selected
+        dashboard.indexModel.wsTaskTitle task.dash.label # Update the title
+
       keyed[id] = task # Set and return it
     else continue # Skip it
+
+  # So we can update logpane when the active task is reaped/none are selected
+  activeCount = 0
 
   # Prune
   for k of keyed
     unless +k in ids # Coerce to int, lulz
-      delete keyed[k]
+      delete keyed[k] # Toss reaped tasks
+    else
+      activeCount++ # Got an active (selected) one!
+
+  if !activeCount # If none were selected
+    # Reset log pane bits
+    dashboard.indexModel.wsTaskTitle "Select a task to view its log"
+    dashboard.indexModel.wsTaskLog "..."
 
   tasks # Return list
 

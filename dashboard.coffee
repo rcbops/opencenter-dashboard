@@ -4,7 +4,6 @@ url = require "url"
 path = require "path"
 http = require "http"
 https = require "https"
-gzippo = require "gzippo"
 express = require "express"
 httpProxy = require "http-proxy"
 config = require "./config.json"
@@ -21,22 +20,18 @@ app = express()
 app.configure ->
   app.set "port", process.env.PORT or 3000
   app.set "sport", process.env.SPORT or 3443
-  app.use express.favicon(path.join __dirname, "source/favicon.ico")
+  app.use express.compress()
+  app.use express.static(path.join __dirname, "public")
+  app.use express.favicon(path.join __dirname, "public/favicon.ico")
   app.use express.logger("dev")
-  app.use express.bodyParser()
   app.use express.methodOverride()
-  app.use require("connect-restreamer")()
   app.use app.router
 
 # Profiles
 app.configure "production", ->
-  # Use gzip/1 day cache
-  app.use gzippo.staticGzip(path.join __dirname, "public")
   app.use express.errorHandler()
 
 app.configure "development", ->
-  # no compression/no cache
-  app.use express.static(path.join __dirname, "public")
   app.use express.errorHandler(
     dumpExceptions: true
     showStack: true)
