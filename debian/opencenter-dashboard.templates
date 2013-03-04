@@ -5,5 +5,5 @@ Description: Enter IP for communicating with the OpenCenter endpoint.
 
 Template: opencenter/server_port
 Type: string
-Default: 8080
+Default: 8443
 Description: Enter port for communicating with the OpenCenter endpoint.
