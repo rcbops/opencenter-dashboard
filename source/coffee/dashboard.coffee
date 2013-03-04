@@ -64,6 +64,8 @@ dashboard.getPopoverPlacement = (tip, element) ->
 
 # Keep track of AJAX success/failure
 dashboard.siteEnabled = ko.observable true
+dashboard.siteDisable = -> dashboard.siteEnabled false
+dashboard.siteEnable = -> dashboard.siteEnabled true
 
 # Toggle task/log pane
 dashboard.displayTaskLogPane = ko.observable false
@@ -168,7 +170,7 @@ dashboard.ajax = (type, url, data, success, error, timeout, statusCode) ->
         data: data
         headers: dashboard.authHeader # Add basic auth
         success: (data) ->
-          dashboard.siteEnabled true # Enable site
+          dashboard.siteEnable() # Enable site
           dashboard.hideModal "#indexNoConnectionModal" # Hide immediately
           req.backoff = 250 # Reset on success
           success data if success?
@@ -181,7 +183,7 @@ dashboard.ajax = (type, url, data, success, error, timeout, statusCode) ->
           else if retry is true and type is "GET" # Opted in and not a POST
             setTimeout req, req.backoff # Retry with incremental backoff
             unless jqXHR.status is 0 # Didn't timeout
-              dashboard.siteEnabled false # Don't disable on repolls and such
+              dashboard.siteDisable() # Don't disable on repolls and such
               req.backoff *= 2 if req.backoff < 32000 # Do eet
         complete: -> delete dashboard.pendingRequests[url] # Clean up our request
         statusCode: statusCode
