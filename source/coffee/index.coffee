@@ -264,6 +264,8 @@ $ ->
         id = data().id()
         obj = dashboard.indexModel.keyItems[id]
         dashboard.killPopovers()
+        if dashboard.indexModel.siteLocked()
+          return # Don't pop when locked
         if event.type is "mouseenter"
           obj.hovered = true
           dashboard.updatePopover this, obj, true
@@ -272,7 +274,7 @@ $ ->
           dashboard.killPopovers()
 
   ko.bindingHandlers.sortable.options =
-    handle: ".btn"
+    handle: ".draggable"
     cancel: ".dragDisable"
     opacity: 0.35
     tolerance: "pointer"
