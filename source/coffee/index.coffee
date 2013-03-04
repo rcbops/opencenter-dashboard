@@ -182,13 +182,20 @@ $ ->
     $(document).click => @siteLocked false
 
     @getActions = (node) =>
-      open = $("[data-id=#{node.id()}]").parent().hasClass("open")
+      $el = $("[data-id=#{node.id()}]")
+      $place = $el.siblings(".dropdown-menu").find("#placeHolder")
+      open = $el.parent().hasClass("open")
       if open # Closing menu
         @siteLocked false
       else # Opening menu
         @siteLocked true
+        $place.empty() # Clear children
+        $place.append("<div class='form-throb' />") # Show throbber
         dashboard.getData "/octr/nodes/#{node.id()}/adventures", (data) ->
-          node.dash.actions (n for n in data?.adventures)
+          if data?.adventures?.length # Have adventures?
+            node.dash.actions (n for n in data?.adventures)
+          else # No adventures
+            $place.text "No actions available" # Show sad message
 
     @doAction = (object, action) =>
       dashboard.post "/octr/adventures/#{action.id}/execute",
