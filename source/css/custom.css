@@ -360,6 +360,7 @@ Content
 }
 #root > .well > .container-body {
   max-height: none !important;
+  overflow-y: scroll;
 }
 
 /* Re-space wells */
