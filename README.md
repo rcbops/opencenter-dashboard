@@ -66,10 +66,11 @@ You can watch the various logs in parallel for easy debugging.
 SSL
 ---
 
-If you have a hankering to get some securities up in your biznatch, the
-included makefile has a "cert" target. This will automate the process of
-creating a self-signed cert to your liking, which the server will automatically
-make utilize (if present).
+If you have a hankering to get some securities up in your business, the included
+makefile has a "cert" target, which will automate the process of creating a
+self-signed cert to your liking, which the server will automatically make use of
+if present.
+
 
 Deployment
 ---
