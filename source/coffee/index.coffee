@@ -183,16 +183,19 @@ $ ->
 
     @getActions = (node) =>
       $el = $("[data-id=#{node.id()}]")
+      $place = $el.siblings(".dropdown-menu").find("#placeHolder")
       open = $el.parent().hasClass("open")
       if open # Closing menu
         @siteLocked false
       else # Opening menu
         @siteLocked true
+        $place.empty() # Clear children
+        $place.append("<div class='form-throb' />") # Show throbber
         dashboard.getData "/octr/nodes/#{node.id()}/adventures", (data) ->
-          if data?.adventures?.length
+          if data?.adventures?.length # Have adventures?
             node.dash.actions (n for n in data?.adventures)
-          else
-            $el.siblings(".dropdown-menu").find("#placeHolder").text "No actions available"
+          else # No adventures
+            $place.text "No actions available" # Show sad message
 
     @doAction = (object, action) =>
       dashboard.post "/octr/adventures/#{action.id}/execute",
