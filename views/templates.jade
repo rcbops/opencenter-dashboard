@@ -33,24 +33,8 @@ block templates
       .well.well-small.pull-left.opencenter-container
         header.container-header
           .pull-left.btn-group
-            button.btn.btn-mini.dropdown-toggle(data-bind='click: $root.getActions, attr: {"data-id": id}', data-toggle='dropdown')
-              i.icon-cog
-            ul.dropdown-menu
-              li.nav-header Manage
-              li.divider
-              // ko if: !dash.actions().length
-              li: span#placeHolder
-              // /ko
-              // ko foreach: dash.actions
-              li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
-              // /ko
-          .pull-left.container-name: span(data-bind='text: name')
-
-        .container-body
-          .drop-target(data-bind='sortable: dash.agents, attr: {"data-id": id}, dropper: dash.locked')
-            .btn-group.node
-              button.btn.btn-small.btn-node.statusDescription(disabled='disabled', data-bind='css: dash.statusClass')
-              button.btn.btn-small.btn-node.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: !!task_id()}', data-toggle='dropdown')
+            .dropdown
+              button.btn.btn-mini.dropdown-toggle(data-bind='click: $root.getActions, attr: {"data-id": id}', data-toggle='dropdown')
                 i.icon-cog
               ul.dropdown-menu
                 li.nav-header= "Manage"
@@ -61,10 +45,27 @@ block templates
                 // ko foreach: dash.actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
                 // /ko
-              button.btn.btn-small.btn-node.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dash.locked}, attr: {"data-id": id}')
-            .clear-right
+          .pull-left.container-name: span(data-bind='text: name')
 
+        .container-body
+          .drop-target(data-bind='sortable: dash.agents, attr: {"data-id": id}, dropper: dash.locked')
+            .node
+              .statusDescription(disabled='disabled', data-bind='css: dash.statusClass')
+              .dropdown
+                .draggable.dropdown-toggle(data-bind='click: $root.getActions, attr: {disabled: !!task_id(), "data-id": id}', data-toggle='dropdown')
+                  i.icon-cog
+                ul.dropdown-menu
+                  li.nav-header= "Manage"
+                  li.divider
+                  // ko if: !dash.actions().length
+                  li: span#placeHolder
+                  // /ko
+                  // ko foreach: dash.actions
+                  li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
+                  // /ko
+              .draggable.node-name(data-bind='text: name, popper: $data, css: {dragDisable: dash.locked}, attr: {"data-id": id}')
           div(data-bind='template: {name: "indexItemTemplate", foreach: dash.containers}')
+
     #indexTaskLogPane(data-bind='showPane: dashboard.displayTaskLogPane')
       #taskPane
         .pane-title= 'Tasks'
