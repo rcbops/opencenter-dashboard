@@ -169,9 +169,17 @@ $ ->
           ret.push (step)
       ret
 
+    # Document clicks hide menus and bubble up here
+    $(document).click => @siteLocked false
+
     @getActions = (node) =>
-      dashboard.getData "/octr/nodes/#{node.id()}/adventures", (data) ->
-        node.dash.actions (n for n in data?.adventures)
+      open = $("[data-id=#{node.id()}]").parent().hasClass("open")
+      if open # Closing menu
+        @siteLocked false
+      else # Opening menu
+        @siteLocked true
+        dashboard.getData "/octr/nodes/#{node.id()}/adventures", (data) ->
+          node.dash.actions (n for n in data?.adventures)
 
     @doAction = (object, action) =>
       dashboard.post "/octr/adventures/#{action.id}/execute",
