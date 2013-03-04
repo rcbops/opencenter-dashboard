@@ -118,13 +118,22 @@ $ ->
           else
             dashboard.getData "/octr/nodes/#{id}"
             , (node) ->
-                pnodes.push node.node
-                resolver stack
+                pnodes.push node.node # Got a node, so push it
+                resolver stack # Continue
             , (jqXHR) =>
                 switch jqXHR.status
                   when 404
+                    node = @keyItems[id]
+                    unless node? # Already deleted?
+                      resolver stack # Continue
+                      break # Bail this thread
+                    pid = node?.facts?.parent_id
+                    if pid? # Have parent?
+                      delete @keyItems[pid].dash.children[id] # Delete from parent's children
                     delete @keyItems[id] # Remove node
-                  else true # Keep trying
+                    resolver stack # Continue
+                  else true # Retry GET
+                false # Don't retry GET
         resolver nodes
       , @config?.timeout?.long ? 30000
 
