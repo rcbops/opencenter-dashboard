@@ -39,7 +39,7 @@ block templates
               li.nav-header Manage
               li.divider
               // ko if: !dash.actions().length
-              li: span#placeHolder: .form-throb
+              li: span#placeHolder
               // /ko
               // ko foreach: dash.actions
               li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
@@ -56,7 +56,7 @@ block templates
                 li.nav-header= "Manage"
                 li.divider
                 // ko if: !dash.actions().length
-                li: span#placeHolder: .form-throb
+                li: span#placeHolder
                 // /ko
                 // ko foreach: dash.actions
                 li: a(tabindex='-1', href='#', data-bind='click: $root.doAction.bind($data, $parent), text: name + "..."')
