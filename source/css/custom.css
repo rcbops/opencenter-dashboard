@@ -2,7 +2,7 @@
 General
 ****************/
 body {
-  background: #ddd;
+  background: #eee;
   /* Space navbar */
   padding-top: 120px;
   padding-right: 10px;
@@ -114,7 +114,7 @@ Header
   text-align: right;
   color: #999;
   font-size: 12px;
-  margin-top: 3px;
+  padding-top: 3px;
 }
 #top-links li {
   line-height: 14px;
@@ -134,9 +134,7 @@ Header
 }
 #banner {
   z-index: 80;
-  box-shadow: 0 -3px 9px 0 #000;
-  -moz-box-shadow: 0 -3px 9px 0 #000;
-  -webkit-box-shadow: 0 -3px 9px 0 #000;
+  border-bottom: 1px solid #f9f9f9;
 }
 .navbar-fixed-top .navbar-inner,
 .navbar-static-top .navbar-inner {
@@ -144,6 +142,9 @@ Header
   -moz-box-shadow: none;
   box-shadow: none;
   border: 0px;
+}
+.navbar-inner {
+  border-bottom: 1px solid #dddddd !important;
 }
 #logo-wrapper {
   position: relative;
@@ -167,7 +168,7 @@ Header
   text-indent: 200%;
   white-space: nowrap;
   padding: 0px;
-  margin: 0px;
+  margin: 10px 0px 0px 0px;
 }
 .brand::before {
   content: '';
