@@ -125,7 +125,7 @@ block templates
                   .control-group
                     label.control-label(data-bind='text: value.friendly, attr: {for: key}')
                     .controls
-                      input(data-bind='tipper: value, attr: {id: key, name: key, placeholder: value.placeholder, value: value.default, type: dashboard.convertValueType(value.type)}, css: {required: value.required}')
+                      input(data-bind='tipper: value, attr: {id: key, name: key, placeholder: value.placeholder, value: value.default, type: dashboard.convertValueType(value.type)}, css: {required: value.required, cidrType: value.type === "cidr"}')
                   // /ko
               // /ko
         .modal-footer
