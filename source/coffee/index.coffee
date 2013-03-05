@@ -100,6 +100,7 @@ $ ->
           url = "/octr/tasks/#{id}/logs/#{data.request}"
           xhr = new XMLHttpRequest()
           xhr.open "GET", url
+          xhr.setRequestHeader('Authorization', dashboard.authHeader)
           xhr.onloadstart = ->
             dashboard.pendingRequests[url] = xhr # Store
           xhr.onprogress = =>
