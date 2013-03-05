@@ -14,6 +14,7 @@ BuildRequires:	make
 BuildRequires:	openssl
 BuildRequires:	git
 Requires:	httpd
+Requires:   mod_ssl
 
 %description
 Some description
