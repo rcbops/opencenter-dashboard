@@ -315,6 +315,28 @@ $ ->
     stop: (event, ui) ->
       dashboard.indexModel.siteLocked false
 
+  $.validator.addMethod "cidrType", (value, element) ->
+    dot2num = (dot) ->
+      d = dot.split('.')
+      ((((((+d[0])*256)+(+d[1]))*256)+(+d[2]))*256)+(+d[3])
+
+    num2dot = (num) ->
+      ((num >> 24) & 255) + "." +
+      ((num >> 16) & 255) + "." +
+      ((num >> 8) & 255) + "." +
+      (num & 255)
+
+    regex = /^((?:(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5]))(?:\/(\d|[1-2]\d|3[0-2]))$/
+    match = regex.exec value
+
+    if match?
+      mask = +match[2]
+      num = dot2num match[1]
+      masked = num2dot(num & (0xffffffff << (32-mask)))
+      if masked is match[1] then true else false
+    else false
+  , "Validate CIDR"
+
   # Login form validator
   $('#loginForm').validate
     #focusCleanup: true
