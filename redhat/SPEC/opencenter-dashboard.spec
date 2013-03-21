@@ -1,7 +1,7 @@
 %define ver 1
 
 Name:		opencenter-dashboard
-Version:	0.1.0
+Version:	0.2.0
 Release:        %{ver}%{?dist}
 Summary:	Dashboard for OpenCenter
 
@@ -51,7 +51,13 @@ service httpd restart
 /usr/share/opencenter-dashboard/*
 /etc/httpd/conf.d/opencenter-dashboard.conf
 
+# *******************************************************
+# ATTENTION: changelog is in reverse chronological order
+# *******************************************************
 %changelog
+* Wed Mar 20 2013 RCB Builder (rcb-deploy@lists.rackspace.com) - 0.2.0
+- Fixed apache access log location
+
 * Mon Sep 10 2012 Joseph W. Breu (joseph.breu@rackspace.com) - 0.1.0
 - Initial build
 
