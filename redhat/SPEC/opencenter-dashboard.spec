@@ -49,7 +49,7 @@ service httpd restart
 %files
 %defattr(-,root,root,-)
 /usr/share/opencenter-dashboard/*
-/etc/httpd/conf.d/opencenter-dashboard.conf
+%config(noreplace) /etc/httpd/conf.d/opencenter-dashboard.conf
 
 # *******************************************************
 # ATTENTION: changelog is in reverse chronological order
