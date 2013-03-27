@@ -297,6 +297,8 @@ dashboard.parseNodes = (data, keyed={}) ->
       dashboard.setWarning node
     else if node.task_id?
       dashboard.setBusy node
+    else if node.facts.maintenance_mode
+      dashboard.setDisabled node
     else
       dashboard.setGood node
 
@@ -334,6 +336,10 @@ dashboard.setGood = (node) ->
   node.dash.statusClass "ok_state"
   node.dash.statusText "Good"
   node.dash.locked false
+
+dashboard.setDisabled = (node) ->
+  node.dash.statusClass "disabled_state"
+  node.dash.statusText "Disabled"
 
 # Process nodes and map to pin
 dashboard.updateNodes = (data, pin, keys) ->

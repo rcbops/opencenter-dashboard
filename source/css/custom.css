@@ -555,7 +555,7 @@ ul.backend-list li {
   background-color: #c40022 !important;
 }
 .disabled_state, .pending_state {
-  background-color: #ccc !important;
+  background-color: #999 !important;
   color: #666 !important;
 }
 .processing_state {
