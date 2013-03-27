@@ -395,6 +395,16 @@ Content
   margin: 0px;
   min-height: 10px;
 }
+
+/* Drop-target place-holder */
+.place-holder {
+  margin: 0px;
+  padding: 0px;
+  height: 33px;
+  width: 216px;
+  border: 1px dashed #333;
+}
+
  /* Cogs */
 .container-header .btn-group {
   margin-top: 10px;
