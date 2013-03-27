@@ -307,7 +307,7 @@ $ ->
     handle: ".draggable"
     cancel: ".dragDisable"
     opacity: 0.35
-    tolerance: "pointer"
+    placeholder: "place-holder"
     start: (event, ui) ->
       $("[data-bind~='popper']").popover "disable"
       dashboard.killPopovers()
